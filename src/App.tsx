@@ -5,6 +5,7 @@ import Footer from './components/Footer'
 import FooterSimple from './components/FooterSimple'
 import Header from './components/Header'
 import ScrollReveal from './components/ScrollReveal'
+import ScrollToTop from './components/ScrollToTop'
 import { CartProvider } from './context/CartContext'
 import { NavProvider } from './context/NavContext'
 import Cadastro from './pages/Cadastro'
@@ -54,6 +55,7 @@ function App() {
       <NavProvider>
         <CartProvider>
           <LayoutGroup>
+            <ScrollToTop />
             <div className="min-h-screen w-full overflow-x-clip overflow-y-clip bg-offwhite">
               <Header />
               <main className="mx-auto w-full max-w-375 px-4 md:px-6">
