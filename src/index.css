@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'Flatline';
+  src: url('./assets/fonts/Up_Up_Creative_-_Flatline_Regular.otf')
+    format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Paleta oficial HEALTH — ver documento de paleta da marca. Cada cor tem
+     um papel definido na hierarquia (não são intercambiáveis por gosto):
+     - Verde HEALTH + Dourado HEALTH: elementos de mais destaque (logo,
+       títulos principais, botões primários).
+     - Verde Profundo + Verde Esmeralda: apoio (rodapé, contraste, texto de
+       apoio, ícones).
+     - Off-white: fundo principal de toda a página. Champagne: áreas de
+       apoio/destaque suave (banners, seções que precisam se diferenciar do
+       fundo padrão sem pesar).
+     - Verde Profundo + Dourado Claro: aplicação premium, só em momentos de
+       mais impacto (banner principal, destaque de produtos, kit/promoção).
+     - Dourado (HEALTH e Claro): sempre com parcimônia — assinatura da
+       marca, nunca cor de fundo grande, nunca competindo com o verde.
+     - Bronze Dourado: profundidade/contraste dentro dos próprios dourados
+       (ex: sombra ou borda de um elemento dourado).
+
+     `emerald-dark`, `gold` e `offwhite` são os nomes históricos das
+     classes usadas em todo o site (bg-emerald-dark, text-gold, etc.) —
+     mantidos como alias pra Verde HEALTH / Dourado HEALTH / Off-white, pra
+     não precisar trocar classe por classe em todo o código. */
+  --color-verde-health: #04452e;
+  --color-verde-profundo: #042012;
+  --color-verde-esmeralda: #0a7553;
+  --color-verde-turquesa: #2cac87;
+  --color-dourado-health: #caa02d;
+  --color-dourado-claro: #eec35a;
+  --color-champagne: #f6e99d;
+  --color-off-white: #f8f5ee;
+  --color-bronze-dourado: #94530d;
+
+  --color-emerald-dark: var(--color-verde-health);
+  --color-gold: var(--color-dourado-health);
+  --color-offwhite: var(--color-off-white);
+
+  /* Breakpoints extras (além dos padrões sm/md/lg/xl/2xl do Tailwind) para
+     refinar a responsividade do catálogo Tulipia. */
+  --breakpoint-xs: 30rem; /* 480px — celular pequeno vs. tablet */
+  --breakpoint-3xl: 90rem; /* 1440px — desktop grande */
+}
+
+.font-poppins {
+  font-family: 'Poppins', sans-serif;
+}
+
+.font-quicksand {
+  font-family: 'Quicksand', sans-serif;
+}
+
+.font-inter {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-flatline {
+  font-family: 'Flatline', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  /* só existe o corte "Regular" — evita negrito/itálico falso do navegador
+     por cima do desenho da fonte. */
+  font-synthesis: none;
+}
+
+/* Serif elegante para títulos de seção (diretriz de marca) — corpo de
+   texto continua em Inter/Quicksand/Poppins, nunca nesta fonte. */
+.font-serif-display {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+}
+
+/* Faixa de categorias do catálogo Tulipia — rola devagar e sem parar; a
+   lista é renderizada em dobro no JSX e a animação percorre metade da
+   largura, então o loop fecha sem "salto" visível. Pausa no hover para dar
+   tempo de mirar o clique, e para de vez para quem pediu menos movimento. */
+@keyframes tulipia-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.tulipia-marquee-track {
+  animation: tulipia-marquee 46s linear infinite;
+}
+
+.tulipia-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tulipia-marquee-track {
+    animation: none;
+  }
+}
+
+/* Esconde a barra de rolagem (mantendo a rolagem funcional) — usado no
+   carrossel de categorias e em outras faixas horizontais do catálogo
+   Tulipia, onde a barra nativa polui o visual sem agregar nada. */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

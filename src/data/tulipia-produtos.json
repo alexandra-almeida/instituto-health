@@ -1,0 +1,1483 @@
+{
+  "marca": "Tulípia",
+  "fonte": "Extraído diretamente do site oficial tulipia.com.br/profissional em outubro/2026 — substitui/complementa o catálogo PDF antigo",
+  "produtos": [
+    {
+      "nome": "Calmskin - Pomada Multirreparadora",
+      "tamanho": "30g",
+      "preco": 71.1,
+      "categoria": "Pomada",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Floraty - Creme Emoliente para Cravos",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Emolientes",
+      "cuidado": [],
+      "destaque": true
+    },
+    {
+      "nome": "Firm Flaccid - Nano Fluido Remineralizante",
+      "tamanho": "60ml",
+      "preco": 71.1,
+      "categoria": "Firmeza",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Floraty - Loção Amolecedora de Cravos",
+      "tamanho": "500ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Emolientes",
+      "cuidado": [],
+      "destaque": true
+    },
+    {
+      "nome": "Firm Flaccid - Nano Fluído Remineralizante",
+      "tamanho": "300ml",
+      "preco": 189,
+      "categoria": "Firmeza",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Niacine+ - Espuma de Limpeza de Niacinamida",
+      "tamanho": "50ml",
+      "preco": 49,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Floraty - Creme Esfoliante Apricot",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [],
+      "destaque": true
+    },
+    {
+      "nome": "Niacine+ - Sérum de Niacinamida 20%",
+      "tamanho": "30ml",
+      "preco": 149,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Marezi - Nano Máscara Hidrocalmante",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Immortalité-C - Nano Sérum de Vitamina C",
+      "tamanho": "50ml",
+      "preco": 152.1,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento",
+        "Anti-Idade"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Life C+ - Nano Sabonete Mousse",
+      "tamanho": "150ml",
+      "preco": 109.65,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Immortalité-C - Sabonete Antioxidante de Vitamina C",
+      "tamanho": "110ml",
+      "preco": 71.1,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Niacine+ - Espuma de Limpeza de Niacinamida",
+      "tamanho": "150ml",
+      "preco": 99,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Miracle Eyes - Nano Gel Área dos Olhos",
+      "tamanho": "13g",
+      "preco": 119,
+      "categoria": "Área dos Olhos",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Niacine+ - Pad Multifuncional",
+      "tamanho": "130g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Cils & Lashes - Sérum para Cílios e Sobrancelhas",
+      "tamanho": "8ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Área dos Olhos",
+      "cuidado": [],
+      "destaque": true
+    },
+    {
+      "nome": "Life C+ - Nano Sabonete Mousse",
+      "tamanho": "150ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": true
+    },
+    {
+      "nome": "Skin Molecular - Sérum de GHK-Cu",
+      "tamanho": "30ml",
+      "preco": 119,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Anti-Idade",
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Skin Molecular - Sérum de Vitamina B12",
+      "tamanho": "30ml",
+      "preco": 99,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Resilience - Sérum Multirreparador Calmante",
+      "tamanho": "50ml",
+      "preco": 139,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Age-Matte - Sérum Antioleosidade",
+      "tamanho": "50ml",
+      "preco": 169,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Antiacne",
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Miracle 4D - Sérum Multifuncional",
+      "tamanho": "50ml",
+      "preco": 179,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Anti-Idade",
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermacoll - Sérum Firmador de Colágeno",
+      "tamanho": "50ml",
+      "preco": 169,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Oligo-Nerox - Sérum Antirrugas",
+      "tamanho": "50ml",
+      "preco": 179,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermacos - Sérum Booster Rejuvenescedor",
+      "tamanho": "30ml",
+      "preco": 199,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Hidrasol FPS 60 - Fotoprotetor Facial",
+      "tamanho": "50g",
+      "preco": 125.1,
+      "categoria": "Fotoproteção",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Hidrasol FPS 30 - Fotoprotetor Facial",
+      "tamanho": "50g",
+      "preco": 116.1,
+      "categoria": "Fotoproteção",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Primavera Mask - Nano Máscara Renovadora",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Chokolá - Máscara de Chocolate",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Minerals 24K - Máscara de Ouro",
+      "tamanho": "100g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Anti-Idade",
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Inverno Mask - Nano Máscara Hidronutritiva",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Stellar Mask - Máscara Matificante",
+      "tamanho": "100g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Verão Mask - Nano Máscara Energizante",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Stellar Mask - Máscara Rejuvenescedora",
+      "tamanho": "100g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Stellar Mask - Máscara Enzimática",
+      "tamanho": "100g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Stellar Mask - Máscara Hidronutritiva",
+      "tamanho": "100g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Outono Mask - Nano Máscara Reequilibrante",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Ultimate Estetic+ - Nano Máscara Tensora de Ouro",
+      "tamanho": "250g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Marezi - Nano Sabonete Hidratante",
+      "tamanho": "110ml",
+      "preco": 79,
+      "categoria": "Limpeza",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Essence - Cleansing Oil",
+      "tamanho": "150ml",
+      "preco": 126.65,
+      "categoria": "Limpeza",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Citrata - Sabonete Líquido Antioleosidade",
+      "tamanho": "110ml",
+      "preco": 71.1,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Marezi - Nano Sabonete Hidratante",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Marezi - Nano Loção Tônica Remineralizante",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Dermacos - Espuma de Limpeza Rejuvenescedora",
+      "tamanho": "150ml",
+      "preco": 129,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Marezi - Nano Loção Tônica Remineralizante",
+      "tamanho": "110ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Citrata - Nano Loção Tônica Adstringente",
+      "tamanho": "110ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Citrata - Sabonete Líquido Antioleosidade",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Citrata - Nano Loção Tônica Adstringente",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Solução Pós Extração",
+      "tamanho": "50ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza de Pele",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Máscara Nutri Calm",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Loção Tônica Antisséptica",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Solução Ultraemoliente de Trietanolamina",
+      "tamanho": "500ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Emolientes",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Sérum Ultra Calmante",
+      "tamanho": "50ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Estetic - Sabonete Esfoliante Facial",
+      "tamanho": "200ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Hydrogen - Bruma de Hidrogênio Molecular",
+      "tamanho": "50ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo CaHA - Monodose Facial",
+      "tamanho": "3 ampolas de 5ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Ampolas",
+      "cuidado": [
+        "Firmeza e Contorno Facial",
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "ExoGenetic PDRN - Monodose Facial",
+      "tamanho": "3 ampolas de 3ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Ampolas",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Exogenetic PDRN - Creme Facial",
+      "tamanho": "30g",
+      "preco": 149,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Dermo Geneticist C+ - Supreme Formula",
+      "tamanho": "5 ampolas de 4ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Ampolas",
+      "cuidado": [
+        "Anti-Idade",
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "ProSkin Repair - Sabonete Restaurador",
+      "tamanho": "110ml",
+      "preco": 87,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "ProSkin Repair - Creme Fortalecedor de Barreira",
+      "tamanho": "30g",
+      "preco": 129,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "ProSkin Repair - Milk Bionutritivo",
+      "tamanho": "50ml",
+      "preco": 129,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "ProSkin Repair - Bruma Dermatológica",
+      "tamanho": "55ml",
+      "preco": 129,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Esteticista - para Limpeza de Pele",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Vitamina C - Sabonete e Sérum",
+      "tamanho": "kit",
+      "preco": 223.2,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Pele Oleosa - Sérum e Espuma de Limpeza",
+      "tamanho": "kit",
+      "preco": 248,
+      "categoria": "Kits",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Sweet Lips - Tutti-Frutti",
+      "tamanho": "kit",
+      "preco": 166,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Sweet Lips - Cereja",
+      "tamanho": "kit",
+      "preco": 166,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina ProSkin Ultra Reparadora - Kit com Creme Fortalecedor de Barreira",
+      "tamanho": "kit",
+      "preco": 345,
+      "categoria": "Kits",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Sweet Lips - Tutti Frutti",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Sweet Lips - Chocolate",
+      "tamanho": "kit",
+      "preco": 141.1,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Pós Peeling e Microagulhamento",
+      "tamanho": "kit",
+      "preco": 266.2,
+      "categoria": "Kits",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Redução de Poros - Espuma de Limpeza e Pad Multifuncional",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit 4 Estações - Profissional",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina ProSkin Ultra Hidratante - Kit com Milk Bionutritivo",
+      "tamanho": "kit",
+      "preco": 345,
+      "categoria": "Kits",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Sweet Lips - Cereja",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Peeling Premium - Black Secret",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Dermacos - Duo Home Care Rejuvenescedor",
+      "tamanho": "kit",
+      "preco": 328,
+      "categoria": "Kits",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Stellar Masks - Kit Completo",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Pele Seca ou Desidratada - Sabonete, Loção Tônica e Pomada",
+      "tamanho": "kit",
+      "preco": 237.1,
+      "categoria": "Kits",
+      "cuidado": [
+        "Pele Sensível/Sensibilizada"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Pele Mista - Sérum e Sabonete",
+      "tamanho": "kit",
+      "preco": 240.1,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Drenagem - para técnicas de massagem corporal",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Hialux - Sérum e Sabonete",
+      "tamanho": "kit",
+      "preco": 318,
+      "categoria": "Kits",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Antiacne FPS - Cuidados para peles acneicas",
+      "tamanho": "kit (3 itens)",
+      "preco": 362.1,
+      "categoria": "Kits",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Drenagem Facial - para técnicas de massagem",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Protocolo Antiacne Profissional - Kit Protocolo Peeling Antiacne",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Skincare Essencial - Sabonete, Sérum e Fotoprotetor",
+      "tamanho": "kit",
+      "preco": 334.1,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Sweet Lips Profissional - Chocolate",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Anti-Idade - Espuma de Limpeza e Creme com PDRN",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit FlaciAll - Técnica Corporal by Ana Julia Graf",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Life C+ - Profissional",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Citropeel - Peeling Soft",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Pré Peeling - Black Secret",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Séruns Premium",
+      "tamanho": "kit",
+      "preco": 646,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Rotina Clareadora - Espuma, Tônico e Sérum Life C+",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Combo Dermocosméticos para Olhos - Home Care",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Rejuvenescimento Íntimo by Ana Júlia Graf",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Anti-Idade"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Capilar Profissional - Nano Plasma e Tônico Capilar",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Capilar"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kit Hialux - Sérum, Sabonete e Creme",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Gloss Labial Tutti Frutti",
+      "tamanho": "10g",
+      "preco": 79,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Gloss Labial Cereja",
+      "tamanho": "10g",
+      "preco": 79,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Gloss Labial Chocolate",
+      "tamanho": "10g",
+      "preco": 67.15,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Fluído Ultra Concentrado Labial",
+      "tamanho": "5ml - 3 ampolas",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Esfoliante Labial Cereja",
+      "tamanho": "15g",
+      "preco": 87,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Esfoliante Labial",
+      "tamanho": "15g",
+      "preco": 87,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Sweet Lips - Esfoliante Labial Chocolate",
+      "tamanho": "15g",
+      "preco": 73.95,
+      "categoria": "Labial",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Nano Máscara Ultrassecativa",
+      "tamanho": "200g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Nano Gel Seborregulador",
+      "tamanho": "30g",
+      "preco": 114,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Nano Loção Ultrassecativa",
+      "tamanho": "60ml",
+      "preco": 99,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Peeling Antiacne",
+      "tamanho": "30ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Sabonete Seborregulador",
+      "tamanho": "110ml",
+      "preco": 114,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Loção Ultrassecativa FPS 30 Tonalizante",
+      "tamanho": "50ml",
+      "preco": 134.1,
+      "categoria": "Fotoproteção",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Kinelyn - Sabonete Seborregulador",
+      "tamanho": "230ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Antiacne"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Citrogel - Nano Gel Clareador da Pele",
+      "tamanho": "30g",
+      "preco": 149,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Sabonete Glico-Renovador",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Sepiwhite - Gel Clareador",
+      "tamanho": "30g",
+      "preco": 179,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Clareador Concentrado",
+      "tamanho": "60ml",
+      "preco": 199,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Biowhite - Nano Loção Clareadora",
+      "tamanho": "60ml",
+      "preco": 157,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Solução Pré-peeling Desengordurante",
+      "tamanho": "120ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza de Pele",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Renotrat - Gel Facial",
+      "tamanho": "30g",
+      "preco": 169,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Clareamento",
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Micro Spikes Peeling",
+      "tamanho": "30g",
+      "preco": 220,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Black Secret - Peeling Facial 2 Fases",
+      "tamanho": "30g cada",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Hialux - Sabonete Clareador",
+      "tamanho": "110ml",
+      "preco": 99,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Hialux - Creme Preenchedor",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Hidratação",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Hialux - Sérum Preenchedor",
+      "tamanho": "30ml",
+      "preco": 219,
+      "categoria": "Séruns",
+      "cuidado": [
+        "Rugas e Linhas de Expressão"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Nano Sérum Clareador 20%",
+      "tamanho": "30ml",
+      "preco": 228,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Nano Máscara Iluminadora",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Monodose Clareadora de Vitamina C",
+      "tamanho": "4ml - 5 ampolas",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Nano Peeling Abrasivo C",
+      "tamanho": "150g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Nano Tônico",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Life C+ - Nano Tônico",
+      "tamanho": "110ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Vitamina C",
+      "cuidado": [
+        "Clareamento"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Trico Geneticist - Nano Plasma Capilar",
+      "tamanho": "4ml - 5 ampolas",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Ampolas",
+      "cuidado": [
+        "Capilar"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Trico Geneticist - Nano Máscara Regeneradora",
+      "tamanho": "200g",
+      "preco": 157,
+      "categoria": "Máscaras",
+      "cuidado": [
+        "Capilar"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Faixa de Cabelo Rosa - Protege o cabelo do skincare",
+      "tamanho": "1 un",
+      "preco": 35.9,
+      "categoria": "Acessórios",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Trico Geneticist - Tônico Capilar Antiqueda",
+      "tamanho": "110ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Tônicos",
+      "cuidado": [
+        "Capilar"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Trico Geneticist - Nano Shampoo Revitalizante",
+      "tamanho": "250ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Limpeza",
+      "cuidado": [
+        "Capilar"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Faixa de Cabelo Bege - Protege o cabelo do skincare",
+      "tamanho": "1 un",
+      "preco": 35.9,
+      "categoria": "Acessórios",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Elegance - Nano Dual-Peeling Esfoliante",
+      "tamanho": "500g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Corpus - Máscara de Argila Amarela e Colágeno",
+      "tamanho": "1kg",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Argilas",
+      "cuidado": [
+        "Firmeza e Contorno Facial"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Elegance Body - Nano Spray Lipotérmico 5 em 1",
+      "tamanho": "300ml",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Ocean OX by Ana Júlia Graf - Flocos de Magnésio Dérmico",
+      "tamanho": "3 sachês",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Body HD - Creme de Massagem Redutor",
+      "tamanho": "1kg",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Moovy - Creme de Massagem Neutro",
+      "tamanho": "1kg",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [],
+      "destaque": false
+    },
+    {
+      "nome": "Moovy - Creme de Massagem Ozonizado",
+      "tamanho": "1kg",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Body HD - Gel Crioterápico",
+      "tamanho": "1kg",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Body HD - Gel Hiperemiante",
+      "tamanho": "500g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Corporal",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    },
+    {
+      "nome": "Body HD - Goma Esfoliante",
+      "tamanho": "500g",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Peelings e Esfoliantes",
+      "cuidado": [
+        "Redução de Medidas e Celulite"
+      ],
+      "destaque": false
+    }
+  ]
+}

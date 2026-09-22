@@ -1,0 +1,209 @@
+{
+  "marca": "Tulípia",
+  "observacao": "Preços = Cliente Final (preço de venda ao público). O preço Profissional NÃO está incluído aqui de propósito — fica reservado para uma futura área de login exclusiva para profissionais cadastrados e confirmados.",
+  "fotos": "PENDENTE - aguardando confirmação da Juliana sobre banco de imagens em alta resolução. Usar placeholder até lá.",
+  "categorias": [
+    {
+      "categoria": "Dermo Estetic (Limpeza de Pele)",
+      "produtos": [
+        { "nome": "Dermo Estetic - Solução Pós Extração", "tamanho": "50ml", "preco": 128.00 },
+        { "nome": "Dermo Estetic - Loção Tônica Antisséptica", "tamanho": "300ml", "preco": 142.00 },
+        { "nome": "Dermo Estetic - Solução Ultraemoliente de Trietanolamina", "tamanho": "500ml", "preco": 142.00 },
+        { "nome": "Dermo Estetic - Máscara Nutri Calm", "tamanho": "200g", "preco": 169.00 },
+        { "nome": "Dermo Estetic - Sabonete Esfoliante Facial", "tamanho": "200ml", "preco": 142.00 },
+        { "nome": "Dermo Estetic - Sérum Ultra Calmante", "tamanho": "50ml", "preco": 186.00 },
+        { "nome": "Kit Protocolo Dermo Estetic", "tamanho": "kit completo", "preco": 909.00, "observacao": "preço De/Por - conferir se cliente final tem desconto" }
+      ]
+    },
+    {
+      "categoria": "Ampolas",
+      "produtos": [
+        { "nome": "Dermo CaHA - Monodose Facial", "tamanho": "5ml - 3amp", "preco": 228.00 },
+        { "nome": "ExoGenetic PDRN - Monodose Facial", "tamanho": "3ml - 3amp", "preco": 285.00 },
+        { "nome": "Dermo-Geneticist C+ Supreme Formula", "tamanho": "4ml - 5amp", "preco": 285.00 },
+        { "nome": "ExoGenetic PDRN - Creme Facial", "tamanho": "não especificado", "preco": 149.00 }
+      ]
+    },
+    {
+      "categoria": "Kits",
+      "produtos": [
+        { "nome": "Kit Limpeza de Pele", "tamanho": "kit (6 itens: Marezi loção tônica remineralizante 300ml, Marezi máscara hidrocalmante 200g, Marezi sabonete hidratante 300ml, Floraty creme esfoliante apricot 200g, Floraty creme emoliente para cravos 200g, Immortalité-C sérum vitamina C 50ml)", "preco": 936.00 },
+        { "nome": "Kit Life C+ Profissional", "tamanho": "kit (5 itens: sérum clareador 30ml, monodose clareadora 4ml-5amp, tônico 300ml, sabonete mousse 150ml, máscara iluminadora 150g, peeling abrasivo 150g)", "preco": 1139.00 },
+        { "nome": "Immortalité-C Essential Duo", "tamanho": "kit (sérum 50ml + sabonete 110ml)", "preco": 248.00 },
+        { "nome": "Kit Dermacos", "tamanho": "kit (booster 30ml + espuma de limpeza 150ml)", "preco": 328.00 },
+        { "nome": "Kit Sweet Lips Profissional", "tamanho": "kit (gloss 10g, esfoliante 15g, fluido ultraconcentrado 3amp-5ml)", "preco": 380.00, "observacao": "disponível em 3 sabores: tutti-frutti, cereja, chocolate" },
+        { "nome": "Kit Sweet Lips Home Care", "tamanho": "kit (gloss 10g + esfoliante 15g)", "preco": 166.00, "observacao": "disponível em 3 sabores" },
+        { "nome": "Kit 4 Estações", "tamanho": "kit (4 máscaras 150g cada: Inverno, Outono, Primavera, Verão)", "preco": 628.00 },
+        { "nome": "Kit Stellar Mask", "tamanho": "kit (4 máscaras 100g cada)", "preco": 744.00 },
+        { "nome": "Kit Ácido Hialurônico", "tamanho": "kit (creme 150g, sabonete 110ml, sérum 30ml)", "preco": 504.00 },
+        { "nome": "Kit Antiacne", "tamanho": "kit (5 itens Kinelyn + Age-Matte)", "preco": 720.00 },
+        { "nome": "Kit Ana Julia Graf", "tamanho": "kit (Corpus 1kg, Elegance dual-peeling 500g, Elegance body spray 300ml, Firm Flaccid 300ml, Ocean Ox 3 sachês)", "preco": 859.00 },
+        { "nome": "Kit Peeling Premium (Black Secret)", "tamanho": "kit (peeling 2 fases, clareador 60ml, sabonete 300ml, solução pré-peeling 120ml)", "preco": 1281.00 },
+        { "nome": "Kit ProSkin", "tamanho": "kit (bruma 55ml, sabonete 110ml, creme fortalecedor 30g)", "preco": 345.00 }
+      ]
+    },
+    {
+      "categoria": "Queridinhos",
+      "produtos": [
+        { "nome": "Floraty - Creme Esfoliante Apricot", "tamanho": "200g", "preco": 157.00 },
+        { "nome": "Cils & Lashes - Sérum para Cílios e Sobrancelhas", "tamanho": "8ml", "preco": 119.00 },
+        { "nome": "Life C+ - Nano Sabonete Mousse", "tamanho": "não especificado", "preco": 129.00 },
+        { "nome": "Floraty - Creme Amolecedor de Cravos", "tamanho": "200g", "preco": 157.00 },
+        { "nome": "Firm Flaccid - Nano Fluido Remineralizante", "tamanho": "300ml", "preco": 189.00 },
+        { "nome": "Firm Flaccid - Nano Fluido Remineralizante", "tamanho": "60ml", "preco": 79.00 },
+        { "nome": "Calmskin - Pomada Multirreparadora", "tamanho": "30g", "preco": 79.00 },
+        { "nome": "Immortalité-C - Sabonete Antioxidante de Vitamina C", "tamanho": "110ml", "preco": 79.00 },
+        { "nome": "Immortalité-C - Nano Sérum de Vitamina C", "tamanho": "não especificado", "preco": 169.00 },
+        { "nome": "Miracle Eyes - Nano Gel Área dos Olhos", "tamanho": "não especificado", "preco": 119.00 },
+        { "nome": "Floraty - Amolecedor de Cravos Líquido", "tamanho": "500ml", "preco": 157.00 },
+        { "nome": "Marezi - Nano Máscara Hidrocalmante", "tamanho": "200g", "preco": 169.00 },
+        { "nome": "Niacine+ - Pad Multifuncional", "tamanho": "70 pads", "preco": 149.00 },
+        { "nome": "Niacine+ - Sérum de Niacinamida 20%", "tamanho": "não especificado", "preco": 149.00 },
+        { "nome": "Niacine+ - Espuma de Limpeza de Niacinamida", "tamanho": "50ml", "preco": 49.00 },
+        { "nome": "Niacine+ - Espuma de Limpeza de Niacinamida", "tamanho": "150ml", "preco": 69.30 }
+      ]
+    },
+    {
+      "categoria": "Cleasing (Limpeza)",
+      "produtos": [
+        { "nome": "Marezi - Nano Loção Tônica Remineralizante", "tamanho": "110ml", "preco": 87.00 },
+        { "nome": "Marezi - Nano Sabonete Hidratante", "tamanho": "110ml", "preco": 79.00 },
+        { "nome": "Marezi - Nano Loção Tônica Remineralizante", "tamanho": "300ml", "preco": 142.00 },
+        { "nome": "Marezi - Nano Sabonete Hidratante", "tamanho": "300ml", "preco": 142.00 },
+        { "nome": "Citrata - Nano Loção Tônica Adstringente", "tamanho": "110ml", "preco": 79.00 },
+        { "nome": "Citrata - Sabonete Líquido Antioleosidade", "tamanho": "110ml", "preco": 79.00 },
+        { "nome": "Citrata - Nano Loção Tônica Adstringente", "tamanho": "300ml", "preco": 142.00 },
+        { "nome": "Citrata - Sabonete Líquido Antioleosidade", "tamanho": "300ml", "preco": 142.00 },
+        { "nome": "Essence - Cleansing Oil", "tamanho": "150ml", "preco": 149.00 },
+        { "nome": "Dermacos - Espuma de Limpeza Rejuvenescedora", "tamanho": "150ml", "preco": 129.00 }
+      ]
+    },
+    {
+      "categoria": "Séruns",
+      "produtos": [
+        { "nome": "Dermacos - Booster Rejuvenescedor", "tamanho": "30ml", "preco": 199.00 },
+        { "nome": "Age-Matte - Sérum Antioleosidade", "tamanho": "50ml", "preco": 169.00 },
+        { "nome": "Dermacoll - Sérum de Colágeno", "tamanho": "50ml", "preco": 169.00 },
+        { "nome": "Miracle 4D - Nano Sérum Restaurador", "tamanho": "110ml", "preco": 179.00 },
+        { "nome": "Oligo Nerox - Nano Sérum Suavizante", "tamanho": "50ml", "preco": 179.00 },
+        { "nome": "Resilience - Nano Sérum Dermoprotetor", "tamanho": "50ml", "preco": 139.00 },
+        { "nome": "Skin Molecular - Sérum de Vitamina B12", "tamanho": "30ml", "preco": 99.00 }
+      ]
+    },
+    {
+      "categoria": "Vitamina C",
+      "produtos": [
+        { "nome": "Life C+ - Nano Máscara Iluminadora", "tamanho": "150ml", "preco": 199.00 },
+        { "nome": "Life C+ - Nano Peeling Abrasivo", "tamanho": "150ml", "preco": 199.00 },
+        { "nome": "Life C+ - Nano Monodose Clareadora", "tamanho": "4ml - 5amp", "preco": 257.00 },
+        { "nome": "Life C+ - Nano Sabonete Mousse", "tamanho": "150ml", "preco": 99.00 },
+        { "nome": "Life C+ - Nano Tônico", "tamanho": "110ml", "preco": 99.00 },
+        { "nome": "Life C+ - Nano Tônico", "tamanho": "300ml", "preco": 157.00 },
+        { "nome": "Life C+ - Nano Sérum Clareador 20%", "tamanho": "30ml", "preco": 228.00 }
+      ]
+    },
+    {
+      "categoria": "Máscaras",
+      "produtos": [
+        { "nome": "Minerals 24K - Máscara de Ouro", "tamanho": "100g", "preco": null, "observacao": "preço não visível no catálogo" },
+        { "nome": "Chokolá - Máscara de Chocolate", "tamanho": "200g", "preco": null, "observacao": "preço não visível no catálogo" },
+        { "nome": "Inverno Mask - Nano Máscara Hidronutritiva", "tamanho": "50ml", "preco": 157.00 },
+        { "nome": "Primavera Mask - Nano Máscara Renovadora", "tamanho": "50ml", "preco": 157.00 },
+        { "nome": "Verão Mask - Nano Máscara Energizante", "tamanho": "50ml", "preco": 157.00 },
+        { "nome": "Outono Mask - Nano Máscara Reequilibrante", "tamanho": "50ml", "preco": 157.00 },
+        { "nome": "Stellar Mask - Máscara Enzimática", "tamanho": "100g", "preco": 186.00 },
+        { "nome": "Stellar Mask - Máscara Matificante", "tamanho": "100g", "preco": 186.00 },
+        { "nome": "Stellar Mask - Máscara Rejuvenescedora", "tamanho": "100g", "preco": 186.00 },
+        { "nome": "Stellar Mask - Máscara Hidronutritiva", "tamanho": "100g", "preco": 186.00 }
+      ]
+    },
+    {
+      "categoria": "Ácido Hialurônico",
+      "produtos": [
+        { "nome": "Hialux - Sabonete Clareador", "tamanho": "110ml", "preco": 99.00 },
+        { "nome": "Hialux - Sérum Preenchedor", "tamanho": "30ml", "preco": 219.00 },
+        { "nome": "Hialux - Creme Preenchedor", "tamanho": "150g", "preco": 186.00 }
+      ]
+    },
+    {
+      "categoria": "Clareamento",
+      "produtos": [
+        { "nome": "Black Secret - Micro Spikes Peeling", "tamanho": "30g", "preco": 220.00 },
+        { "nome": "Biowhite - Nano Loção Clareadora", "tamanho": "60ml", "preco": 157.00 },
+        { "nome": "Black Secret - Clareador Concentrado", "tamanho": "60ml", "preco": 199.00 },
+        { "nome": "Black Secret - Peeling Facial 2 Fases", "tamanho": "não especificado", "preco": 714.00 },
+        { "nome": "Black Secret - Sabonete Glico-Renovador", "tamanho": "300ml", "preco": 199.00 },
+        { "nome": "Black Secret - Solução Pré-Peeling Desengordurante", "tamanho": "120ml", "preco": 169.00 },
+        { "nome": "Citrogel - Nano Gel Clareador", "tamanho": "30g", "preco": 149.00 },
+        { "nome": "Renotrat - Gel Facial com DMAE", "tamanho": "30g", "preco": 169.00 },
+        { "nome": "Sepiwhite - Gel Clareador", "tamanho": "30g", "preco": 179.00 }
+      ]
+    },
+    {
+      "categoria": "Antiacne",
+      "produtos": [
+        { "nome": "Black Secret - Peeling Antiacne", "tamanho": "30ml", "preco": 199.00 },
+        { "nome": "Kinelyn - Nano Gel Seborregulador", "tamanho": "30g", "preco": 114.00 },
+        { "nome": "Kinelyn - Nano Loção Ultrassecativa", "tamanho": "60ml", "preco": 99.00 },
+        { "nome": "Kinelyn - Loção Ultrassecativa FPS 30 Tonalizante", "tamanho": "50ml", "preco": 149.00 },
+        { "nome": "Kinelyn - Nano Máscara Ultrassecativa", "tamanho": "200g", "preco": 169.00 },
+        { "nome": "Kinelyn - Sabonete Seborregulador", "tamanho": "110ml", "preco": 114.00 },
+        { "nome": "Kinelyn - Sabonete Seborregulador", "tamanho": "230ml", "preco": 169.00 }
+      ]
+    },
+    {
+      "categoria": "Ana Júlia Graf",
+      "produtos": [
+        { "nome": "Corpus - Máscara de Argila e Colágeno", "tamanho": "1kg", "preco": 214.00 },
+        { "nome": "Elegance - Body Nano Spray Lipotérmico 5 em 1", "tamanho": "300ml", "preco": 228.00 },
+        { "nome": "Elegance - Nano Dual-Peeling Esfoliante", "tamanho": "500g", "preco": 228.00 },
+        { "nome": "Ocean Ox - Flocos de Magnésio", "tamanho": "3 sachês", "preco": 142.00 }
+      ]
+    },
+    {
+      "categoria": "Protetor Solar",
+      "produtos": [
+        { "nome": "Hidrasol - Fotoprotetor Facial FPS 30", "tamanho": "50g", "preco": 129.00 },
+        { "nome": "Hidrasol - Fotoprotetor Facial FPS 60", "tamanho": "50g", "preco": 139.00 }
+      ]
+    },
+    {
+      "categoria": "Labial",
+      "produtos": [
+        { "nome": "Sweet Lips - Gloss Labial Chocolate", "tamanho": "10g", "preco": 79.00 },
+        { "nome": "Sweet Lips - Esfoliante Labial Chocolate", "tamanho": "15g", "preco": 87.00 },
+        { "nome": "Sweet Lips - Gloss Labial Cereja", "tamanho": "10g", "preco": 79.00 },
+        { "nome": "Sweet Lips - Gloss Labial Tutti-Frutti", "tamanho": "10g", "preco": 79.00 },
+        { "nome": "Sweet Lips - Esfoliante Labial Cereja", "tamanho": "15g", "preco": 87.00 },
+        { "nome": "Sweet Lips - Esfoliante Labial Tutti-Frutti", "tamanho": "15g", "preco": 87.00 },
+        { "nome": "Sweet Lips - Fluido Ultraconcentrado Labial", "tamanho": "3amp - 5ml", "preco": 214.00 }
+      ]
+    },
+    {
+      "categoria": "Capilar",
+      "produtos": [
+        { "nome": "Trico Geneticist - Nano Plasma Capilar", "tamanho": "4ml - 5amp", "preco": 257.00 },
+        { "nome": "Trico Geneticist - Nano Máscara Regeneradora", "tamanho": "200g", "preco": 157.00 },
+        { "nome": "Trico Geneticist - Shampoo Revitalizante", "tamanho": "250ml", "preco": 139.00 },
+        { "nome": "Trico Geneticist - Tônico Capilar Antiqueda", "tamanho": "110ml", "preco": 179.00 }
+      ]
+    },
+    {
+      "categoria": "Corporal",
+      "produtos": [
+        { "nome": "Body HD - Creme de Massagem Redutor", "tamanho": "1kg", "preco": 228.00 },
+        { "nome": "Body HD - Gel Hiperemiante", "tamanho": "1kg", "preco": 169.00 },
+        { "nome": "Moovy - Creme de Massagem Neutro", "tamanho": "1kg", "preco": 142.00 },
+        { "nome": "Moovy - Creme de Massagem Ozonizado", "tamanho": "1kg", "preco": 228.00 }
+      ]
+    },
+    {
+      "categoria": "Barreira Cutânea (ProSkin)",
+      "produtos": [
+        { "nome": "ProSkin Repair - Sabonete Restaurador", "tamanho": "10ml", "preco": 87.00 },
+        { "nome": "ProSkin Repair - Creme Fortalecedor de Barreira", "tamanho": "30g", "preco": 129.00 },
+        { "nome": "ProSkin Repair - Bruma Dermatológica", "tamanho": "55ml", "preco": 129.00 }
+      ]
+    }
+  ]
+}
