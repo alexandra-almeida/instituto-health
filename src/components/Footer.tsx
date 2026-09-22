@@ -1,4 +1,4 @@
-import { WHATSAPP_NUMBER } from '../data/contact'
+import { INSTAGRAM_URL, WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from '../data/contact'
 import {
   FacebookIcon,
   InstagramIcon,
@@ -31,7 +31,7 @@ function Footer() {
                 className="inline-flex items-center gap-2 hover:text-gold"
               >
                 <WhatsappIcon className="h-4 w-4" />
-                (16) 99730-4585
+                {WHATSAPP_DISPLAY}
               </a>
             </li>
             <li>
@@ -70,7 +70,7 @@ function Footer() {
           </h3>
           <div className="mt-3 flex gap-3">
             <a
-              href="https://www.instagram.com/health_instituto/"
+              href={INSTAGRAM_URL}
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram"

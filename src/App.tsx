@@ -1,5 +1,6 @@
 import { LayoutGroup, MotionConfig } from 'motion/react'
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import FloatingWhatsapp from './components/FloatingWhatsapp'
 import Footer from './components/Footer'
 import FooterSimple from './components/FooterSimple'
 import Header from './components/Header'
@@ -94,6 +95,7 @@ function App() {
                 </Routes>
               </main>
               <ScrollReveal>{isHome ? <Footer /> : <FooterSimple />}</ScrollReveal>
+              <FloatingWhatsapp />
             </div>
           </LayoutGroup>
         </CartProvider>

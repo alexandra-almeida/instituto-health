@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import logoNavbar from '../assets/logo-parts/logo-navbar-cropped.png'
-import { WHATSAPP_NUMBER } from '../data/contact'
+import { INSTAGRAM_URL, WHATSAPP_NUMBER } from '../data/contact'
 import { FacebookIcon, InstagramIcon, WhatsappIcon } from './icons'
 
 // Rodapé enxuto — usado em todas as páginas menos a home (que tem o Footer
@@ -23,7 +23,7 @@ function FooterSimple() {
 
         <div className="flex items-center gap-3">
           <a
-            href="https://instagram.com"
+            href={INSTAGRAM_URL}
             target="_blank"
             rel="noreferrer"
             aria-label="Instagram"
