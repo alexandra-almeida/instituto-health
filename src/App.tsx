@@ -12,6 +12,8 @@ import Cadastro from './pages/Cadastro'
 import Carrinho from './pages/Carrinho'
 import Cursos from './pages/Cursos'
 import Home from './pages/Home'
+import Login from './pages/Login'
+import PoliticaDePrivacidade from './pages/PoliticaDePrivacidade'
 import Procedimentos from './pages/Procedimentos'
 import ProcedimentoDetalhe from './pages/ProcedimentoDetalhe'
 import ProdutosHospitalares from './pages/ProdutosHospitalares'
@@ -80,6 +82,11 @@ function App() {
                   <Route path="/sobre" element={<Sobre />} />
                   <Route path="/carrinho" element={<Carrinho />} />
                   <Route path="/cadastro" element={<Cadastro />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route
+                    path="/politica-de-privacidade"
+                    element={<PoliticaDePrivacidade />}
+                  />
 
                   {/* Rotas antigas, redirecionadas pras equivalentes novas —
                       pra não quebrar links que já existam por aí (favoritos,
