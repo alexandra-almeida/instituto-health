@@ -787,29 +787,35 @@ function Cadastro() {
 
   function handleDadosConcluidos(emailConfirmado: string) {
     setEmail(emailConfirmado)
-    setView('confirmacao-email')
-  }
-
-  function handleEmailConfirmado() {
-    // Home Care termina o cadastro aqui mesmo; Profissional ainda passa
-    // pela etapa de comprovante antes da tela de sucesso.
+    // Profissional passa pelo comprovante ANTES de confirmar o e-mail; Home
+    // Care não tem comprovante, então já vai direto pra confirmação.
     if (perfil === 'profissional') {
       setView('comprovante')
     } else {
       setSuccessVariant('padrao')
-      setView('sucesso')
+      setView('confirmacao-email')
     }
   }
 
   function handleComprovanteFinalizado() {
     setSuccessVariant('profissional')
+    setView('confirmacao-email')
+  }
+
+  function handleEmailConfirmado() {
+    // A ramificação por perfil já aconteceu antes (em handleDadosConcluidos
+    // / handleComprovanteFinalizado) — confirmar o e-mail é sempre a última
+    // etapa antes do sucesso, pros dois perfis.
     setView('sucesso')
   }
 
   function handleSwitchToHomeCare() {
+    // Troca de perfil acontece durante o comprovante, que agora vem ANTES
+    // da confirmação de e-mail — então ainda falta confirmar o e-mail,
+    // mesmo virando Home Care (não pula direto pro sucesso).
     setPerfil('homecare')
     setSuccessVariant('padrao')
-    setView('sucesso')
+    setView('confirmacao-email')
   }
 
   return (
