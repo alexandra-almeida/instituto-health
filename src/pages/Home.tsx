@@ -821,16 +821,46 @@ function FinalCtaSection() {
   )
 }
 
+// Marca que a pessoa já viu a animação de entrada nesta ABA/sessão do
+// navegador — sessionStorage (não localStorage) porque queremos exatamente
+// isso: não repetir a cada navegação de volta pra "/", mas voltar a mostrar
+// numa visita nova (aba/navegador fechado e reaberto).
+const INTRO_SEEN_KEY = 'health_intro_seen'
+
+function hasSeenIntro(): boolean {
+  try {
+    return window.sessionStorage.getItem(INTRO_SEEN_KEY) === 'true'
+  } catch {
+    // sessionStorage indisponível (ex: navegação privada) — melhor deixar a
+    // animação rodar do que arriscar um erro.
+    return false
+  }
+}
+
+function markIntroSeen() {
+  try {
+    window.sessionStorage.setItem(INTRO_SEEN_KEY, 'true')
+  } catch {
+    // sem sessionStorage a animação só vai repetir a cada visita — não é
+    // motivo pra quebrar a navegação.
+  }
+}
+
 function Home() {
+  // Lazy init (roda uma vez, antes do primeiro paint) — decide já na
+  // primeira renderização se a animação deve rodar ou se a home nasce
+  // direto no estado final, sem nenhum frame intermediário da intro.
+  const [skipIntro] = useState(hasSeenIntro)
+
   // Controla exclusivamente a LogoInteira + subtítulo + divisor + tagline
   // (o bloco de entrada inteiro). Ao virar false, o <AnimatePresence> roda
   // o fade-out e SÓ DEPOIS desmonta o bloco de verdade do DOM.
-  const [showFullLogo, setShowFullLogo] = useState(true)
+  const [showFullLogo, setShowFullLogo] = useState(!skipIntro)
   // Overlay fixo (emblema + texto) "voando" da home até o header — só
   // existe durante a própria transição de ~1s.
   const [overlay, setOverlay] = useState<OverlayRects | null>(null)
   // Libera as seções da home depois que a transição termina de vez.
-  const [homeReady, setHomeReady] = useState(false)
+  const [homeReady, setHomeReady] = useState(skipIntro)
 
   const { setIntroFinished, setBrandReady, brandIconRef, brandTextRef } =
     useNav()
@@ -840,10 +870,18 @@ function Home() {
   // Sempre que a home é montada (inclusive ao voltar de outra página), a
   // animação de entrada roda de novo — então o NavContext (que sobrevive à
   // troca de rota) precisa "esquecer" que o header já tinha aparecido antes.
+  // Exceção: quando a intro já foi vista nesta sessão, pula direto pro
+  // estado final (header já visível), sem passar por "false" antes —
+  // useLayoutEffect roda antes do paint, então não há flash em nenhum caso.
   useLayoutEffect(() => {
+    if (skipIntro) {
+      setIntroFinished(true)
+      setBrandReady(true)
+      return
+    }
     setIntroFinished(false)
     setBrandReady(false)
-  }, [setIntroFinished, setBrandReady])
+  }, [skipIntro, setIntroFinished, setBrandReady])
 
   function startHandoff() {
     const iconFromEl = iconAnchorRef.current
@@ -867,6 +905,7 @@ function Home() {
       // sem overlay, em vez de travar a home nesse estado.
       setBrandReady(true)
       setHomeReady(true)
+      markIntroSeen()
     }
 
     // O "chrome" do menu (fundo, borda, links, carrinho) começa a
@@ -889,6 +928,7 @@ function Home() {
     setOverlay(null)
     setBrandReady(true)
     setHomeReady(true)
+    markIntroSeen()
   }
 
   return (
