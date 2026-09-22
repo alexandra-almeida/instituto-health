@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
-import type { FormEvent } from 'react'
+import { useRef, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircleIcon,
   ChevronLeftIcon,
   EyeIcon,
   EyeOffIcon,
+  FileIcon,
   HomeIcon,
   ShieldCheckIcon,
+  UploadIcon,
 } from '../components/icons'
 
 type Perfil = 'profissional' | 'homecare'
@@ -44,6 +46,29 @@ const PERFIS: {
 ]
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// Profissões que a Tulípia/Instituto Health não reconhece como "profissional
+// da estética" pra fins de conta profissional — mostradas como aviso antes
+// do upload, pra quem não se encaixa já saber de cara.
+const PROFISSOES_INVALIDAS = [
+  'Cabeleireiro',
+  'Tatuador',
+  'Depilador',
+  'Micropigmentador',
+  'Maquiador',
+  'Aromaterapeuta',
+  'Designer de Unhas',
+  'Designer de Sobrancelhas',
+  'Educador Físico',
+  'Psicólogo',
+  'Designer de Cílios',
+  'Manicure e Pedicure',
+  'Epilador',
+  'Podólogo',
+]
+
+const COMPROVANTE_ACCEPT =
+  '.jpg,.jpeg,.png,.heic,.pdf,image/jpeg,image/png,image/heic,application/pdf'
 
 // ---------------------------------------------------------------------
 // Indicador de progresso — "Passo X de 2" + barra de 2 segmentos.
@@ -380,20 +405,191 @@ function CriarConta({
 }
 
 // ---------------------------------------------------------------------
+// Comprovante Profissional — só pra quem escolheu perfil "Profissional".
+// ---------------------------------------------------------------------
+function ComprovanteProfissional({
+  onFinalizar,
+  onSwitchToHomeCare,
+}: {
+  onFinalizar: () => void
+  onSwitchToHomeCare: () => void
+}) {
+  const [arquivo, setArquivo] = useState<File | null>(null)
+  const [confirmado, setConfirmado] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const podeFinalizar = arquivo !== null && confirmado
+
+  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
+    setArquivo(event.target.files?.[0] ?? null)
+  }
+
+  function handleRemoverArquivo() {
+    setArquivo(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  function handleFinalizar() {
+    if (!podeFinalizar) return
+    // TODO(backend): ainda não existe upload real. Quando existir, o envio
+    // do arquivo (ex: POST multipart/form-data pra /api/cadastro/comprovante)
+    // entra aqui — só chamar onFinalizar() depois da confirmação do
+    // servidor. Por enquanto o arquivo escolhido (`arquivo`) nunca sai do
+    // navegador: não é enviado nem salvo em lugar nenhum, é só validação
+    // visual da interface.
+    onFinalizar()
+  }
+
+  return (
+    <div>
+      <div className="text-center">
+        <h1 className="font-flatline text-2xl text-verde-health sm:text-3xl">
+          Comprovante Profissional
+        </h1>
+        <p className="mt-2 text-sm text-verde-health/70">
+          Envie seu certificado, diploma ou comprovante de aptidão para
+          validar sua conta profissional.
+        </p>
+      </div>
+
+      <div className="mt-6 rounded-2xl border border-verde-health/15 bg-verde-health/5 p-4">
+        <p className="text-sm font-medium text-verde-health">
+          Profissões não válidas para conta profissional:
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {PROFISSOES_INVALIDAS.map((profissao) => (
+            <span
+              key={profissao}
+              className="rounded-full border border-verde-health/20 bg-white px-3 py-1 text-xs text-verde-health/70"
+            >
+              {profissao}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <h2 className="font-flatline flex items-center gap-2 text-base text-verde-health">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-verde-health text-xs text-offwhite">
+            1
+          </span>
+          Selecione seu comprovante
+        </h2>
+        <p className="mt-2 ml-8 text-sm text-verde-health/70">
+          Certificados de cursos da área de estética com somatória mínima de
+          100h/aula.
+        </p>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={COMPROVANTE_ACCEPT}
+          onChange={handleFileChange}
+          className="sr-only"
+        />
+
+        {arquivo ? (
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-verde-health/20 bg-white px-4 py-3.5">
+            <span className="flex min-w-0 items-center gap-2.5 text-sm text-verde-health">
+              <FileIcon className="h-5 w-5 shrink-0 text-dourado-health" />
+              <span className="truncate">{arquivo.name}</span>
+            </span>
+            <button
+              type="button"
+              onClick={handleRemoverArquivo}
+              className="shrink-0 text-xs font-medium text-verde-health/60 hover:text-dourado-health"
+            >
+              Remover
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="mt-3 flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-verde-health/25 px-6 py-8 text-center transition-colors hover:border-dourado-health"
+          >
+            <UploadIcon className="h-7 w-7 text-verde-health/50" />
+            <span className="text-sm font-medium text-verde-health">
+              Clique para selecionar o arquivo
+            </span>
+            <span className="text-xs text-verde-health/55">
+              JPG, PNG, HEIC (iPhone) ou PDF
+            </span>
+          </button>
+        )}
+      </div>
+
+      <div className="mt-6">
+        <h2 className="font-flatline flex items-center gap-2 text-base text-verde-health">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-verde-health text-xs text-offwhite">
+            2
+          </span>
+          Confirme a veracidade
+        </h2>
+
+        <label className="mt-3 ml-8 flex items-start gap-2.5 text-sm text-verde-health/80">
+          <input
+            type="checkbox"
+            checked={confirmado}
+            onChange={(event) => setConfirmado(event.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 accent-dourado-health"
+          />
+          <span>
+            Afirmo para todos os efeitos e sob pena da lei, que o documento
+            enviado pertence a mim e é verídico.
+          </span>
+        </label>
+
+        <div className="mt-3 ml-8 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800">
+          <strong className="font-semibold">Atenção:</strong> Seu comprovante
+          será revisado na primeira compra. Caso não esteja de acordo com
+          nosso termo de uso, a compra poderá ser cancelada.
+        </div>
+      </div>
+
+      <button
+        type="button"
+        disabled={!podeFinalizar}
+        onClick={handleFinalizar}
+        className={`font-flatline mt-8 w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
+          podeFinalizar
+            ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
+            : 'cursor-not-allowed bg-gray-200 text-gray-400'
+        }`}
+      >
+        Finalizar Cadastro
+      </button>
+
+      <button
+        type="button"
+        onClick={onSwitchToHomeCare}
+        className="mt-4 w-full rounded-2xl border border-verde-health/15 bg-white px-4 py-3 text-left text-sm text-verde-health/70 transition-colors hover:border-dourado-health/50"
+      >
+        Não é profissional da estética? Sem problema. Sua conta passa para
+        Home Care agora e você segue comprando com preço de cliente final.
+      </button>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------
 // Tela de sucesso — sem backend ainda, é só a confirmação visual do fluxo.
 // ---------------------------------------------------------------------
-function ContaCriada() {
+function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
+  const titulo =
+    variant === 'profissional' ? 'Conta criada!' : 'Conta criada com sucesso!'
+  const mensagem =
+    variant === 'profissional'
+      ? 'Seu comprovante será analisado na primeira compra.'
+      : 'Em breve você poderá fazer login.'
+
   return (
     <div className="flex flex-col items-center gap-4 py-10 text-center">
       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-verde-health/10 text-verde-health">
         <CheckCircleIcon className="h-9 w-9" />
       </span>
-      <h1 className="font-flatline text-2xl text-verde-health">
-        Conta criada com sucesso!
-      </h1>
-      <p className="max-w-sm text-sm text-verde-health/70">
-        Em breve você poderá fazer login.
-      </p>
+      <h1 className="font-flatline text-2xl text-verde-health">{titulo}</h1>
+      <p className="max-w-sm text-sm text-verde-health/70">{mensagem}</p>
       <Link
         to="/"
         className="font-flatline mt-2 inline-flex items-center justify-center rounded-full bg-emerald-dark px-8 py-3 text-sm uppercase leading-none text-offwhite transition-colors hover:bg-emerald-dark/90"
@@ -404,12 +600,39 @@ function ContaCriada() {
   )
 }
 
-function Cadastro() {
-  const [step, setStep] = useState<1 | 2>(1)
-  const [perfil, setPerfil] = useState<Perfil | null>(null)
-  const [submitted, setSubmitted] = useState(false)
+// Passo 1 e 2 são o fluxo base (indicador "Passo X de 2"); "comprovante" é
+// uma etapa extra, só pra quem escolheu perfil profissional — por isso não
+// entra na contagem do indicador (fica escondido nela e na tela de sucesso).
+type View = 'perfil' | 'dados' | 'comprovante' | 'sucesso'
 
-  const viewKey = submitted ? 'sucesso' : step
+function Cadastro() {
+  const [view, setView] = useState<View>('perfil')
+  const [perfil, setPerfil] = useState<Perfil | null>(null)
+  const [successVariant, setSuccessVariant] = useState<
+    'padrao' | 'profissional'
+  >('padrao')
+
+  function handleDadosConcluidos() {
+    // Home Care termina o cadastro aqui mesmo; Profissional ainda passa
+    // pela etapa de comprovante antes da tela de sucesso.
+    if (perfil === 'profissional') {
+      setView('comprovante')
+    } else {
+      setSuccessVariant('padrao')
+      setView('sucesso')
+    }
+  }
+
+  function handleComprovanteFinalizado() {
+    setSuccessVariant('profissional')
+    setView('sucesso')
+  }
+
+  function handleSwitchToHomeCare() {
+    setPerfil('homecare')
+    setSuccessVariant('padrao')
+    setView('sucesso')
+  }
 
   return (
     <motion.section
@@ -418,33 +641,42 @@ function Cadastro() {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="mx-auto w-full max-w-xl py-8 sm:py-12"
     >
-      {!submitted && <StepProgress step={step} />}
+      {(view === 'perfil' || view === 'dados') && (
+        <StepProgress step={view === 'perfil' ? 1 : 2} />
+      )}
 
       <AnimatePresence mode="wait">
         <motion.div
-          key={viewKey}
+          key={view}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.25, ease: 'easeOut' }}
         >
-          {submitted ? (
-            <ContaCriada />
-          ) : step === 1 ? (
+          {view === 'perfil' && (
             <EscolhaPerfil
               perfil={perfil}
               onSelect={setPerfil}
-              onContinuar={() => perfil && setStep(2)}
+              onContinuar={() => perfil && setView('dados')}
             />
-          ) : (
-            perfil && (
-              <CriarConta
-                perfil={perfil}
-                onVoltar={() => setStep(1)}
-                onSuccess={() => setSubmitted(true)}
-              />
-            )
           )}
+
+          {view === 'dados' && perfil && (
+            <CriarConta
+              perfil={perfil}
+              onVoltar={() => setView('perfil')}
+              onSuccess={handleDadosConcluidos}
+            />
+          )}
+
+          {view === 'comprovante' && (
+            <ComprovanteProfissional
+              onFinalizar={handleComprovanteFinalizado}
+              onSwitchToHomeCare={handleSwitchToHomeCare}
+            />
+          )}
+
+          {view === 'sucesso' && <ContaCriada variant={successVariant} />}
         </motion.div>
       </AnimatePresence>
     </motion.section>

@@ -576,3 +576,38 @@ export function CheckCircleIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   )
 }
+
+export function UploadIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M12 15.5V4" />
+      <path d="m7.5 8.5 4.5-4.5 4.5 4.5" />
+      <path d="M4.5 15.5V19a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3.5" />
+    </svg>
+  )
+}
+
+export function FileIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M6.5 3h7L18.5 8.5V20a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" />
+      <path d="M13.5 3v5a1 1 0 0 0 1 1h4" />
+    </svg>
+  )
+}
