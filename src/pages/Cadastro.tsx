@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useRef, useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ChangeEvent, ClipboardEvent, FormEvent, KeyboardEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircleIcon,
@@ -12,6 +12,7 @@ import {
   ShieldCheckIcon,
   UploadIcon,
 } from '../components/icons'
+import { WHATSAPP_NUMBER } from '../data/contact'
 
 type Perfil = 'profissional' | 'homecare'
 
@@ -69,6 +70,9 @@ const PROFISSOES_INVALIDAS = [
 
 const COMPROVANTE_ACCEPT =
   '.jpg,.jpeg,.png,.heic,.pdf,image/jpeg,image/png,image/heic,application/pdf'
+
+const CODIGO_LENGTH = 6
+const RESEND_COOLDOWN_SECONDS = 30
 
 // ---------------------------------------------------------------------
 // Indicador de progresso — "Passo X de 2" + barra de 2 segmentos.
@@ -279,7 +283,7 @@ function CriarConta({
 }: {
   perfil: Perfil
   onVoltar: () => void
-  onSuccess: () => void
+  onSuccess: (email: string) => void
 }) {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
@@ -309,10 +313,11 @@ function CriarConta({
 
     // TODO(backend): ainda não existe API de cadastro. Quando existir, a
     // chamada real (algo como POST /api/cadastro com { perfil, nome, email,
-    // senha }) entra aqui — só chamar onSuccess() depois da confirmação do
-    // servidor. Por enquanto isso é só uma simulação visual: nenhum dado
-    // é enviado ou persistido em lugar nenhum (nem localStorage/sessionStorage).
-    onSuccess()
+    // senha }) entra aqui — só avançar depois da confirmação do servidor
+    // (que também dispararia o envio do código de verificação por e-mail).
+    // Por enquanto isso é só uma simulação visual: nenhum dado é enviado ou
+    // persistido em lugar nenhum (nem localStorage/sessionStorage).
+    onSuccess(email)
   }
 
   return (
@@ -400,6 +405,166 @@ function CriarConta({
           Criar Conta
         </button>
       </form>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------
+// Confirmação de e-mail — entre "Crie sua conta" e o resto do fluxo.
+// Vale pros dois perfis (Profissional e Home Care), não é exclusiva de
+// nenhum. 6 caixinhas de 1 dígito cada, com avanço automático de foco.
+// ---------------------------------------------------------------------
+function ConfirmacaoEmail({
+  email,
+  onConfirmado,
+}: {
+  email: string
+  onConfirmado: () => void
+}) {
+  const [digitos, setDigitos] = useState<string[]>(
+    Array(CODIGO_LENGTH).fill(''),
+  )
+  const [resendCooldown, setResendCooldown] = useState(RESEND_COOLDOWN_SECONDS)
+  const inputsRef = useRef<Array<HTMLInputElement | null>>([])
+
+  const codigoCompleto = digitos.every((digito) => digito.length === 1)
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return
+    const timer = window.setInterval(() => {
+      setResendCooldown((current) => Math.max(0, current - 1))
+    }, 1000)
+    return () => window.clearInterval(timer)
+  }, [resendCooldown])
+
+  function handleChange(index: number, value: string) {
+    const digito = value.replace(/\D/g, '').slice(-1)
+    setDigitos((current) => {
+      const next = [...current]
+      next[index] = digito
+      return next
+    })
+    if (digito && index < CODIGO_LENGTH - 1) {
+      inputsRef.current[index + 1]?.focus()
+    }
+  }
+
+  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
+    if (event.key === 'Backspace' && !digitos[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus()
+    }
+  }
+
+  function handlePaste(event: ClipboardEvent<HTMLInputElement>) {
+    const colado = event.clipboardData
+      .getData('text')
+      .replace(/\D/g, '')
+      .slice(0, CODIGO_LENGTH)
+    if (!colado) return
+    event.preventDefault()
+    const next = Array(CODIGO_LENGTH).fill('')
+    for (let i = 0; i < colado.length; i++) next[i] = colado[i]
+    setDigitos(next)
+    inputsRef.current[Math.min(colado.length, CODIGO_LENGTH) - 1]?.focus()
+  }
+
+  function handleReenviar() {
+    if (resendCooldown > 0) return
+    // TODO(backend): ainda não existe envio real de e-mail — quando existir,
+    // o reenvio de verdade do código entra aqui. Por enquanto só reinicia o
+    // timer visual, sem reenviar nada.
+    setResendCooldown(RESEND_COOLDOWN_SECONDS)
+  }
+
+  function handleConfirmar() {
+    if (!codigoCompleto) return
+    // TODO(backend): ainda não existe backend nem envio real de código por
+    // e-mail. Quando existir, a validação de verdade do código digitado
+    // (ex: POST /api/cadastro/confirmar-email com { email, codigo }) entra
+    // aqui — só chamar onConfirmado() depois da confirmação do servidor.
+    // Por enquanto qualquer sequência de 6 dígitos avança o fluxo.
+    onConfirmado()
+  }
+
+  return (
+    <div>
+      <div className="text-center">
+        <h1 className="font-flatline text-2xl text-verde-health sm:text-3xl">
+          Confirme seu e-mail
+        </h1>
+        <p className="mt-2 text-sm text-verde-health/70">
+          Enviamos um código de 6 números para{' '}
+          <span className="font-medium text-verde-health">{email}</span>
+        </p>
+      </div>
+
+      <div className="mt-8 flex justify-center gap-2 xs:gap-3">
+        {digitos.map((digito, index) => (
+          <input
+            key={index}
+            ref={(el) => {
+              inputsRef.current[index] = el
+            }}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={1}
+            value={digito}
+            onChange={(event) => handleChange(index, event.target.value)}
+            onKeyDown={(event) => handleKeyDown(index, event)}
+            onPaste={handlePaste}
+            aria-label={`Dígito ${index + 1} do código`}
+            className="h-12 w-10 rounded-xl border border-verde-health/20 bg-white text-center text-lg font-semibold text-verde-health focus:border-dourado-health focus:ring-2 focus:ring-dourado-health/25 focus:outline-none xs:h-14 xs:w-12"
+          />
+        ))}
+      </div>
+
+      <button
+        type="button"
+        disabled={!codigoCompleto}
+        onClick={handleConfirmar}
+        className={`font-flatline mt-8 w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
+          codigoCompleto
+            ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
+            : 'cursor-not-allowed bg-gray-200 text-gray-400'
+        }`}
+      >
+        Confirmar código
+      </button>
+
+      <p className="mt-4 text-center text-xs text-verde-health/55">
+        O código pode levar um minuto para chegar. Confira também a caixa de
+        spam.
+      </p>
+
+      <div className="mt-4 text-center">
+        <button
+          type="button"
+          onClick={handleReenviar}
+          disabled={resendCooldown > 0}
+          className={`text-sm font-medium ${
+            resendCooldown > 0
+              ? 'cursor-not-allowed text-verde-health/40'
+              : 'text-dourado-health hover:underline'
+          }`}
+        >
+          {resendCooldown > 0
+            ? `Reenviar código em ${resendCooldown}s`
+            : 'Reenviar código'}
+        </button>
+      </div>
+
+      <p className="mt-8 text-center text-xs text-verde-health/55">
+        Precisa de ajuda?{' '}
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-dourado-health hover:underline"
+        >
+          Fale com a gente
+        </a>
+      </p>
     </div>
   )
 }
@@ -600,19 +765,32 @@ function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
   )
 }
 
-// Passo 1 e 2 são o fluxo base (indicador "Passo X de 2"); "comprovante" é
-// uma etapa extra, só pra quem escolheu perfil profissional — por isso não
-// entra na contagem do indicador (fica escondido nela e na tela de sucesso).
-type View = 'perfil' | 'dados' | 'comprovante' | 'sucesso'
+// Passo 1 e 2 são o fluxo base (indicador "Passo X de 2"); "confirmacao-
+// email" e "comprovante" são etapas extras — a confirmação de e-mail vale
+// pros dois perfis, o comprovante só pra profissional — por isso nenhuma
+// das duas entra na contagem do indicador (fica escondido nelas e no
+// sucesso).
+type View =
+  | 'perfil'
+  | 'dados'
+  | 'confirmacao-email'
+  | 'comprovante'
+  | 'sucesso'
 
 function Cadastro() {
   const [view, setView] = useState<View>('perfil')
   const [perfil, setPerfil] = useState<Perfil | null>(null)
+  const [email, setEmail] = useState('')
   const [successVariant, setSuccessVariant] = useState<
     'padrao' | 'profissional'
   >('padrao')
 
-  function handleDadosConcluidos() {
+  function handleDadosConcluidos(emailConfirmado: string) {
+    setEmail(emailConfirmado)
+    setView('confirmacao-email')
+  }
+
+  function handleEmailConfirmado() {
     // Home Care termina o cadastro aqui mesmo; Profissional ainda passa
     // pela etapa de comprovante antes da tela de sucesso.
     if (perfil === 'profissional') {
@@ -666,6 +844,13 @@ function Cadastro() {
               perfil={perfil}
               onVoltar={() => setView('perfil')}
               onSuccess={handleDadosConcluidos}
+            />
+          )}
+
+          {view === 'confirmacao-email' && (
+            <ConfirmacaoEmail
+              email={email}
+              onConfirmado={handleEmailConfirmado}
             />
           )}
 
