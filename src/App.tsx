@@ -10,9 +10,11 @@ import { CartProvider } from './context/CartContext'
 import { NavProvider } from './context/NavContext'
 import Cadastro from './pages/Cadastro'
 import Carrinho from './pages/Carrinho'
+import Checkout from './pages/Checkout'
 import Cursos from './pages/Cursos'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import PedidoConfirmado from './pages/PedidoConfirmado'
 import PoliticaDePrivacidade from './pages/PoliticaDePrivacidade'
 import Procedimentos from './pages/Procedimentos'
 import ProcedimentoDetalhe from './pages/ProcedimentoDetalhe'
@@ -81,6 +83,11 @@ function App() {
                   <Route path="/cursos" element={<Cursos />} />
                   <Route path="/sobre" element={<Sobre />} />
                   <Route path="/carrinho" element={<Carrinho />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route
+                    path="/pedido-confirmado"
+                    element={<PedidoConfirmado />}
+                  />
                   <Route path="/cadastro" element={<Cadastro />} />
                   <Route path="/login" element={<Login />} />
                   <Route

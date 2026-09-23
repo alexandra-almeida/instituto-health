@@ -188,16 +188,22 @@ function Carrinho() {
                 o valor final será combinado pelo WhatsApp.
               </p>
             )}
+            <Link
+              to="/checkout"
+              className="mt-5 flex w-full items-center justify-center rounded-full bg-[#04452E] px-6 py-3 text-sm font-semibold text-offwhite transition-colors hover:bg-[#04452E]/90"
+            >
+              Finalizar Compra
+            </Link>
             <button
               type="button"
               onClick={handleCheckout}
-              className="mt-5 w-full rounded-full bg-[#04452E] px-6 py-3 text-sm font-semibold text-offwhite transition-colors hover:bg-[#04452E]/90"
+              className="mt-3 w-full rounded-full border border-[#04452E]/15 px-6 py-2.5 text-sm font-medium text-[#04452E] transition-colors hover:border-[#CAA02D]/50"
             >
               Finalizar pelo WhatsApp
             </button>
             <p className="mt-3 text-center text-xs text-[#04452E]/50">
-              Ainda não há pagamento online — o pedido é fechado
-              diretamente com a equipe pelo WhatsApp.
+              Prefere combinar direto com a equipe? Use a opção pelo
+              WhatsApp.
             </p>
           </div>
         </div>
