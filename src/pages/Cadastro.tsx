@@ -1,6 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
-import type { ChangeEvent, ClipboardEvent, FormEvent, KeyboardEvent } from 'react'
+import type {
+  ChangeEvent,
+  ClipboardEvent,
+  FormEvent,
+  KeyboardEvent,
+  ReactNode,
+} from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircleIcon,
@@ -96,6 +102,42 @@ function StepProgress({ step }: { step: 1 | 2 }) {
 }
 
 // ---------------------------------------------------------------------
+// Botão principal — usado nas 4 telas do fluxo (Continuar, Criar Conta,
+// Confirmar código, Finalizar Cadastro). Sólido com sombra suave quando
+// habilitado (ainda precisa de contraste pra ação principal ficar clara);
+// desabilitado é quase invisível (tom da marca em opacidade bem baixa),
+// em vez do cinza pesado de antes.
+// ---------------------------------------------------------------------
+function PrimaryButton({
+  type = 'button',
+  disabled,
+  onClick,
+  className = '',
+  children,
+}: {
+  type?: 'button' | 'submit'
+  disabled?: boolean
+  onClick?: () => void
+  className?: string
+  children: ReactNode
+}) {
+  return (
+    <button
+      type={type}
+      disabled={disabled}
+      onClick={onClick}
+      className={`font-flatline w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-all ${
+        disabled
+          ? 'cursor-not-allowed bg-verde-health/8 text-verde-health/25'
+          : 'bg-verde-health text-offwhite shadow-[0_6px_20px_-6px_rgba(4,69,46,0.5)] hover:bg-verde-health/90 hover:shadow-[0_8px_24px_-6px_rgba(4,69,46,0.55)]'
+      } ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+// ---------------------------------------------------------------------
 // Campos de texto/senha do Passo 2 — mesmo visual (rótulo, texto de
 // ajuda/erro embaixo), a senha ganha um botão de olho pra mostrar/ocultar.
 // ---------------------------------------------------------------------
@@ -130,7 +172,7 @@ function TextField({
         onChange={(event) => onChange(event.target.value)}
         autoComplete={autoComplete}
         required
-        className="w-full rounded-xl border border-verde-health/20 bg-white px-4 py-2.5 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health focus:ring-2 focus:ring-dourado-health/25 focus:outline-none"
+        className="w-full rounded-xl border border-[#04452E]/12 bg-white/60 px-4 py-2.5 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none"
       />
       {error ? (
         <span className="text-xs text-red-600">{error}</span>
@@ -162,7 +204,7 @@ function PasswordField({
           onChange={(event) => onChange(event.target.value)}
           autoComplete={autoComplete}
           required
-          className="w-full rounded-xl border border-verde-health/20 bg-white px-4 py-2.5 pr-11 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health focus:ring-2 focus:ring-dourado-health/25 focus:outline-none"
+          className="w-full rounded-xl border border-[#04452E]/12 bg-white/60 px-4 py-2.5 pr-11 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none"
         />
         <button
           type="button"
@@ -218,10 +260,10 @@ function EscolhaPerfil({
               type="button"
               onClick={() => onSelect(item.key)}
               aria-pressed={selected}
-              className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-6 text-center transition-colors ${
+              className={`flex flex-col items-center gap-3 rounded-2xl border bg-white/70 p-6 text-center backdrop-blur-sm transition-all ${
                 selected
-                  ? 'border-dourado-health bg-dourado-health/8'
-                  : 'border-verde-health/15 bg-white hover:border-dourado-health/50'
+                  ? 'border-dourado-health/70 bg-dourado-health/8 shadow-[0_4px_20px_-4px_rgba(202,160,45,0.35)]'
+                  : 'border-[#04452E]/10 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.08)] hover:border-dourado-health/40'
               }`}
             >
               <span
@@ -247,18 +289,9 @@ function EscolhaPerfil({
         })}
       </div>
 
-      <button
-        type="button"
-        disabled={!perfil}
-        onClick={onContinuar}
-        className={`font-flatline mt-8 w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
-          perfil
-            ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
-            : 'cursor-not-allowed bg-gray-200 text-gray-400'
-        }`}
-      >
+      <PrimaryButton className="mt-8" disabled={!perfil} onClick={onContinuar}>
         Continuar
-      </button>
+      </PrimaryButton>
 
       <p className="mt-6 text-center text-sm text-verde-health/70">
         Já é cadastrado?{' '}
@@ -393,17 +426,9 @@ function CriarConta({
           .
         </p>
 
-        <button
-          type="submit"
-          disabled={!formValido}
-          className={`font-flatline w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
-            formValido
-              ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
-              : 'cursor-not-allowed bg-gray-200 text-gray-400'
-          }`}
-        >
+        <PrimaryButton type="submit" disabled={!formValido}>
           Criar Conta
-        </button>
+        </PrimaryButton>
       </form>
     </div>
   )
@@ -514,23 +539,18 @@ function ConfirmacaoEmail({
             onKeyDown={(event) => handleKeyDown(index, event)}
             onPaste={handlePaste}
             aria-label={`Dígito ${index + 1} do código`}
-            className="h-12 w-10 rounded-xl border border-verde-health/20 bg-white text-center text-lg font-semibold text-verde-health focus:border-dourado-health focus:ring-2 focus:ring-dourado-health/25 focus:outline-none xs:h-14 xs:w-12"
+            className="h-12 w-10 rounded-xl border border-[#04452E]/12 bg-white/60 text-center text-lg font-semibold text-verde-health shadow-[0_2px_8px_-4px_rgba(4,32,18,0.08)] focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none xs:h-14 xs:w-12"
           />
         ))}
       </div>
 
-      <button
-        type="button"
+      <PrimaryButton
+        className="mt-8"
         disabled={!codigoCompleto}
         onClick={handleConfirmar}
-        className={`font-flatline mt-8 w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
-          codigoCompleto
-            ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
-            : 'cursor-not-allowed bg-gray-200 text-gray-400'
-        }`}
       >
         Confirmar código
-      </button>
+      </PrimaryButton>
 
       <p className="mt-4 text-center text-xs text-verde-health/55">
         O código pode levar um minuto para chegar. Confira também a caixa de
@@ -617,7 +637,7 @@ function ComprovanteProfissional({
         </p>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-verde-health/15 bg-verde-health/5 p-4">
+      <div className="mt-6 rounded-2xl border border-[#04452E]/10 bg-verde-health/5 p-4 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.06)] backdrop-blur-sm">
         <p className="text-sm font-medium text-verde-health">
           Profissões não válidas para conta profissional:
         </p>
@@ -625,7 +645,7 @@ function ComprovanteProfissional({
           {PROFISSOES_INVALIDAS.map((profissao) => (
             <span
               key={profissao}
-              className="rounded-full border border-verde-health/20 bg-white px-3 py-1 text-xs text-verde-health/70"
+              className="rounded-full border border-[#04452E]/10 bg-white/70 px-3 py-1 text-xs text-verde-health/70 backdrop-blur-sm"
             >
               {profissao}
             </span>
@@ -654,7 +674,7 @@ function ComprovanteProfissional({
         />
 
         {arquivo ? (
-          <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-verde-health/20 bg-white px-4 py-3.5">
+          <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-[#04452E]/10 bg-white/70 px-4 py-3.5 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.08)] backdrop-blur-sm">
             <span className="flex min-w-0 items-center gap-2.5 text-sm text-verde-health">
               <FileIcon className="h-5 w-5 shrink-0 text-dourado-health" />
               <span className="truncate">{arquivo.name}</span>
@@ -671,7 +691,7 @@ function ComprovanteProfissional({
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="mt-3 flex w-full flex-col items-center gap-2 rounded-2xl border-2 border-dashed border-verde-health/25 px-6 py-8 text-center transition-colors hover:border-dourado-health"
+            className="mt-3 flex w-full flex-col items-center gap-2 rounded-2xl border border-dashed border-[#04452E]/15 bg-white/40 px-6 py-8 text-center backdrop-blur-sm transition-all hover:border-dourado-health/60 hover:bg-dourado-health/5"
           >
             <UploadIcon className="h-7 w-7 text-verde-health/50" />
             <span className="text-sm font-medium text-verde-health">
@@ -705,30 +725,25 @@ function ComprovanteProfissional({
           </span>
         </label>
 
-        <div className="mt-3 ml-8 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800">
+        <div className="mt-3 ml-8 rounded-xl border border-amber-300/50 bg-amber-50/70 px-4 py-3 text-xs leading-relaxed text-amber-800 backdrop-blur-sm">
           <strong className="font-semibold">Atenção:</strong> Seu comprovante
           será revisado na primeira compra. Caso não esteja de acordo com
           nosso termo de uso, a compra poderá ser cancelada.
         </div>
       </div>
 
-      <button
-        type="button"
+      <PrimaryButton
+        className="mt-8"
         disabled={!podeFinalizar}
         onClick={handleFinalizar}
-        className={`font-flatline mt-8 w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-colors ${
-          podeFinalizar
-            ? 'bg-verde-health text-offwhite hover:bg-verde-health/90'
-            : 'cursor-not-allowed bg-gray-200 text-gray-400'
-        }`}
       >
         Finalizar Cadastro
-      </button>
+      </PrimaryButton>
 
       <button
         type="button"
         onClick={onSwitchToHomeCare}
-        className="mt-4 w-full rounded-2xl border border-verde-health/15 bg-white px-4 py-3 text-left text-sm text-verde-health/70 transition-colors hover:border-dourado-health/50"
+        className="mt-4 w-full rounded-2xl border border-[#04452E]/10 bg-white/60 px-4 py-3 text-left text-sm text-verde-health/70 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.06)] backdrop-blur-sm transition-all hover:border-dourado-health/40"
       >
         Não é profissional da estética? Sem problema. Sua conta passa para
         Home Care agora e você segue comprando com preço de cliente final.
