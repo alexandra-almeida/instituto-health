@@ -65,7 +65,7 @@ function Sobre() {
             Neuropediatria e Motricidade pela Universidade Federal de São
             Carlos (UFSCar) e em Fisioterapia Dermato Funcional pela
             Universidade Gama Filho (UGF), além de Mestre em Biotecnologia
-            em Medicina Regenerativa e Química Medicinal — uma combinação
+            em Medicina Regenerativa e Química Medicinal, uma combinação
             rara que une o rigor científico da saúde à sensibilidade da
             estética.
           </p>
@@ -76,7 +76,7 @@ function Sobre() {
             Técnicas Minimamente Invasivas, Tricologia, Fisiologia e
             Dermatopatologia, além de supervisionar estágios. É também
             autora de artigos científicos e de capítulo de livro na área de
-            biotecnologia — conhecimento que hoje se traduz em cada
+            biotecnologia, conhecimento que hoje se traduz em cada
             atendimento e cada produto recomendado no Instituto Health.
           </p>
         </div>
@@ -93,7 +93,7 @@ function Sobre() {
             Ao longo dos anos, o Instituto ampliou sua atuação e hoje é
             também distribuidor oficial da Tulípia, levando dermocosméticos
             de alta performance tanto para profissionais quanto para
-            clientes finais — além de oferecer produtos de higiene,
+            clientes finais, além de oferecer produtos de higiene,
             perfumaria, descartáveis e acessórios para clínicas e
             profissionais de Estética e Fisioterapia.
           </p>
@@ -118,7 +118,7 @@ function Sobre() {
             trajetória de Juliana. Hoje, ela leva essa experiência para
             dentro do próprio Instituto através da Health Academy,
             ministrando cursos nas áreas de Estética Facial, Corporal,
-            Capilar e Técnicas Minimamente Invasivas — formação prática,
+            Capilar e Técnicas Minimamente Invasivas, formação prática,
             guiada por quem une know-how científico e vivência de mais de
             uma década em sala de aula universitária.
           </p>

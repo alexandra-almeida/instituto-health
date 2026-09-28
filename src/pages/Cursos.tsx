@@ -26,7 +26,7 @@ function Cursos() {
         trajetória de Juliana. Hoje, ela leva essa experiência para dentro
         do próprio Instituto através da Health Academy, ministrando cursos
         nas áreas de Estética Facial, Corporal, Capilar e Técnicas
-        Minimamente Invasivas — formação prática, guiada por quem une
+        Minimamente Invasivas, formação prática, guiada por quem une
         know-how científico e vivência de mais de uma década em sala de
         aula universitária.
       </p>
