@@ -37,7 +37,7 @@ function Sobre() {
       transition={{ duration: 0.5, ease: 'easeOut' }}
       className="w-full py-10"
     >
-      <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
+      <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 px-5 text-center sm:px-0">
         <img
           src={julianaRetrato}
           alt="Juliana Gonella"
@@ -54,10 +54,13 @@ function Sobre() {
 
       {/* Corpo do texto em coluna à esquerda (mais legível pro conteúdo
           mais longo) — só o cabeçalho acima (foto + título) fica
-          centralizado, mantendo o tratamento visual original. */}
-      <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-10 text-left">
+          centralizado, mantendo o tratamento visual original. Padding
+          horizontal extra + leading mais solto só entram no mobile (onde a
+          coluna ocupa quase a largura inteira da tela): dá um respiro pro
+          texto em vez de ficar colado na borda, sem lotar linha demais. */}
+      <div className="mx-auto mt-8 flex max-w-2xl flex-col gap-10 px-5 text-left sm:px-0">
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             Juliana Gonella é fisioterapeuta, especialista e mestre, com uma
             trajetória que une décadas de atuação clínica à formação
             acadêmica de excelência. Fisioterapeuta formada pela
@@ -69,7 +72,7 @@ function Sobre() {
             rara que une o rigor científico da saúde à sensibilidade da
             estética.
           </p>
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             Por 16 anos (2009–2025), Juliana formou novas gerações de
             profissionais como professora universitária no curso de
             Estética e Cosmética da Uniara, lecionando Estética Facial,
@@ -83,13 +86,13 @@ function Sobre() {
 
         <div className="flex flex-col gap-4">
           <SubsectionTitle>O Instituto Health</SubsectionTitle>
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             Desde 2013, Juliana é proprietária e gerente do Health Instituto
             de Saúde Integrada, nascido para reunir, em um só espaço,
             fisioterapia, estética e pilates com o mesmo padrão de cuidado
             técnico e humano.
           </p>
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             Ao longo dos anos, o Instituto ampliou sua atuação e hoje é
             também distribuidor oficial da Tulípia, levando dermocosméticos
             de alta performance tanto para profissionais quanto para
@@ -101,10 +104,10 @@ function Sobre() {
 
         <div className="flex flex-col gap-4">
           <SubsectionTitle>Atendimentos</SubsectionTitle>
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             Juliana atende pessoalmente nas áreas de:
           </p>
-          <ul className="list-disc space-y-1.5 pl-5 text-sm text-emerald-dark/80 marker:text-dourado-health sm:text-base">
+          <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-emerald-dark/80 marker:text-dourado-health sm:text-base">
             {ATENDIMENTOS.map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -113,7 +116,7 @@ function Sobre() {
 
         <div className="flex flex-col gap-4">
           <SubsectionTitle>Health Academy</SubsectionTitle>
-          <p className="text-sm text-emerald-dark/80 sm:text-base">
+          <p className="text-sm leading-relaxed text-emerald-dark/80 sm:text-base">
             A vocação de formar profissionais nunca deixou de fazer parte da
             trajetória de Juliana. Hoje, ela leva essa experiência para
             dentro do próprio Instituto através da Health Academy,
