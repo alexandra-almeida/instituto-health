@@ -12,12 +12,11 @@ import BackgroundPhoto from '../components/BackgroundPhoto'
 import {
   BodyIcon,
   DrenagemIcon,
-  GlowFaceIcon,
   GraduationCapIcon,
+  HairStrandIcon,
   HospitalarIcon,
   JulianaIcon,
-  LayersIcon,
-  RazorIcon,
+  LeafDropIcon,
   ServicosIcon,
   SyringeIcon,
   TulipiaIcon,
@@ -529,25 +528,39 @@ function TulipiaShowcaseSection() {
 }
 
 // ---------------------------------------------------------------------
-// 04. Procedimentos — vitrine visual. Ícones próprios (mesmo estilo de
-// traço dos outros ícones do site) em vez de uma lib externa, já que o
-// site inteiro usa SVGs desenhados à mão (ver components/icons.tsx).
+// 04. Procedimentos — vitrine visual. 1 procedimento real por categoria
+// (o mais representativo de cada uma), com um trecho da descrição real —
+// nunca texto inventado. Ícones próprios (mesmo estilo de traço dos
+// outros ícones do site) em vez de uma lib externa, já que o site inteiro
+// usa SVGs desenhados à mão (ver components/icons.tsx).
 // ---------------------------------------------------------------------
 // `nome` aqui precisa bater exatamente com o nome do procedimento em
-// data/procedimentos.ts — o slug real é derivado de lá (uma só fonte da
-// verdade), em vez de duplicado à mão e arriscar ficar desatualizado.
+// data/procedimentos.ts — slug e descrição são derivados de lá (uma só
+// fonte da verdade), em vez de duplicados à mão e arriscar ficar
+// desatualizados.
 const PROCEDIMENTOS_VITRINE_NOMES = [
-  { label: 'Botox', nome: 'Toxina Botulínica — Botox®', Icon: SyringeIcon },
-  { label: 'Rejuvenescimento Facial', nome: 'Rejuvenescimento Facial', Icon: GlowFaceIcon },
-  { label: 'Drenagem Corporal', nome: 'Drenagem Linfática Corporal', Icon: DrenagemIcon },
-  { label: 'Dermaplaning', nome: 'Dermaplaning (Facial)', Icon: RazorIcon },
-  { label: 'Microagulhamento Facial', nome: 'Microagulhamento Facial', Icon: LayersIcon },
-  { label: 'Pós-Operatório Corporal', nome: 'Pós-Operatório Corporal', Icon: BodyIcon },
+  { nome: 'Toxina Botulínica — Botox®', Icon: SyringeIcon },
+  { nome: 'Drenagem Linfática Corporal', Icon: DrenagemIcon },
+  { nome: 'Microagulhamento Capilar', Icon: HairStrandIcon },
+  { nome: 'Pós-Operatório Corporal', Icon: BodyIcon },
+  { nome: 'Desintoxicação Metabólica', Icon: LeafDropIcon },
 ]
+
+// A maioria das descrições do catálogo é uma única frase longa (só um
+// ponto final, no fim) — por isso o corte real de tamanho fica a cargo do
+// line-clamp no card, não só da primeira frase.
+function primeiraFrase(texto: string): string {
+  const index = texto.indexOf('.')
+  return index === -1 ? texto : texto.slice(0, index + 1)
+}
 
 const PROCEDIMENTOS_VITRINE = PROCEDIMENTOS_VITRINE_NOMES.map((item) => {
   const procedimento = PROCEDIMENTOS.find((p) => p.nome === item.nome)
-  return { ...item, slug: procedimento?.slug ?? '' }
+  return {
+    ...item,
+    slug: procedimento?.slug ?? '',
+    descricao: procedimento ? primeiraFrase(procedimento.descricao) : '',
+  }
 })
 
 function ProcedimentosShowcaseSection() {
@@ -557,19 +570,22 @@ function ProcedimentosShowcaseSection() {
       <p className="mx-auto mb-10 max-w-xl text-center text-sm text-emerald-dark/70 sm:text-base">
         Uma vitrine dos principais procedimentos disponíveis no Instituto.
       </p>
-      <div className="mx-auto grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-3">
-        {PROCEDIMENTOS_VITRINE.map(({ label, slug, Icon }, index) => (
-          <ScrollReveal key={label} delay={(index % 3) * 0.08}>
+      <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        {PROCEDIMENTOS_VITRINE.map(({ nome, slug, descricao, Icon }, index) => (
+          <ScrollReveal key={nome} delay={(index % 5) * 0.08}>
             <Link
               to={`/procedimentos/${slug}`}
-              className="flex flex-col items-center gap-2 rounded-2xl border border-emerald-dark/10 bg-white p-5 text-center shadow-sm transition-shadow hover:shadow-md"
+              className="flex h-full flex-col items-center gap-2 rounded-2xl border border-emerald-dark/10 bg-white p-5 text-center shadow-sm transition-shadow hover:shadow-md"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-dark/8 text-emerald-dark">
                 <Icon className="h-6 w-6" />
               </span>
               <h3 className="font-flatline text-sm text-emerald-dark">
-                {label}
+                {nome}
               </h3>
+              <p className="line-clamp-2 text-xs text-emerald-dark/70">
+                {descricao}
+              </p>
             </Link>
           </ScrollReveal>
         ))}
