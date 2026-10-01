@@ -1,11 +1,10 @@
 import { Link, useParams } from 'react-router-dom'
 import ServicoPage from '../components/ServicoPage'
-import { findProcedimentoBySlug } from '../data/procedimentosDetalhe'
+import { findProcedimentoBySlug } from '../data/procedimentos'
 
 // Rota dinâmica /procedimentos/:slug — busca o conteúdo do procedimento
 // pelo slug e renderiza o template compartilhado <ServicoPage>. Conteúdo
-// ainda é de exemplo (ver data/procedimentosDetalhe.ts) até a Juliana
-// revisar o texto definitivo de cada procedimento.
+// real, fornecido pela Juliana (ver data/procedimentos.ts).
 function ProcedimentoDetalhe() {
   const { slug } = useParams<{ slug: string }>()
   const procedimento = findProcedimentoBySlug(slug)

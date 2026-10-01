@@ -1,34 +1,63 @@
 import { motion } from 'motion/react'
-import bgFisioterapiaExplicacao from '../assets/hero-bg/bg-2-fisioterapia-explicacao.jpg'
-import bgMassagemFacial from '../assets/hero-bg/bg-3-massagem-facial.jpg'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import FadedImage from '../components/FadedImage'
 import ScrollReveal from '../components/ScrollReveal'
-import { WHATSAPP_NUMBER } from '../data/contact'
+import {
+  CATEGORIA_IMAGEM,
+  CATEGORIAS,
+  PROCEDIMENTOS,
+} from '../data/procedimentos'
+import type { Procedimento, ProcedimentoCategoria } from '../data/procedimentos'
 
-const PROCEDIMENTOS = [
-  {
-    id: 'fisioterapia',
-    image: bgFisioterapiaExplicacao,
-    title: 'Fisioterapia',
-    description:
-      'Atendimento fisioterapêutico presencial, com avaliação individualizada e técnicas manuais para alívio de dor, reabilitação e bem-estar do corpo.',
-    message: 'Olá! Gostaria de agendar uma sessão de fisioterapia.',
-  },
-  {
-    id: 'estetica-presencial',
-    image: bgMassagemFacial,
-    title: 'Estética Presencial',
-    description:
-      'Procedimentos estéticos faciais e corporais realizados presencialmente no Instituto, com tecnologia e cuidado personalizado para cada tipo de pele.',
-    message: 'Olá! Gostaria de agendar um procedimento estético presencial.',
-  },
-]
+type FiltroCategoria = ProcedimentoCategoria | 'Todos'
 
-// Cuidados presenciais — fisioterapia e estética feitas no próprio
-// Instituto (por isso a rota própria, separada da Teleconsulta, que é
-// remota). Cada card usa uma foto com fade nas bordas (FadedImage) em vez
-// de um ícone, pra dar mais presença visual a esse tipo de atendimento.
+const FILTROS: FiltroCategoria[] = ['Todos', ...CATEGORIAS]
+
+function ProcedimentoCard({ procedimento }: { procedimento: Procedimento }) {
+  return (
+    <Link
+      to={`/procedimentos/${procedimento.slug}`}
+      className="flex h-full flex-col items-center gap-3 rounded-2xl border border-emerald-dark/10 bg-white p-6 text-center shadow-sm transition-shadow hover:shadow-md"
+    >
+      <div className="relative flex h-28 w-28 items-center justify-center">
+        <FadedImage
+          src={CATEGORIA_IMAGEM[procedimento.categoria]}
+          alt=""
+          className="h-full w-full rounded-full"
+        />
+      </div>
+      <span className="text-[11px] font-semibold tracking-wide text-dourado-health uppercase">
+        {procedimento.categoria}
+      </span>
+      <h2 className="font-flatline text-lg leading-tight text-emerald-dark">
+        {procedimento.nome}
+      </h2>
+      <p className="line-clamp-2 text-sm text-emerald-dark/70">
+        {procedimento.descricao}
+      </p>
+      <span className="font-flatline text-sm text-emerald-dark">
+        Sob consulta
+      </span>
+      <span className="mt-1 inline-flex items-center justify-center rounded-full bg-emerald-dark px-6 py-2 text-xs font-medium text-offwhite transition-colors hover:bg-emerald-dark/90">
+        Saiba mais
+      </span>
+    </Link>
+  )
+}
+
+// Listagem de procedimentos — filtro por categoria em pills (mesmo padrão
+// de segmented control já usado em outras páginas do site) + grid de
+// cards. Nenhuma foto real existe ainda por procedimento, então cada card
+// usa a foto genérica da categoria (ver CATEGORIA_IMAGEM).
 function Procedimentos() {
+  const [filtro, setFiltro] = useState<FiltroCategoria>('Todos')
+
+  const procedimentosFiltrados =
+    filtro === 'Todos'
+      ? PROCEDIMENTOS
+      : PROCEDIMENTOS.filter((item) => item.categoria === filtro)
+
   return (
     <motion.section
       initial={{ opacity: 0, y: 16 }}
@@ -42,37 +71,36 @@ function Procedimentos() {
           Procedimentos
         </h1>
         <p className="max-w-xl text-sm text-emerald-dark/70 sm:text-base">
-          Atendimentos presenciais no Instituto Health — fisioterapia e
-          estética, com acompanhamento próximo e personalizado.
+          Atendimentos presenciais no Instituto Health, com avaliação
+          individual e acompanhamento próximo em cada etapa.
         </p>
       </div>
 
-      <div className="mx-auto mt-12 grid max-w-3xl grid-cols-1 gap-6 sm:grid-cols-2">
-        {PROCEDIMENTOS.map(({ id, image, title, description, message }, index) => (
-          <ScrollReveal key={id} delay={index * 0.1}>
-            <div className="flex h-full flex-col items-center gap-3 rounded-2xl border border-emerald-dark/10 bg-white p-6 text-center shadow-sm sm:p-8">
-              <div className="relative flex h-32 w-32 items-center justify-center">
-                <FadedImage
-                  src={image}
-                  alt=""
-                  className="h-full w-full rounded-full"
-                />
-              </div>
-              <h2 className="font-flatline text-xl leading-tight text-emerald-dark">
-                {title}
-              </h2>
-              <p className="text-sm text-emerald-dark/70 sm:text-base">
-                {description}
-              </p>
-              <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-emerald-dark px-6 py-2.5 text-sm font-medium text-offwhite transition-colors hover:bg-emerald-dark/90"
-              >
-                Agendar pelo WhatsApp
-              </a>
-            </div>
+      <div className="mt-8 flex flex-wrap justify-center gap-2">
+        {FILTROS.map((categoria) => {
+          const selecionado = filtro === categoria
+          return (
+            <button
+              key={categoria}
+              type="button"
+              onClick={() => setFiltro(categoria)}
+              aria-pressed={selecionado}
+              className={`rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+                selecionado
+                  ? 'border-dourado-health bg-dourado-health text-emerald-dark'
+                  : 'border-emerald-dark/15 text-emerald-dark hover:border-dourado-health/50'
+              }`}
+            >
+              {categoria}
+            </button>
+          )
+        })}
+      </div>
+
+      <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-5 xs:grid-cols-2 lg:grid-cols-3">
+        {procedimentosFiltrados.map((procedimento, index) => (
+          <ScrollReveal key={procedimento.slug} delay={(index % 6) * 0.06}>
+            <ProcedimentoCard procedimento={procedimento} />
           </ScrollReveal>
         ))}
       </div>

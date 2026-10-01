@@ -26,6 +26,7 @@ import {
 import PriceTag from '../components/PriceTag'
 import ScrollReveal from '../components/ScrollReveal'
 import { WHATSAPP_NUMBER } from '../data/contact'
+import { PROCEDIMENTOS } from '../data/procedimentos'
 import { QUERIDINHOS } from '../data/tulipiaProducts'
 import { useNav } from '../context/useNav'
 
@@ -532,14 +533,22 @@ function TulipiaShowcaseSection() {
 // traço dos outros ícones do site) em vez de uma lib externa, já que o
 // site inteiro usa SVGs desenhados à mão (ver components/icons.tsx).
 // ---------------------------------------------------------------------
-const PROCEDIMENTOS_VITRINE = [
-  { label: 'Botox', slug: 'botox', Icon: SyringeIcon },
-  { label: 'PEIM', slug: 'peim', Icon: GlowFaceIcon },
-  { label: 'Drenagem', slug: 'drenagem', Icon: DrenagemIcon },
-  { label: 'Dermaplaning', slug: 'dermaplaning', Icon: RazorIcon },
-  { label: 'Peeling Coreano', slug: 'peeling-coreano', Icon: LayersIcon },
-  { label: 'Fisioterapia', slug: 'fisioterapia', Icon: BodyIcon },
+// `nome` aqui precisa bater exatamente com o nome do procedimento em
+// data/procedimentos.ts — o slug real é derivado de lá (uma só fonte da
+// verdade), em vez de duplicado à mão e arriscar ficar desatualizado.
+const PROCEDIMENTOS_VITRINE_NOMES = [
+  { label: 'Botox', nome: 'Toxina Botulínica — Botox®', Icon: SyringeIcon },
+  { label: 'Rejuvenescimento Facial', nome: 'Rejuvenescimento Facial', Icon: GlowFaceIcon },
+  { label: 'Drenagem Corporal', nome: 'Drenagem Linfática Corporal', Icon: DrenagemIcon },
+  { label: 'Dermaplaning', nome: 'Dermaplaning (Facial)', Icon: RazorIcon },
+  { label: 'Microagulhamento Facial', nome: 'Microagulhamento Facial', Icon: LayersIcon },
+  { label: 'Pós-Operatório Corporal', nome: 'Pós-Operatório Corporal', Icon: BodyIcon },
 ]
+
+const PROCEDIMENTOS_VITRINE = PROCEDIMENTOS_VITRINE_NOMES.map((item) => {
+  const procedimento = PROCEDIMENTOS.find((p) => p.nome === item.nome)
+  return { ...item, slug: procedimento?.slug ?? '' }
+})
 
 function ProcedimentosShowcaseSection() {
   return (
