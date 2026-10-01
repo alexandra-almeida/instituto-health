@@ -1,15 +1,9 @@
 import { motion } from 'motion/react'
 import julianaRetrato from '../assets/juliana/juliana-retrato-sem-botoes.jpg'
 import { WHATSAPP_NUMBER } from '../data/contact'
+import { CATEGORIAS } from '../data/procedimentos'
 
 const MESSAGE = 'Olá! Gostaria de saber mais sobre os atendimentos da Juliana Gonella.'
-
-const ATENDIMENTOS = [
-  'Estética Facial',
-  'Estética Corporal',
-  'Estética Capilar',
-  'Técnicas Minimamente Invasivas',
-]
 
 // Título discreto de subseção — mesmo tratamento (barrinha dourada + texto)
 // já usado no resto do site (ver SectionLabel em Home.tsx), só alinhado à
@@ -108,8 +102,8 @@ function Sobre() {
             Juliana atende pessoalmente nas áreas de:
           </p>
           <ul className="list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-emerald-dark/80 marker:text-dourado-health sm:text-base">
-            {ATENDIMENTOS.map((item) => (
-              <li key={item}>{item}</li>
+            {CATEGORIAS.map((categoria) => (
+              <li key={categoria}>{categoria}</li>
             ))}
           </ul>
         </div>
