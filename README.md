@@ -10,12 +10,14 @@ Site institucional e e-commerce do **Instituto Health**, unindo fisioterapia, es
 
 ## Sobre o projeto
 
-O Instituto Health é conduzido pela fisioterapeuta e esteticista **Juliana Gonella**, professora na Uniara. O site funciona como hub central da marca, organizando a comunicação em torno de 4 pilares:
+O Instituto Health é conduzido pela fisioterapeuta e esteticista **Juliana Gonella**, professora na Uniara. O site funciona como hub central da marca, organizando a comunicação em torno de 6 pilares:
 
+- **Tulípia** — catálogo de dermocosméticos (representante oficial)
+- **Descartáveis para Clínicas** — produtos hospitalares e descartáveis
 - **Procedimentos** — cuidados presenciais (fisioterapia e estética)
 - **Teleconsulta** — orientação individualizada por vídeo
-- **Loja** — Tulípia (revenda oficial) + Descartáveis para Clínicas
 - **Cursos** — formação e aperfeiçoamento em estética
+- **Sobre a HEALTH** — a profissional e a história do Instituto
 
 ---
 
@@ -79,10 +81,24 @@ Tipografia: fonte customizada **Flatline** nos catálogos de produto, com hierar
 
 ### Carrinho
 - Compartilhado entre Tulípia e Descartáveis para Clínicas
-- Fechamento de pedido via WhatsApp (checkout com gateway de pagamento real está em desenvolvimento)
+- Duas formas de fechar o pedido: **Finalizar Compra** (checkout) ou **Finalizar pelo WhatsApp**
 
-### Procedimentos, Teleconsulta, Cursos, Sobre
-- Páginas dedicadas por pilar, com fotos reais e CTA de agendamento via WhatsApp
+### Checkout (`/checkout`)
+- Endereço com preenchimento automático via CEP
+- Formas de pagamento: Pix, crédito e débito (somente interface)
+- Frete estimado e página de pedido confirmado
+- **Ainda sem backend**: não há cobrança real nem cálculo de frete com transportadora
+
+### Cadastro e Login (`/cadastro`, `/login`)
+- Cadastro Profissional / Home Care, com confirmação de e-mail e upload de comprovante profissional
+- **Ainda sem backend**: o fluxo é só de interface, nenhum dado é salvo
+
+### Procedimentos (`/procedimentos`)
+- **28 procedimentos reais**, com texto clínico da Juliana e filtro por categoria
+- Página de detalhe própria por procedimento, com CTA de agendamento via WhatsApp
+
+### Teleconsulta, Cursos, Sobre
+- Páginas dedicadas por pilar, com CTA de agendamento via WhatsApp
 
 ### Responsividade
 - Construído mobile-first, testado em múltiplas larguras (320px a 1920px+)
@@ -132,7 +148,7 @@ npx tsc -b          # checagem de tipos
 
 ## Deploy
 
-Hospedado na **Vercel**, com deploy automático a cada `git push` no branch `main`.
+Hospedado na **Vercel**, com deploy automático a cada `git push` no branch `main`. O `vercel.json` redireciona todas as rotas para o `index.html`, para que links diretos (ex.: `/tulipia`) funcionem com o React Router.
 
 ```bash
 git add .
@@ -144,10 +160,12 @@ git push
 
 ## Roadmap
 
-- [ ] Checkout completo (endereço via CEP + gateway de pagamento)
-- [ ] Backend para integração com transportadora
-- [ ] Painel administrativo (estoque, pedidos, cursos, financeiro, agenda)
-- [ ] Conteúdo real de Procedimentos e Cursos (aguardando material da Juliana)
+- [x] Fase 1 — Frontend completo (catálogos, cadastro e checkout em interface)
+- [ ] Fase 2 — Backend: gateway de pagamento, integração com transportadora e cadastro real
+- [ ] Fase 3 — Painel administrativo (estoque, pedidos, nota fiscal)
+- [ ] Fase 4 — Agendamentos, financeiro e cursos no admin
+- [ ] Domínio próprio e transferência do projeto para a conta Vercel do Instituto
+- [ ] Conteúdo pendente (aguardando material da Juliana): procedimento "Jato de Plasma", fotos, valor e duração dos procedimentos, detalhamento dos cursos
 - [ ] Stories patrocinados no Instagram, na mesma identidade visual
 
 ---
