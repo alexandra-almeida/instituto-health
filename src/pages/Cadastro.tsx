@@ -5,19 +5,19 @@ import type {
   ClipboardEvent,
   FormEvent,
   KeyboardEvent,
-  ReactNode,
 } from 'react'
 import { Link } from 'react-router-dom'
 import {
   CheckCircleIcon,
   ChevronLeftIcon,
-  EyeIcon,
-  EyeOffIcon,
   FileIcon,
   HomeIcon,
   ShieldCheckIcon,
   UploadIcon,
 } from '../components/icons'
+import PasswordField from '../components/PasswordField'
+import PrimaryButton from '../components/PrimaryButton'
+import TextField from '../components/TextField'
 import { WHATSAPP_NUMBER } from '../data/contact'
 
 type Perfil = 'profissional' | 'homecare'
@@ -98,133 +98,6 @@ function StepProgress({ step }: { step: 1 | 2 }) {
         />
       </div>
     </div>
-  )
-}
-
-// ---------------------------------------------------------------------
-// Botão principal — usado nas 4 telas do fluxo (Continuar, Criar Conta,
-// Confirmar código, Finalizar Cadastro). Sólido com sombra suave quando
-// habilitado (ainda precisa de contraste pra ação principal ficar clara);
-// desabilitado é quase invisível (tom da marca em opacidade bem baixa),
-// em vez do cinza pesado de antes.
-// ---------------------------------------------------------------------
-function PrimaryButton({
-  type = 'button',
-  disabled,
-  onClick,
-  className = '',
-  children,
-}: {
-  type?: 'button' | 'submit'
-  disabled?: boolean
-  onClick?: () => void
-  className?: string
-  children: ReactNode
-}) {
-  return (
-    <button
-      type={type}
-      disabled={disabled}
-      onClick={onClick}
-      className={`font-flatline w-full rounded-full px-8 py-3 text-sm uppercase leading-none transition-all ${
-        disabled
-          ? 'cursor-not-allowed bg-verde-health/8 text-verde-health/25'
-          : 'bg-verde-health text-offwhite shadow-[0_6px_20px_-6px_rgba(4,69,46,0.5)] hover:bg-verde-health/90 hover:shadow-[0_8px_24px_-6px_rgba(4,69,46,0.55)]'
-      } ${className}`}
-    >
-      {children}
-    </button>
-  )
-}
-
-// ---------------------------------------------------------------------
-// Campos de texto/senha do Passo 2 — mesmo visual (rótulo, texto de
-// ajuda/erro embaixo), a senha ganha um botão de olho pra mostrar/ocultar.
-// ---------------------------------------------------------------------
-interface FieldProps {
-  id: string
-  label: string
-  value: string
-  onChange: (value: string) => void
-  type?: string
-  autoComplete?: string
-  helper?: string
-  error?: string
-}
-
-function TextField({
-  id,
-  label,
-  value,
-  onChange,
-  type = 'text',
-  autoComplete,
-  helper,
-  error,
-}: FieldProps) {
-  return (
-    <label htmlFor={id} className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-verde-health">{label}</span>
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        autoComplete={autoComplete}
-        required
-        className="w-full rounded-xl border border-[#04452E]/12 bg-white/60 px-4 py-2.5 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none"
-      />
-      {error ? (
-        <span className="text-xs text-red-600">{error}</span>
-      ) : helper ? (
-        <span className="text-xs text-verde-health/55">{helper}</span>
-      ) : null}
-    </label>
-  )
-}
-
-function PasswordField({
-  id,
-  label,
-  value,
-  onChange,
-  autoComplete,
-  helper,
-  error,
-}: FieldProps) {
-  const [visible, setVisible] = useState(false)
-  return (
-    <label htmlFor={id} className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-verde-health">{label}</span>
-      <span className="relative flex items-center">
-        <input
-          id={id}
-          type={visible ? 'text' : 'password'}
-          value={value}
-          onChange={(event) => onChange(event.target.value)}
-          autoComplete={autoComplete}
-          required
-          className="w-full rounded-xl border border-[#04452E]/12 bg-white/60 px-4 py-2.5 pr-11 text-sm text-verde-health placeholder:text-verde-health/35 focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none"
-        />
-        <button
-          type="button"
-          onClick={() => setVisible((current) => !current)}
-          aria-label={visible ? 'Ocultar senha' : 'Mostrar senha'}
-          className="absolute right-3 text-verde-health/50 hover:text-dourado-health"
-        >
-          {visible ? (
-            <EyeOffIcon className="h-5 w-5" />
-          ) : (
-            <EyeIcon className="h-5 w-5" />
-          )}
-        </button>
-      </span>
-      {error ? (
-        <span className="text-xs text-red-600">{error}</span>
-      ) : helper ? (
-        <span className="text-xs text-verde-health/55">{helper}</span>
-      ) : null}
-    </label>
   )
 }
 

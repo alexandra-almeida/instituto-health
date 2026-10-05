@@ -39,7 +39,7 @@ Os pontos de integração estão marcados com `TODO(backend)`:
 
 - `src/pages/Cadastro.tsx` — criar conta, reenviar código, confirmar e-mail, upload de comprovante profissional
 - `src/pages/Checkout.tsx` — confirmar pedido; pagamento (Pix, crédito, débito) e frete são só interface. O CEP já usa o ViaCEP de verdade. "Até 3x sem juros" é valor de exemplo.
-- `src/pages/Login.tsx` — placeholder "em construção"
+- `src/pages/Login.tsx` — formulário completo (e-mail, senha, "esqueci minha senha"), mas sem autenticação real; nunca simula login bem-sucedido nem redireciona
 
 ## Regras de negócio
 
