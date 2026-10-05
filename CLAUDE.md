@@ -50,9 +50,8 @@ Os pontos de integração estão marcados com `TODO(backend)`:
 ## Pendências (aguardando a Juliana)
 
 - Gateway de pagamento (Mercado Pago, Asaas ou PagBank) e transportadora (Manda Bem ou Melhor Envio)
-- Transferência do projeto para a conta Vercel dela e domínio próprio (ao trocar, atualizar `canonical` e `og:url` no `index.html`)
+- Transferência do projeto para a conta Vercel dela e domínio próprio (ao trocar, atualizar `canonical`, `og:url` e também `og:image`/`twitter:image` no `index.html`)
 - Conteúdo: "Jato de Plasma" incompleto (`completo: false`), fotos, valor e duração dos procedimentos, detalhamento dos cursos
-- Falta imagem de compartilhamento (og:image, 1200x630) em `public/`
 
 ## Fases
 
