@@ -7,7 +7,8 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 
 - React 19 + TypeScript, Vite 8, Tailwind CSS v4, React Router 7, Motion, lucide-react
 - Deploy na Vercel a cada push na `main` (`vercel.json` reescreve todas as rotas para `index.html`)
-- Ainda NÃO existe backend. A stack do backend não foi decidida.
+- Backend (Fase 2, ainda não implementado): Node + Express + TypeScript em `backend/`, em camadas (routes, controller, service, repository), publicado como segundo projeto na Vercel. Supabase (Postgres, Storage, Auth) acessado só pelo backend. Pagamento via PagBank.
+- ANTES de qualquer tarefa de backend, leia `docs/plano-backend.md` inteiro. Ele é a fonte da verdade; não dependa da memória da conversa.
 
 ## Comandos
 
@@ -49,7 +50,7 @@ Os pontos de integração estão marcados com `TODO(backend)`:
 
 ## Pendências (aguardando a Juliana)
 
-- Gateway de pagamento (Mercado Pago, Asaas ou PagBank) e transportadora (Manda Bem ou Melhor Envio)
+- Transportadora (Manda Bem ou Melhor Envio). O gateway já foi decidido: PagBank.
 - Transferência do projeto para a conta Vercel dela e domínio próprio (ao trocar, atualizar `canonical`, `og:url` e também `og:image`/`twitter:image` no `index.html`)
 - Conteúdo: "Jato de Plasma" incompleto (`completo: false`), fotos, valor e duração dos procedimentos, detalhamento dos cursos
 
