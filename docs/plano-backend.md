@@ -4,8 +4,13 @@ Este arquivo é a fonte da verdade do backend. Leia-o inteiro antes de qualquer
 tarefa de backend e NÃO dependa da memória da conversa. Se algo aqui estiver
 errado ou incompleto, pare e avise a Alexandra em vez de supor.
 
-Estado em 06/10/2026: nada do backend foi implementado. O banco do Supabase
-está VAZIO (sem tabelas, políticas ou buckets). Atualize a seção "Progresso"
+Estado em 06/10/2026: nada do backend foi implementado. O projeto do site já
+foi transferido para o time da cliente na Vercel ("Health Instituto de Saúde
+Integrada", plano Pro). O banco do Supabase foi criado em 06/10/2026 pelo
+Marketplace da Vercel, dentro desse time: recurso `instituto-health-db`, plano
+gratuito, região São Paulo (gru1). Ele está VAZIO (sem tabelas, políticas ou
+buckets) e ainda não está conectado a nenhum projeto da Vercel. Não use nem
+cite nenhum projeto Supabase anterior. Atualize a seção "Progresso"
 no fim deste arquivo a cada passo concluído.
 
 ## 1. Decisões fechadas
@@ -18,8 +23,9 @@ no fim deste arquivo a cada passo concluído.
   deste mesmo repositório, com `package.json` próprio.
 - Hospedagem: Vercel, como um SEGUNDO projeto apontando para `backend/`
   (Root Directory). Sem servidor dedicado.
-- Banco, arquivos e e-mail de confirmação: Supabase (projeto `instituto-health`,
-  plano gratuito, região sa-east-1), acessado só pelo backend.
+- Banco, arquivos e e-mail de confirmação: Supabase, criado pelo Marketplace
+  da Vercel no time da cliente (cobrança na fatura da Vercel dela), plano
+  gratuito para começar, região São Paulo. Acessado só pelo backend.
 - Gateway de pagamento: PagBank.
 - Fluxo do cadastro profissional mantém a ordem das telas atuais
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
@@ -258,9 +264,15 @@ Endpoints previstos (ajustar após ler a documentação):
 ## 9. Variáveis de ambiente
 
 Backend (projeto do backend na Vercel e `backend/.env` local, nunca no git):
-`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-`PAGBANK_TOKEN`, `PAGBANK_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
+as variáveis do Supabase, `PAGBANK_TOKEN`, `PAGBANK_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
 `COOKIE_SECRET` (se necessário).
+
+Variáveis do Supabase: a integração do Marketplace cria e sincroniza as
+variáveis no projeto da Vercel a que o banco for conectado (ex.: `SUPABASE_URL`,
+`SUPABASE_SECRET_KEY`, chave publicável, `POSTGRES_URL`). Use os NOMES REAIS
+que a integração criar; confira-os no painel antes de escrever `config/env.ts`.
+O banco deve ser conectado SOMENTE ao projeto do backend, nunca ao do frontend.
+A chave secreta (secret/service role) nunca vai para chat, git ou frontend.
 
 Frontend: nenhuma chave. Só o rewrite de `/api` (e o proxy do Vite em dev).
 
@@ -306,6 +318,9 @@ Etapa C — Pedidos e pagamento
 
 ## 11. Tarefas manuais da Alexandra
 
+- Banco já criado (`instituto-health-db`). Falta conectá-lo ao projeto do
+  backend na Vercel (Storage > instituto-health-db > Connect to Project),
+  depois que esse projeto existir (passo 2). Nunca conectar ao projeto do site.
 - Colar cada migração no SQL Editor do Supabase.
 - Supabase, Authentication: modelos de e-mail de confirmação e de recuperação
   usando `{{ .Token }}` (código) em vez de link; conferir código de 6 dígitos;
