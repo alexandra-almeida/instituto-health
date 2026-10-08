@@ -291,7 +291,9 @@ Etapa A — Base
    config de env, tratamento de erros, `GET /api/saude`), rodando local.
 2. Publicar o backend como segundo projeto na Vercel; rewrite de `/api` no
    frontend e proxy do Vite. Teste: `/api/saude` responde em produção pelo
-   domínio do site.
+   domínio do site. O projeto do backend deve ter a região das Functions
+   fixada em `gru1` (São Paulo), a mesma do banco (o padrão da Vercel é
+   `iad1`, nos EUA). Conferir no painel depois do primeiro deploy.
 3. Migração `0001`: `perfis` e `comprovantes_profissionais`, com RLS ligado
    sem políticas, e o bucket privado.
 
@@ -348,4 +350,7 @@ Etapa C — Pedidos e pagamento
 
 ## Progresso
 
-- [ ] Passo 1
+- [x] Passo 1 (08/10/2026): verificações da seção 3 sem conflito com o plano
+  (Express sem configuração, com `src/app.ts` como entrypoint; corpo máximo de
+  4,5 MB; duração padrão de 300 s no Pro) e esqueleto do `backend/` com
+  `GET /api/saude`.

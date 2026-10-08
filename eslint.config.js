@@ -7,7 +7,8 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // O backend tem package.json e configuração de lint próprios (Node, sem React)
+  globalIgnores(['dist', 'backend']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
