@@ -1,6 +1,5 @@
 import { motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
-import bannerHeroMesCliente from '../assets/tulipia-banners/banner-hero-mes-cliente.webp'
 import bannerLancamentoHidrasolFluidDesktop from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-desktop.webp'
 import bannerLancamentoHidrasolFluidMobile from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-mobile.webp'
 import tulipiaRepresentante from '../assets/tulipia-brand/tulipia-representante.png'
@@ -10,6 +9,7 @@ import LinhaDropdown from '../components/tulipia/LinhaDropdown'
 import LaunchBanner from '../components/tulipia/LaunchBanner'
 import LineBanner from '../components/tulipia/LineBanner'
 import ProductCard from '../components/tulipia/ProductCard'
+import PromoStrip from '../components/tulipia/PromoStrip'
 import QueridinhosDestaque from '../components/tulipia/QueridinhosDestaque'
 import SkinTypeGrid from '../components/tulipia/SkinTypeGrid'
 import { SearchIcon } from '../components/icons'
@@ -288,16 +288,9 @@ function Tulipia() {
         </p>
       </div>
 
-      {/* 1. Banner hero — arte real da marca (promoção vigente: "Mês do
-          Cliente", 1 a 30 de setembro, ainda dentro do período). Texto já
-          vem desenhado na própria imagem, sem overlay HTML por cima. */}
-      <div className="mt-8 overflow-hidden rounded-2xl">
-        <img
-          src={bannerHeroMesCliente}
-          alt="Tulípia — Mês do Cliente, celebramos quem eleva a estética"
-          className="h-auto w-full"
-        />
-      </div>
+      {/* 1. Faixa promocional (mesma posição do antigo hero); textos em
+          src/data/promocoes.ts. */}
+      <PromoStrip />
 
       {/* Últimos lançamentos — banner do Hidrasol Fluid, inteiro clicável,
           leva direto à página do produto lançado. */}
