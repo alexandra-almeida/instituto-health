@@ -44,6 +44,10 @@ import galFloratyCremeEmolienteParaCravos200gFoto1 from '../assets/products/tuli
 import galFloratyCremeEmolienteParaCravos200gFoto2 from '../assets/products/tulipia-floraty-creme-emoliente-para-cravos-200g-foto2.webp'
 import galFloratyCremeEsfoliante200gFoto1 from '../assets/products/tulipia-floraty-creme-esfoliante-200g-foto1.webp'
 import galFloratyCremeEsfoliante200gFoto2 from '../assets/products/tulipia-floraty-creme-esfoliante-200g-foto2.webp'
+import galHidrasolProtetorSolarFluidFps6050mlFoto1 from '../assets/products/tulipia-hidrasol-protetor-solar-fluid-fps-60-50ml-foto1.webp'
+import galHidrasolProtetorSolarFluidFps6050mlFoto2 from '../assets/products/tulipia-hidrasol-protetor-solar-fluid-fps-60-50ml-foto2.webp'
+import galHidrasolProtetorSolarFluidFps6050mlFoto3 from '../assets/products/tulipia-hidrasol-protetor-solar-fluid-fps-60-50ml-foto3.webp'
+import galHidrasolProtetorSolarFluidFps6050mlFoto4 from '../assets/products/tulipia-hidrasol-protetor-solar-fluid-fps-60-50ml-foto4.webp'
 import galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto1 from '../assets/products/tulipia-immortalite-c-sabonete-antioxidante-de-vitamina-c-110ml-foto1.webp'
 import galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto2 from '../assets/products/tulipia-immortalite-c-sabonete-antioxidante-de-vitamina-c-110ml-foto2.webp'
 import galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto3 from '../assets/products/tulipia-immortalite-c-sabonete-antioxidante-de-vitamina-c-110ml-foto3.webp'
@@ -142,6 +146,7 @@ export const PRODUCT_GALLERY_EXTRAS: Record<string, string[]> = {
   'ExoGenetic PDRN - Monodose Facial|3 ampolas de 3ml': [galExogeneticPdrnMonodoseFacial3ml3AmpFoto1, galExogeneticPdrnMonodoseFacial3ml3AmpFoto2, galExogeneticPdrnMonodoseFacial3ml3AmpFoto3, galExogeneticPdrnMonodoseFacial3ml3AmpFoto4],
   'Floraty - Creme Emoliente para Cravos|200g': [galFloratyCremeEmolienteParaCravos200gFoto1, galFloratyCremeEmolienteParaCravos200gFoto2],
   'Floraty - Creme Esfoliante Apricot|200g': [galFloratyCremeEsfoliante200gFoto1, galFloratyCremeEsfoliante200gFoto2],
+  'Hidrasol - Protetor Solar Fluid FPS 60|50ml': [galHidrasolProtetorSolarFluidFps6050mlFoto1, galHidrasolProtetorSolarFluidFps6050mlFoto2, galHidrasolProtetorSolarFluidFps6050mlFoto3, galHidrasolProtetorSolarFluidFps6050mlFoto4],
   'Immortalité-C - Sabonete Antioxidante de Vitamina C|110ml': [galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto1, galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto2, galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto3, galImmortaliteCSaboneteAntioxidanteDeVitaminaC110mlFoto4],
   'Inverno Mask - Nano Máscara Hidronutritiva|150g': [galInvernoMaskNanoMascaraHidronutritiva150gFoto1],
   'Kinelyn - Loção Ultrassecativa FPS 30 Tonalizante|50ml': [galKinelynLocaoUltrassecativaFps30Tonalizante50mlFoto1, galKinelynLocaoUltrassecativaFps30Tonalizante50mlFoto2, galKinelynLocaoUltrassecativaFps30Tonalizante50mlFoto3, galKinelynLocaoUltrassecativaFps30Tonalizante50mlFoto4],

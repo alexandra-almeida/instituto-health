@@ -1,5 +1,4 @@
 import bannerAmpolas from '../assets/tulipia-banners/banner-ampolas.jpg'
-import bannerLancamentoExogenetic from '../assets/tulipia-banners/banner-lancamento-exogenetic.webp'
 import bannerLinhaDermoEstetic from '../assets/tulipia-banners/banner-linha-dermo-estetic.jpg'
 import bannerLinhaProskin from '../assets/tulipia-banners/banner-linha-proskin.jpg'
 import type { TulipiaProduct } from './tulipiaProducts'
@@ -43,13 +42,5 @@ export const TULIPIA_LINE_BANNERS: TulipiaLineBanner[] = [
     capHeight: true,
     label: 'ProSkin Repair',
     match: (p) => p.linha === 'ProSkin Repair',
-  },
-  {
-    key: 'exogenetic',
-    image: bannerLancamentoExogenetic,
-    alt: 'Lançamento ExoGenetic PDRN',
-    aspectClass: 'aspect-[2000/835]',
-    label: 'Lançamentos — ExoGenetic PDRN',
-    match: (p) => p.linha === 'ExoGenetic PDRN',
   },
 ]

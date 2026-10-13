@@ -1,10 +1,13 @@
 import { motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
 import bannerHeroMesCliente from '../assets/tulipia-banners/banner-hero-mes-cliente.webp'
+import bannerLancamentoHidrasolFluidDesktop from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-desktop.webp'
+import bannerLancamentoHidrasolFluidMobile from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-mobile.webp'
 import tulipiaRepresentante from '../assets/tulipia-brand/tulipia-representante.png'
 import type { IconBadgeItem } from '../components/tulipia/IconBadgeCarousel'
 import IconBadgeCarousel from '../components/tulipia/IconBadgeCarousel'
 import LinhaDropdown from '../components/tulipia/LinhaDropdown'
+import LaunchBanner from '../components/tulipia/LaunchBanner'
 import LineBanner from '../components/tulipia/LineBanner'
 import ProductCard from '../components/tulipia/ProductCard'
 import QueridinhosDestaque from '../components/tulipia/QueridinhosDestaque'
@@ -261,12 +264,9 @@ function Tulipia() {
     (b) => b.key === 'dermo-estetic',
   )
   const ampolasBanner = TULIPIA_LINE_BANNERS.find((b) => b.key === 'ampolas')
-  const exogeneticBanner = TULIPIA_LINE_BANNERS.find(
-    (b) => b.key === 'exogenetic',
+  const hidrasolFluid = ALL_PRODUCTS.find(
+    (p) => p.nome === 'Hidrasol - Protetor Solar Fluid FPS 60',
   )
-  const lancamentoProdutos = exogeneticBanner
-    ? gridPool.filter(exogeneticBanner.match).slice(0, 4)
-    : []
 
   return (
     <motion.section
@@ -299,9 +299,9 @@ function Tulipia() {
         />
       </div>
 
-      {/* Últimos lançamentos — banner + produtos reais da linha anunciada
-          nele (ExoGenetic PDRN). */}
-      {exogeneticBanner && lancamentoProdutos.length > 0 && (
+      {/* Últimos lançamentos — banner do Hidrasol Fluid, inteiro clicável,
+          leva direto à página do produto lançado. */}
+      {hidrasolFluid && (
         <div className="mt-10">
           <div className="mb-5 flex flex-col items-center gap-1 text-center">
             <div className="h-1 w-12 rounded-full bg-[#CAA02D]" />
@@ -309,24 +309,12 @@ function Tulipia() {
               Últimos Lançamentos
             </h2>
           </div>
-          <LineBanner
-            image={exogeneticBanner.image}
-            alt={exogeneticBanner.alt}
-            className={exogeneticBanner.aspectClass}
-            onClick={() => applyCustomFilter(exogeneticBanner)}
+          <LaunchBanner
+            mobileImage={bannerLancamentoHidrasolFluidMobile}
+            desktopImage={bannerLancamentoHidrasolFluidDesktop}
+            alt="Lançamento Hidrasol Protetor Solar Fluid FPS 60"
+            to={`/tulipia/produto/${hidrasolFluid.id}`}
           />
-          <div className="mt-5 grid grid-cols-2 gap-3 xs:grid-cols-4 xs:gap-4">
-            {lancamentoProdutos.map((produto, index) => (
-              <ScrollReveal key={produto.id} delay={index * 0.06}>
-                <ProductCard
-                  product={produto}
-                  favorited={favorites.has(produto.id)}
-                  onToggleFavorite={toggleFavorite}
-                  onQuickAdd={handleQuickAdd}
-                />
-              </ScrollReveal>
-            ))}
-          </div>
         </div>
       )}
 

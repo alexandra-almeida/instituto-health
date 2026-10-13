@@ -23,6 +23,7 @@ import imgFloratyCremeEmolienteParaCravos200g from '../assets/products/tulipia-f
 import imgFloratyCremeEsfoliante200g from '../assets/products/tulipia-floraty-creme-esfoliante-200g.png'
 import imgHidrasolFotoprotetorFacialFps30Ppd1350g from '../assets/products/tulipia-hidrasol-fotoprotetor-facial-fps-30-ppd-13-50g.png'
 import imgHidrasolFotoprotetorFacialFps60Ppd2550g from '../assets/products/tulipia-hidrasol-fotoprotetor-facial-fps-60-ppd-25-50g.png'
+import imgHidrasolProtetorSolarFluidFps6050ml from '../assets/products/tulipia-hidrasol-protetor-solar-fluid-fps-60-50ml.png'
 import imgImmortaliteCNanoSerumDeVitaminaC50ml from '../assets/products/tulipia-immortalite-c-nano-serum-de-vitamina-c-50ml.png'
 import imgKinelynNanoMascaraUltrassecativa200g from '../assets/products/tulipia-kinelyn-nano-mascara-ultrassecativa-200g.png'
 import imgMareziNanoMascaraHidrocalmante200g from '../assets/products/tulipia-marezi-nano-mascara-hidrocalmante-200g.png'
@@ -169,6 +170,7 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   'Floraty - Creme Esfoliante Apricot|200g': imgFloratyCremeEsfoliante200g,
   'Hidrasol FPS 30 - Fotoprotetor Facial|50g': imgHidrasolFotoprotetorFacialFps30Ppd1350g,
   'Hidrasol FPS 60 - Fotoprotetor Facial|50g': imgHidrasolFotoprotetorFacialFps60Ppd2550g,
+  'Hidrasol - Protetor Solar Fluid FPS 60|50ml': imgHidrasolProtetorSolarFluidFps6050ml,
   'Immortalité-C - Nano Sérum de Vitamina C|50ml': imgImmortaliteCNanoSerumDeVitaminaC50ml,
   'Kinelyn - Nano Máscara Ultrassecativa|200g': imgKinelynNanoMascaraUltrassecativa200g,
   'Marezi - Nano Máscara Hidrocalmante|200g': imgMareziNanoMascaraHidrocalmante200g,
