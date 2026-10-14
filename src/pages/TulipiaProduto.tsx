@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import ProductCard from '../components/tulipia/ProductCard'
+import ProductDetails from '../components/tulipia/ProductDetails'
 import ProductGallery from '../components/tulipia/ProductGallery'
 import {
   ChevronRightIcon,
@@ -90,7 +91,10 @@ function TulipiaProduto() {
     (src): src is string => Boolean(src),
   )
   const kitContents = parseKitContents(product.tamanho)
-  const description = generateDescription(product)
+  // Texto oficial (tulipiaDetalhes.ts) quando existe; senão o genérico.
+  const descriptionParagraphs = product.detalhes?.descricao ?? [
+    generateDescription(product),
+  ]
   const related = getRelatedProducts(product, 4)
   const favorited = favorites.has(product.id)
   const breadcrumbLabel = product.linha ?? product.categoria
@@ -245,9 +249,11 @@ function TulipiaProduto() {
             <h2 className="font-flatline text-lg text-[#04452E]">
               Descrição
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#04452E]/80">
-              {description}
-            </p>
+            <div className="mt-2 space-y-3 text-sm leading-relaxed text-[#04452E]/80">
+              {descriptionParagraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+            </div>
           </div>
 
           {/* Conteúdo do kit */}
@@ -269,6 +275,8 @@ function TulipiaProduto() {
           )}
         </div>
       </div>
+
+      {product.detalhes && <ProductDetails detalhes={product.detalhes} />}
 
       {/* Produtos relacionados */}
       {related.length > 0 && (

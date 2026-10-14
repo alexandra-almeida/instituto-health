@@ -1,6 +1,8 @@
 import type { AddToCartInput } from '../context/cart-context'
 import { getProductGalleryExtras } from './productGallery'
 import { getProductImage } from './productImages'
+import { getProductDetails } from './tulipiaDetalhes'
+import type { ProdutoDetalhes } from './tulipiaDetalhes'
 import raw from './tulipia-produtos.json'
 
 export interface TulipiaProduct {
@@ -36,6 +38,9 @@ export interface TulipiaProduct {
    * produto só tem a foto principal (ou nenhuma foto ainda). Usado só no
    * modal de detalhe; o card do grid mostra sempre só a principal. */
   imagensExtras: string[]
+  /** descrição, benefícios, ativos, modo de uso, INCI etc. (ver
+   * tulipiaDetalhes.ts) — ausente nos produtos ainda sem texto oficial. */
+  detalhes?: ProdutoDetalhes
 }
 
 interface RawProduct {
@@ -117,6 +122,7 @@ export const ALL_PRODUCTS: TulipiaProduct[] = data.produtos.map((p, index) => {
     exclusivoProfissional: p.exclusivoProfissional ?? false,
     imagem: getProductImage(p.nome, p.tamanho),
     imagensExtras: getProductGalleryExtras(p.nome, p.tamanho),
+    detalhes: getProductDetails(p.nome, p.tamanho),
   }
 })
 
