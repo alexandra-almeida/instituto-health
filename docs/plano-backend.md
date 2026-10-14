@@ -29,7 +29,7 @@ no fim deste arquivo a cada passo concluído.
 - Gateway de pagamento: PagBank.
 - Fluxo do cadastro profissional mantém a ordem das telas atuais
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
-- Migrações SQL: versionadas em `supabase/migrations/`. A Alexandra cola cada
+- Migrações SQL: versionadas em `database/migrations/`. A Alexandra cola cada
   uma manualmente no SQL Editor. Não configurar a CLI do Supabase.
 - SMTP próprio (Resend) só depois que o domínio existir. Até lá, e-mail
   embutido do Supabase, que tem limite baixo por hora (só para testes).
@@ -100,7 +100,7 @@ Padrões:
   para o localStorage.
 - Proteção contra CSRF: aceitar só `Content-Type: application/json` nas rotas
   que alteram dados e conferir o cabeçalho `Origin`.
-- O frontend ganha `src/lib/api.ts` (um único ponto de chamada HTTP) e um
+- O frontend ganha `frontend/src/lib/api.ts` (um único ponto de chamada HTTP) e um
   `AuthContext`/`useAuth` no mesmo padrão do `CartContext`/`useCart`.
 
 VERIFICAR NO PASSO 1, na documentação oficial da Vercel, antes de escrever
@@ -125,7 +125,7 @@ Tabelas (nomes fixos, não renomear):
   `storage_path text`, `enviado_em timestamptz`.
 - `produtos`: `sku text` (PK), `nome`, `tamanho`, `preco numeric(10,2)` (preço
   público, pode ser nulo), `exclusivo_profissional boolean`, `ativo boolean`.
-  Semeada a partir de `src/data/tulipia-produtos.json`.
+  Semeada a partir de `frontend/src/data/tulipia-produtos.json`.
 - `precos_profissionais`: `sku text` (PK, FK produtos), `preco numeric(10,2)`.
 - `enderecos`: `id`, `perfil_id`, `cep`, `rua`, `numero`, `complemento`,
   `bairro`, `cidade`, `estado`, `nome_destinatario`, `telefone`, `created_at`
@@ -249,8 +249,8 @@ Endpoints previstos (ajustar após ler a documentação):
 
 ## 8. Frontend
 
-- Trocar os `TODO(backend)` de `Cadastro.tsx` (4), `Login.tsx` (2) e
-  `Checkout.tsx` (1) por chamadas a `src/lib/api.ts`.
+- Trocar os `TODO(backend)` de `frontend/src/pages/Cadastro.tsx` (4), `Login.tsx` (2) e
+  `Checkout.tsx` (1) por chamadas a `frontend/src/lib/api.ts`.
 - `AuthProvider` em `App.tsx`, ao lado de `CartProvider` e `NavProvider`.
 - Header: deslogado continua levando a `/cadastro`; logado leva a
   `/minha-conta`.
@@ -354,3 +354,7 @@ Etapa C — Pedidos e pagamento
   (Express sem configuração, com `src/app.ts` como entrypoint; corpo máximo de
   4,5 MB; duração padrão de 300 s no Pro) e esqueleto do `backend/` com
   `GET /api/saude`.
+- [x] Reorganização do repositório (14/10/2026): site movido para `frontend/`
+  (Root Directory da Vercel = `frontend`), criada a pasta `database/` com
+  `migrations/` e `seeds/`. Os caminhos `src/...` citados neste plano referem-se
+  a `frontend/src/...`.

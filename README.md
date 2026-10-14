@@ -107,6 +107,17 @@ Tipografia: fonte customizada **Flatline** nos catálogos de produto, com hierar
 
 ## Estrutura de pastas
 
+O repositório tem três projetos independentes:
+
+```
+frontend/   # site (React + Vite), publicado na Vercel
+backend/    # API (Node + Express), em construção
+database/   # migrações e cargas de dados do Supabase
+docs/       # planejamento (ex: plano-backend.md)
+```
+
+Dentro de `frontend/`:
+
 ```
 src/
 ├── assets/
@@ -129,6 +140,7 @@ src/
 ## Rodando localmente
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
@@ -136,6 +148,8 @@ npm run dev
 Abre em `http://localhost:5173`.
 
 ### Scripts disponíveis
+
+Dentro de `frontend/`:
 
 ```bash
 npm run dev        # ambiente de desenvolvimento
@@ -148,7 +162,7 @@ npx tsc -b          # checagem de tipos
 
 ## Deploy
 
-Hospedado na **Vercel**, com deploy automático a cada `git push` no branch `main`. O `vercel.json` redireciona todas as rotas para o `index.html`, para que links diretos (ex.: `/tulipia`) funcionem com o React Router.
+Hospedado na **Vercel**, com deploy automático a cada `git push` no branch `main`. O projeto da Vercel usa `frontend` como Root Directory, e o `frontend/vercel.json` redireciona todas as rotas para o `index.html`, para que links diretos (ex.: `/tulipia`) funcionem com o React Router.
 
 ```bash
 git add .
