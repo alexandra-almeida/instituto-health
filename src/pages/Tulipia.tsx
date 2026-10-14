@@ -19,6 +19,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
+import { PROMO_AMPOLAS_SEMANA_2 } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -144,6 +145,18 @@ function Tulipia() {
     document
       .getElementById('tulipia-listagem')
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  // Faixa promocional: mostra os produtos da promoção. Todos são exclusivos
+  // a profissionais, que o modo Home Care (padrão) esconde, então o clique
+  // também troca para o modo Profissional, senão a lista ficaria vazia.
+  function handlePromoClick() {
+    setAudience('profissional')
+    applyCustomFilter({
+      key: 'promo-lancamentos',
+      label: PROMO_AMPOLAS_SEMANA_2.rotuloFiltro,
+      match: (p) => PROMO_AMPOLAS_SEMANA_2.produtos.includes(p.nome),
+    })
   }
 
   function clearCustomFilter() {
@@ -288,9 +301,9 @@ function Tulipia() {
         </p>
       </div>
 
-      {/* 1. Faixa promocional (mesma posição do antigo hero); textos em
+      {/* 1. Faixa promocional (mesma posição do antigo hero); dados em
           src/data/promocoes.ts. */}
-      <PromoStrip />
+      <PromoStrip onClick={handlePromoClick} />
 
       {/* Últimos lançamentos — banner do Hidrasol Fluid, inteiro clicável,
           leva direto à página do produto lançado. */}
