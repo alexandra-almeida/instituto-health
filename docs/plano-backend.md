@@ -366,7 +366,7 @@ Etapa C — Pedidos e pagamento
   (Root Directory `backend`); `/api/saude` responde 200 em produção; rewrite de
   `/api/(.*)` para o backend em `frontend/vercel.json`, antes do rewrite da SPA,
   e proxy de `/api` para `http://localhost:3333` em `frontend/vite.config.ts`.
-  PENDENTE: a região das Functions está em `iad1` (EUA), não em `gru1`, como o
-  passo exige. Corrigir no painel (Settings > Functions > Function Region) e
-  fazer um novo deploy do backend, depois conferir que o cabeçalho
-  `X-Vercel-Id` de `/api/saude` mostra `gru1::gru1::`.
+  Região das Functions confirmada em `gru1` (15/10/2026, após novo deploy do
+  backend): o cabeçalho `X-Vercel-Id` de `/api/saude` mostra `gru1::gru1::`.
+  Pelo site, `/api/saude` responde 200 e `/api/xyz` responde 404 em JSON do
+  backend.
