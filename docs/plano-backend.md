@@ -23,6 +23,10 @@ no fim deste arquivo a cada passo concluído.
   deste mesmo repositório, com `package.json` próprio.
 - Hospedagem: Vercel, como um SEGUNDO projeto apontando para `backend/`
   (Root Directory). Sem servidor dedicado.
+  Projeto do backend: `healthinstituto-api`
+  (https://healthinstituto-api.vercel.app), no time "Health Instituto de Saúde
+  Integrada", Root Directory `backend`. O projeto do site é o `instituto-health`
+  (Root Directory `frontend`).
 - Banco, arquivos e e-mail de confirmação: Supabase, criado pelo Marketplace
   da Vercel no time da cliente (cobrança na fatura da Vercel dela), plano
   gratuito para começar, região São Paulo. Acessado só pelo backend.
@@ -358,3 +362,11 @@ Etapa C — Pedidos e pagamento
   (Root Directory da Vercel = `frontend`), criada a pasta `database/` com
   `migrations/` e `seeds/`. Os caminhos `src/...` citados neste plano referem-se
   a `frontend/src/...`.
+- [x] Passo 2 (15/10/2026): projeto `healthinstituto-api` criado na Vercel
+  (Root Directory `backend`); `/api/saude` responde 200 em produção; rewrite de
+  `/api/(.*)` para o backend em `frontend/vercel.json`, antes do rewrite da SPA,
+  e proxy de `/api` para `http://localhost:3333` em `frontend/vite.config.ts`.
+  PENDENTE: a região das Functions está em `iad1` (EUA), não em `gru1`, como o
+  passo exige. Corrigir no painel (Settings > Functions > Function Region) e
+  fazer um novo deploy do backend, depois conferir que o cabeçalho
+  `X-Vercel-Id` de `/api/saude` mostra `gru1::gru1::`.
