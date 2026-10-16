@@ -278,6 +278,18 @@ que a integração criar; confira-os no painel antes de escrever `config/env.ts`
 O banco deve ser conectado SOMENTE ao projeto do backend, nunca ao do frontend.
 A chave secreta (secret/service role) nunca vai para chat, git ou frontend.
 
+Decidido (16/10/2026): o backend usa `SUPABASE_URL` e `SUPABASE_SECRET_KEY`
+(a integração também criou `SUPABASE_SERVICE_ROLE_KEY`, as chaves `anon` e
+publicável, `SUPABASE_JWT_SECRET`, as `POSTGRES_*` e cópias com prefixo
+`NEXT_PUBLIC_`; o backend não usa essas). O `config/env.ts` lê e valida só
+essas duas.
+
+Toda tabela nova, em qualquer migração futura, além de `enable row level
+security` e nenhuma política, precisa de `revoke all on table ... from anon,
+authenticated`: o Supabase concede privilégios a esses papéis nas tabelas novas
+do schema `public`, então a negação não deve depender só do RLS. Incluir
+também as tabelas da `0002` e conferir na consulta de `database/conferencias/`.
+
 Frontend: nenhuma chave. Só o rewrite de `/api` (e o proxy do Vite em dev).
 
 Commitar `backend/.env.example` com os nomes e sem valores.
@@ -370,3 +382,10 @@ Etapa C — Pedidos e pagamento
   backend): o cabeçalho `X-Vercel-Id` de `/api/saude` mostra `gru1::gru1::`.
   Pelo site, `/api/saude` responde 200 e `/api/xyz` responde 404 em JSON do
   backend.
+- [x] Passo 3 (16/10/2026): migração `database/migrations/0001_perfis_comprovantes.sql`
+  (`perfis`, `comprovantes_profissionais`, trigger de `updated_at`, RLS ligado
+  sem políticas, `revoke all` para `anon` e `authenticated`, bucket privado
+  `comprovantes-profissionais` de 10 MB) colada no SQL Editor; a conferência
+  `database/conferencias/0001_perfis_comprovantes.sql` deu as 14 linhas com
+  `ok = true`. Acréscimos aprovados: `status` com default `pendente`, `revoke
+  all` e `nome` não vazio.

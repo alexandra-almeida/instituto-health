@@ -8,5 +8,7 @@ Tudo o que é banco de dados (Supabase) fica aqui.
   na ordem numérica. Não usamos a CLI do Supabase.
 - `seeds/`: scripts de carga de dados, como a carga dos produtos a partir de
   `frontend/src/data/tulipia-produtos.json` (passo 10 de `docs/plano-backend.md`).
+- `conferencias/`: consultas que SÓ LEEM o banco, para conferir depois de colar uma
+  migração (um arquivo por migração, mesmo número). Não são migrações.
 
 Nenhuma chave do Supabase entra nesta pasta nem no git.
