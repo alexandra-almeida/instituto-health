@@ -54,6 +54,7 @@ Os pontos de integração estão marcados com `TODO(backend)`:
 - Preço profissional NUNCA vai no código do frontend. Quando houver backend, vem do servidor só para profissionais confirmados.
 - Produtos com `exclusivoProfissional` ficam com preço oculto e compra desabilitada no modo Home Care.
 - Dados de cartão nunca passam pelo nosso servidor (tokenização no gateway).
+- SKU: todo produto de `frontend/src/data/tulipia-produtos.json` tem um campo `sku` fixo e único, que é o `id` do produto (URL `/tulipia/produto/:slug`, chave do carrinho, favoritos salvos no navegador e, no futuro, o banco). Produto novo entra com sku próprio, adicionado no FINAL da lista, e o sku de um produto existente NUNCA é alterado, mesmo que o nome, o tamanho ou a posição mudem. Sku novo segue o padrão `nome-tamanho-N` em minúsculas e sem acentos, com N = número do próximo índice livre, e não pode repetir nenhum existente.
 
 ## Pendências (aguardando a Juliana)
 

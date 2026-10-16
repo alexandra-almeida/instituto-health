@@ -44,6 +44,9 @@ export interface TulipiaProduct {
 }
 
 interface RawProduct {
+  /** identificador fixo e único do produto (vira o `id`); nunca é alterado
+   * depois de criado, ver "SKU" no CLAUDE.md */
+  sku: string
   nome: string
   tamanho: string
   preco: number | null
@@ -64,15 +67,6 @@ interface RawData {
 }
 
 const data = raw as RawData
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-+|-+$)/g, '')
-}
 
 // A maioria dos nomes segue "Linha - Produto" (ex: "Marezi - Nano Sabonete
 // Hidratante"); kits e alguns itens avulsos não têm esse separador.
@@ -105,10 +99,16 @@ function parseVariacoes(observacao?: string): string[] | null {
   return null
 }
 
-export const ALL_PRODUCTS: TulipiaProduct[] = data.produtos.map((p, index) => {
+// O id do produto É o sku gravado no JSON: ele aparece na URL
+// (/tulipia/produto/:slug), na chave do carrinho e nos favoritos salvos no
+// navegador, então precisa ficar estável mesmo que o produto mude de nome,
+// tamanho ou posição na lista. (Antes era calculado a partir do nome, do
+// tamanho e do índice no array; os sku atuais são exatamente esses valores
+// antigos, congelados.)
+export const ALL_PRODUCTS: TulipiaProduct[] = data.produtos.map((p) => {
   const { linha, displayName } = splitLinha(p.nome)
   return {
-    id: slugify(`${p.nome}-${p.tamanho}-${index}`),
+    id: p.sku,
     nome: p.nome,
     displayName,
     linha,
@@ -125,6 +125,16 @@ export const ALL_PRODUCTS: TulipiaProduct[] = data.produtos.map((p, index) => {
     detalhes: getProductDetails(p.nome, p.tamanho),
   }
 })
+
+// Dois produtos com o mesmo sku se misturariam no carrinho e nos favoritos.
+// Falha alto no desenvolvimento (não derruba o site em produção).
+if (import.meta.env.DEV) {
+  const vistos = new Set<string>()
+  for (const { id } of ALL_PRODUCTS) {
+    if (vistos.has(id)) throw new Error(`sku repetido no catálogo: ${id}`)
+    vistos.add(id)
+  }
+}
 
 /** Produtos em destaque ("Queridinhos") — exibidos à parte, no topo. */
 export const QUERIDINHOS = ALL_PRODUCTS.filter((p) => p.destaque)

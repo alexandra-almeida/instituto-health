@@ -389,3 +389,10 @@ Etapa C — Pedidos e pagamento
   `database/conferencias/0001_perfis_comprovantes.sql` deu as 14 linhas com
   `ok = true`. Acréscimos aprovados: `status` com default `pendente`, `revoke
   all` e `nome` não vazio.
+- [x] Passo 4 (16/10/2026): campo `sku` gravado em cada produto de
+  `frontend/src/data/tulipia-produtos.json` e `tulipiaProducts.ts` passou a usar
+  `p.sku` como id (a função `slugify` foi removida). Conferido por script: 148
+  produtos (não 147: o Hidrasol Fluid entrou depois do plano), 148 sku únicos,
+  todos idênticos aos ids calculados antes, na mesma ordem. URL, carrinho e
+  favoritos continuam usando `product.id`, portanto o mesmo valor. A regra de
+  sku fixo para produtos novos está no `CLAUDE.md`.

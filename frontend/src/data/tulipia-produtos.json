@@ -3,6 +3,7 @@
   "fonte": "Extraído diretamente do site oficial tulipia.com.br/profissional em outubro/2026 — substitui/complementa o catálogo PDF antigo",
   "produtos": [
     {
+      "sku": "calmskin-pomada-multirreparadora-30g-0",
       "nome": "Calmskin - Pomada Multirreparadora",
       "tamanho": "30g",
       "preco": 71.1,
@@ -13,6 +14,7 @@
       "destaque": true
     },
     {
+      "sku": "floraty-creme-emoliente-para-cravos-200g-1",
       "nome": "Floraty - Creme Emoliente para Cravos",
       "tamanho": "200g",
       "preco": null,
@@ -22,6 +24,7 @@
       "destaque": true
     },
     {
+      "sku": "firm-flaccid-nano-fluido-remineralizante-60ml-2",
       "nome": "Firm Flaccid - Nano Fluido Remineralizante",
       "tamanho": "60ml",
       "preco": 71.1,
@@ -32,6 +35,7 @@
       "destaque": true
     },
     {
+      "sku": "floraty-locao-amolecedora-de-cravos-500ml-3",
       "nome": "Floraty - Loção Amolecedora de Cravos",
       "tamanho": "500ml",
       "preco": null,
@@ -41,6 +45,7 @@
       "destaque": true
     },
     {
+      "sku": "firm-flaccid-nano-fluido-remineralizante-300ml-4",
       "nome": "Firm Flaccid - Nano Fluído Remineralizante",
       "tamanho": "300ml",
       "preco": 189,
@@ -51,6 +56,7 @@
       "destaque": true
     },
     {
+      "sku": "niacine-espuma-de-limpeza-de-niacinamida-50ml-5",
       "nome": "Niacine+ - Espuma de Limpeza de Niacinamida",
       "tamanho": "50ml",
       "preco": 49,
@@ -61,6 +67,7 @@
       "destaque": true
     },
     {
+      "sku": "floraty-creme-esfoliante-apricot-200g-6",
       "nome": "Floraty - Creme Esfoliante Apricot",
       "tamanho": "200g",
       "preco": null,
@@ -70,6 +77,7 @@
       "destaque": true
     },
     {
+      "sku": "niacine-serum-de-niacinamida-20-30ml-7",
       "nome": "Niacine+ - Sérum de Niacinamida 20%",
       "tamanho": "30ml",
       "preco": 149,
@@ -80,6 +88,7 @@
       "destaque": true
     },
     {
+      "sku": "marezi-nano-mascara-hidrocalmante-200g-8",
       "nome": "Marezi - Nano Máscara Hidrocalmante",
       "tamanho": "200g",
       "preco": null,
@@ -91,6 +100,7 @@
       "destaque": true
     },
     {
+      "sku": "immortalite-c-nano-serum-de-vitamina-c-50ml-9",
       "nome": "Immortalité-C - Nano Sérum de Vitamina C",
       "tamanho": "50ml",
       "preco": 152.1,
@@ -102,6 +112,7 @@
       "destaque": true
     },
     {
+      "sku": "life-c-nano-sabonete-mousse-150ml-10",
       "nome": "Life C+ - Nano Sabonete Mousse",
       "tamanho": "150ml",
       "preco": 109.65,
@@ -112,6 +123,7 @@
       "destaque": true
     },
     {
+      "sku": "immortalite-c-sabonete-antioxidante-de-vitamina-c-110ml-11",
       "nome": "Immortalité-C - Sabonete Antioxidante de Vitamina C",
       "tamanho": "110ml",
       "preco": 71.1,
@@ -122,6 +134,7 @@
       "destaque": true
     },
     {
+      "sku": "niacine-espuma-de-limpeza-de-niacinamida-150ml-12",
       "nome": "Niacine+ - Espuma de Limpeza de Niacinamida",
       "tamanho": "150ml",
       "preco": 99,
@@ -132,6 +145,7 @@
       "destaque": true
     },
     {
+      "sku": "miracle-eyes-nano-gel-area-dos-olhos-13g-13",
       "nome": "Miracle Eyes - Nano Gel Área dos Olhos",
       "tamanho": "13g",
       "preco": 119,
@@ -142,6 +156,7 @@
       "destaque": true
     },
     {
+      "sku": "niacine-pad-multifuncional-130g-14",
       "nome": "Niacine+ - Pad Multifuncional",
       "tamanho": "130g",
       "preco": null,
@@ -153,6 +168,7 @@
       "destaque": true
     },
     {
+      "sku": "cils-lashes-serum-para-cilios-e-sobrancelhas-8ml-15",
       "nome": "Cils & Lashes - Sérum para Cílios e Sobrancelhas",
       "tamanho": "8ml",
       "preco": null,
@@ -162,6 +178,7 @@
       "destaque": true
     },
     {
+      "sku": "life-c-nano-sabonete-mousse-150ml-16",
       "nome": "Life C+ - Nano Sabonete Mousse",
       "tamanho": "150ml",
       "preco": null,
@@ -173,6 +190,7 @@
       "destaque": true
     },
     {
+      "sku": "skin-molecular-serum-de-ghk-cu-30ml-17",
       "nome": "Skin Molecular - Sérum de GHK-Cu",
       "tamanho": "30ml",
       "preco": 119,
@@ -184,6 +202,7 @@
       "destaque": false
     },
     {
+      "sku": "skin-molecular-serum-de-vitamina-b12-30ml-18",
       "nome": "Skin Molecular - Sérum de Vitamina B12",
       "tamanho": "30ml",
       "preco": 99,
@@ -194,6 +213,7 @@
       "destaque": false
     },
     {
+      "sku": "resilience-serum-multirreparador-calmante-50ml-19",
       "nome": "Resilience - Sérum Multirreparador Calmante",
       "tamanho": "50ml",
       "preco": 139,
@@ -204,6 +224,7 @@
       "destaque": false
     },
     {
+      "sku": "age-matte-serum-antioleosidade-50ml-20",
       "nome": "Age-Matte - Sérum Antioleosidade",
       "tamanho": "50ml",
       "preco": 169,
@@ -215,6 +236,7 @@
       "destaque": false
     },
     {
+      "sku": "miracle-4d-serum-multifuncional-50ml-21",
       "nome": "Miracle 4D - Sérum Multifuncional",
       "tamanho": "50ml",
       "preco": 179,
@@ -226,6 +248,7 @@
       "destaque": false
     },
     {
+      "sku": "dermacoll-serum-firmador-de-colageno-50ml-22",
       "nome": "Dermacoll - Sérum Firmador de Colágeno",
       "tamanho": "50ml",
       "preco": 169,
@@ -236,6 +259,7 @@
       "destaque": false
     },
     {
+      "sku": "oligo-nerox-serum-antirrugas-50ml-23",
       "nome": "Oligo-Nerox - Sérum Antirrugas",
       "tamanho": "50ml",
       "preco": 179,
@@ -246,6 +270,7 @@
       "destaque": false
     },
     {
+      "sku": "dermacos-serum-booster-rejuvenescedor-30ml-24",
       "nome": "Dermacos - Sérum Booster Rejuvenescedor",
       "tamanho": "30ml",
       "preco": 199,
@@ -256,6 +281,7 @@
       "destaque": false
     },
     {
+      "sku": "hidrasol-fps-60-fotoprotetor-facial-50g-25",
       "nome": "Hidrasol FPS 60 - Fotoprotetor Facial",
       "tamanho": "50g",
       "preco": 125.1,
@@ -264,6 +290,7 @@
       "destaque": false
     },
     {
+      "sku": "hidrasol-fps-30-fotoprotetor-facial-50g-26",
       "nome": "Hidrasol FPS 30 - Fotoprotetor Facial",
       "tamanho": "50g",
       "preco": 116.1,
@@ -272,6 +299,7 @@
       "destaque": false
     },
     {
+      "sku": "primavera-mask-nano-mascara-renovadora-150g-27",
       "nome": "Primavera Mask - Nano Máscara Renovadora",
       "tamanho": "150g",
       "preco": null,
@@ -283,6 +311,7 @@
       "destaque": false
     },
     {
+      "sku": "chokola-mascara-de-chocolate-200g-28",
       "nome": "Chokolá - Máscara de Chocolate",
       "tamanho": "200g",
       "preco": null,
@@ -292,6 +321,7 @@
       "destaque": false
     },
     {
+      "sku": "minerals-24k-mascara-de-ouro-100g-29",
       "nome": "Minerals 24K - Máscara de Ouro",
       "tamanho": "100g",
       "preco": null,
@@ -304,6 +334,7 @@
       "destaque": false
     },
     {
+      "sku": "inverno-mask-nano-mascara-hidronutritiva-150g-30",
       "nome": "Inverno Mask - Nano Máscara Hidronutritiva",
       "tamanho": "150g",
       "preco": null,
@@ -315,6 +346,7 @@
       "destaque": false
     },
     {
+      "sku": "stellar-mask-mascara-matificante-100g-31",
       "nome": "Stellar Mask - Máscara Matificante",
       "tamanho": "100g",
       "preco": null,
@@ -326,6 +358,7 @@
       "destaque": false
     },
     {
+      "sku": "verao-mask-nano-mascara-energizante-150g-32",
       "nome": "Verão Mask - Nano Máscara Energizante",
       "tamanho": "150g",
       "preco": null,
@@ -335,6 +368,7 @@
       "destaque": false
     },
     {
+      "sku": "stellar-mask-mascara-rejuvenescedora-100g-33",
       "nome": "Stellar Mask - Máscara Rejuvenescedora",
       "tamanho": "100g",
       "preco": null,
@@ -346,6 +380,7 @@
       "destaque": false
     },
     {
+      "sku": "stellar-mask-mascara-enzimatica-100g-34",
       "nome": "Stellar Mask - Máscara Enzimática",
       "tamanho": "100g",
       "preco": null,
@@ -355,6 +390,7 @@
       "destaque": false
     },
     {
+      "sku": "stellar-mask-mascara-hidronutritiva-100g-35",
       "nome": "Stellar Mask - Máscara Hidronutritiva",
       "tamanho": "100g",
       "preco": null,
@@ -366,6 +402,7 @@
       "destaque": false
     },
     {
+      "sku": "outono-mask-nano-mascara-reequilibrante-150g-36",
       "nome": "Outono Mask - Nano Máscara Reequilibrante",
       "tamanho": "150g",
       "preco": null,
@@ -375,6 +412,7 @@
       "destaque": false
     },
     {
+      "sku": "ultimate-estetic-nano-mascara-tensora-de-ouro-250g-37",
       "nome": "Ultimate Estetic+ - Nano Máscara Tensora de Ouro",
       "tamanho": "250g",
       "preco": null,
@@ -386,6 +424,7 @@
       "destaque": false
     },
     {
+      "sku": "marezi-nano-sabonete-hidratante-110ml-38",
       "nome": "Marezi - Nano Sabonete Hidratante",
       "tamanho": "110ml",
       "preco": 79,
@@ -394,6 +433,7 @@
       "destaque": false
     },
     {
+      "sku": "essence-cleansing-oil-150ml-39",
       "nome": "Essence - Cleansing Oil",
       "tamanho": "150ml",
       "preco": 126.65,
@@ -402,6 +442,7 @@
       "destaque": false
     },
     {
+      "sku": "citrata-sabonete-liquido-antioleosidade-110ml-40",
       "nome": "Citrata - Sabonete Líquido Antioleosidade",
       "tamanho": "110ml",
       "preco": 71.1,
@@ -412,6 +453,7 @@
       "destaque": false
     },
     {
+      "sku": "marezi-nano-sabonete-hidratante-300ml-41",
       "nome": "Marezi - Nano Sabonete Hidratante",
       "tamanho": "300ml",
       "preco": null,
@@ -421,6 +463,7 @@
       "destaque": false
     },
     {
+      "sku": "marezi-nano-locao-tonica-remineralizante-300ml-42",
       "nome": "Marezi - Nano Loção Tônica Remineralizante",
       "tamanho": "300ml",
       "preco": null,
@@ -430,6 +473,7 @@
       "destaque": false
     },
     {
+      "sku": "dermacos-espuma-de-limpeza-rejuvenescedora-150ml-43",
       "nome": "Dermacos - Espuma de Limpeza Rejuvenescedora",
       "tamanho": "150ml",
       "preco": 129,
@@ -440,6 +484,7 @@
       "destaque": false
     },
     {
+      "sku": "marezi-nano-locao-tonica-remineralizante-110ml-44",
       "nome": "Marezi - Nano Loção Tônica Remineralizante",
       "tamanho": "110ml",
       "preco": null,
@@ -449,6 +494,7 @@
       "destaque": false
     },
     {
+      "sku": "citrata-nano-locao-tonica-adstringente-110ml-45",
       "nome": "Citrata - Nano Loção Tônica Adstringente",
       "tamanho": "110ml",
       "preco": null,
@@ -460,6 +506,7 @@
       "destaque": false
     },
     {
+      "sku": "citrata-sabonete-liquido-antioleosidade-300ml-46",
       "nome": "Citrata - Sabonete Líquido Antioleosidade",
       "tamanho": "300ml",
       "preco": null,
@@ -471,6 +518,7 @@
       "destaque": false
     },
     {
+      "sku": "citrata-nano-locao-tonica-adstringente-300ml-47",
       "nome": "Citrata - Nano Loção Tônica Adstringente",
       "tamanho": "300ml",
       "preco": null,
@@ -482,6 +530,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-solucao-pos-extracao-50ml-48",
       "nome": "Dermo Estetic - Solução Pós Extração",
       "tamanho": "50ml",
       "preco": null,
@@ -491,6 +540,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-mascara-nutri-calm-200g-49",
       "nome": "Dermo Estetic - Máscara Nutri Calm",
       "tamanho": "200g",
       "preco": null,
@@ -502,6 +552,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-locao-tonica-antisseptica-300ml-50",
       "nome": "Dermo Estetic - Loção Tônica Antisséptica",
       "tamanho": "300ml",
       "preco": null,
@@ -513,6 +564,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-solucao-ultraemoliente-de-trietanolamina-500ml-51",
       "nome": "Dermo Estetic - Solução Ultraemoliente de Trietanolamina",
       "tamanho": "500ml",
       "preco": null,
@@ -522,6 +574,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-serum-ultra-calmante-50ml-52",
       "nome": "Dermo Estetic - Sérum Ultra Calmante",
       "tamanho": "50ml",
       "preco": null,
@@ -533,6 +586,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-estetic-sabonete-esfoliante-facial-200ml-53",
       "nome": "Dermo Estetic - Sabonete Esfoliante Facial",
       "tamanho": "200ml",
       "preco": null,
@@ -542,6 +596,7 @@
       "destaque": false
     },
     {
+      "sku": "hydrogen-bruma-de-hidrogenio-molecular-50ml-54",
       "nome": "Hydrogen - Bruma de Hidrogênio Molecular",
       "tamanho": "50ml",
       "preco": null,
@@ -553,6 +608,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-caha-monodose-facial-3-ampolas-de-5ml-55",
       "nome": "Dermo CaHA - Monodose Facial",
       "tamanho": "3 ampolas de 5ml",
       "preco": null,
@@ -565,6 +621,7 @@
       "destaque": false
     },
     {
+      "sku": "exogenetic-pdrn-monodose-facial-3-ampolas-de-3ml-56",
       "nome": "ExoGenetic PDRN - Monodose Facial",
       "tamanho": "3 ampolas de 3ml",
       "preco": null,
@@ -576,6 +633,7 @@
       "destaque": false
     },
     {
+      "sku": "exogenetic-pdrn-creme-facial-30g-57",
       "nome": "Exogenetic PDRN - Creme Facial",
       "tamanho": "30g",
       "preco": 149,
@@ -586,6 +644,7 @@
       "destaque": false
     },
     {
+      "sku": "dermo-geneticist-c-supreme-formula-5-ampolas-de-4ml-58",
       "nome": "Dermo Geneticist C+ - Supreme Formula",
       "tamanho": "5 ampolas de 4ml",
       "preco": null,
@@ -598,6 +657,7 @@
       "destaque": false
     },
     {
+      "sku": "proskin-repair-sabonete-restaurador-110ml-59",
       "nome": "ProSkin Repair - Sabonete Restaurador",
       "tamanho": "110ml",
       "preco": 87,
@@ -608,6 +668,7 @@
       "destaque": false
     },
     {
+      "sku": "proskin-repair-creme-fortalecedor-de-barreira-30g-60",
       "nome": "ProSkin Repair - Creme Fortalecedor de Barreira",
       "tamanho": "30g",
       "preco": 129,
@@ -618,6 +679,7 @@
       "destaque": false
     },
     {
+      "sku": "proskin-repair-milk-bionutritivo-50ml-61",
       "nome": "ProSkin Repair - Milk Bionutritivo",
       "tamanho": "50ml",
       "preco": 129,
@@ -628,6 +690,7 @@
       "destaque": false
     },
     {
+      "sku": "proskin-repair-bruma-dermatologica-55ml-62",
       "nome": "ProSkin Repair - Bruma Dermatológica",
       "tamanho": "55ml",
       "preco": 129,
@@ -638,6 +701,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-esteticista-para-limpeza-de-pele-kit-63",
       "nome": "Kit Esteticista - para Limpeza de Pele",
       "tamanho": "kit",
       "preco": null,
@@ -647,6 +711,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-vitamina-c-sabonete-e-serum-kit-64",
       "nome": "Rotina Vitamina C - Sabonete e Sérum",
       "tamanho": "kit",
       "preco": 223.2,
@@ -657,6 +722,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-pele-oleosa-serum-e-espuma-de-limpeza-kit-65",
       "nome": "Rotina Pele Oleosa - Sérum e Espuma de Limpeza",
       "tamanho": "kit",
       "preco": 248,
@@ -667,6 +733,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-sweet-lips-tutti-frutti-kit-66",
       "nome": "Combo Sweet Lips - Tutti-Frutti",
       "tamanho": "kit",
       "preco": 166,
@@ -675,6 +742,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-sweet-lips-cereja-kit-67",
       "nome": "Combo Sweet Lips - Cereja",
       "tamanho": "kit",
       "preco": 166,
@@ -683,6 +751,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-proskin-ultra-reparadora-kit-com-creme-fortalecedor-de-barreira-kit-68",
       "nome": "Rotina ProSkin Ultra Reparadora - Kit com Creme Fortalecedor de Barreira",
       "tamanho": "kit",
       "preco": 345,
@@ -693,6 +762,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-sweet-lips-tutti-frutti-kit-69",
       "nome": "Kit Sweet Lips - Tutti Frutti",
       "tamanho": "kit",
       "preco": null,
@@ -702,6 +772,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-sweet-lips-chocolate-kit-70",
       "nome": "Combo Sweet Lips - Chocolate",
       "tamanho": "kit",
       "preco": 141.1,
@@ -710,6 +781,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-pos-peeling-e-microagulhamento-kit-71",
       "nome": "Rotina Pós Peeling e Microagulhamento",
       "tamanho": "kit",
       "preco": 266.2,
@@ -720,6 +792,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-reducao-de-poros-espuma-de-limpeza-e-pad-multifuncional-kit-72",
       "nome": "Rotina Redução de Poros - Espuma de Limpeza e Pad Multifuncional",
       "tamanho": "kit",
       "preco": null,
@@ -731,6 +804,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-4-estacoes-profissional-kit-73",
       "nome": "Kit 4 Estações - Profissional",
       "tamanho": "kit",
       "preco": null,
@@ -740,6 +814,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-proskin-ultra-hidratante-kit-com-milk-bionutritivo-kit-74",
       "nome": "Rotina ProSkin Ultra Hidratante - Kit com Milk Bionutritivo",
       "tamanho": "kit",
       "preco": 345,
@@ -750,6 +825,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-sweet-lips-cereja-kit-75",
       "nome": "Kit Sweet Lips - Cereja",
       "tamanho": "kit",
       "preco": null,
@@ -759,6 +835,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-peeling-premium-black-secret-kit-76",
       "nome": "Kit Peeling Premium - Black Secret",
       "tamanho": "kit",
       "preco": null,
@@ -770,6 +847,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-dermacos-duo-home-care-rejuvenescedor-kit-77",
       "nome": "Combo Dermacos - Duo Home Care Rejuvenescedor",
       "tamanho": "kit",
       "preco": 328,
@@ -780,6 +858,7 @@
       "destaque": false
     },
     {
+      "sku": "stellar-masks-kit-completo-kit-78",
       "nome": "Stellar Masks - Kit Completo",
       "tamanho": "kit",
       "preco": null,
@@ -789,6 +868,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-pele-seca-ou-desidratada-sabonete-locao-tonica-e-pomada-kit-79",
       "nome": "Rotina Pele Seca ou Desidratada - Sabonete, Loção Tônica e Pomada",
       "tamanho": "kit",
       "preco": 237.1,
@@ -799,6 +879,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-pele-mista-serum-e-sabonete-kit-80",
       "nome": "Rotina Pele Mista - Sérum e Sabonete",
       "tamanho": "kit",
       "preco": 240.1,
@@ -807,6 +888,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-drenagem-para-tecnicas-de-massagem-corporal-kit-81",
       "nome": "Kit Drenagem - para técnicas de massagem corporal",
       "tamanho": "kit",
       "preco": null,
@@ -818,6 +900,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-hialux-serum-e-sabonete-kit-82",
       "nome": "Combo Hialux - Sérum e Sabonete",
       "tamanho": "kit",
       "preco": 318,
@@ -828,6 +911,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-antiacne-fps-cuidados-para-peles-acneicas-kit-3-itens-83",
       "nome": "Rotina Antiacne FPS - Cuidados para peles acneicas",
       "tamanho": "kit (3 itens)",
       "preco": 362.1,
@@ -838,6 +922,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-drenagem-facial-para-tecnicas-de-massagem-kit-84",
       "nome": "Kit Drenagem Facial - para técnicas de massagem",
       "tamanho": "kit",
       "preco": null,
@@ -849,6 +934,7 @@
       "destaque": false
     },
     {
+      "sku": "protocolo-antiacne-profissional-kit-protocolo-peeling-antiacne-kit-85",
       "nome": "Protocolo Antiacne Profissional - Kit Protocolo Peeling Antiacne",
       "tamanho": "kit",
       "preco": null,
@@ -860,6 +946,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-skincare-essencial-sabonete-serum-e-fotoprotetor-kit-86",
       "nome": "Rotina Skincare Essencial - Sabonete, Sérum e Fotoprotetor",
       "tamanho": "kit",
       "preco": 334.1,
@@ -868,6 +955,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-sweet-lips-profissional-chocolate-kit-87",
       "nome": "Kit Sweet Lips Profissional - Chocolate",
       "tamanho": "kit",
       "preco": null,
@@ -877,6 +965,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-anti-idade-espuma-de-limpeza-e-creme-com-pdrn-kit-88",
       "nome": "Rotina Anti-Idade - Espuma de Limpeza e Creme com PDRN",
       "tamanho": "kit",
       "preco": null,
@@ -888,6 +977,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-flaciall-tecnica-corporal-by-ana-julia-graf-kit-89",
       "nome": "Kit FlaciAll - Técnica Corporal by Ana Julia Graf",
       "tamanho": "kit",
       "preco": null,
@@ -899,6 +989,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-life-c-profissional-kit-90",
       "nome": "Kit Life C+ - Profissional",
       "tamanho": "kit",
       "preco": null,
@@ -910,6 +1001,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-citropeel-peeling-soft-kit-91",
       "nome": "Kit Citropeel - Peeling Soft",
       "tamanho": "kit",
       "preco": null,
@@ -921,6 +1013,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-pre-peeling-black-secret-kit-92",
       "nome": "Kit Pré Peeling - Black Secret",
       "tamanho": "kit",
       "preco": null,
@@ -932,6 +1025,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-seruns-premium-kit-93",
       "nome": "Kit Séruns Premium",
       "tamanho": "kit",
       "preco": 646,
@@ -940,6 +1034,7 @@
       "destaque": false
     },
     {
+      "sku": "rotina-clareadora-espuma-tonico-e-serum-life-c-kit-94",
       "nome": "Rotina Clareadora - Espuma, Tônico e Sérum Life C+",
       "tamanho": "kit",
       "preco": null,
@@ -951,6 +1046,7 @@
       "destaque": false
     },
     {
+      "sku": "combo-dermocosmeticos-para-olhos-home-care-kit-95",
       "nome": "Combo Dermocosméticos para Olhos - Home Care",
       "tamanho": "kit",
       "preco": null,
@@ -962,6 +1058,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-rejuvenescimento-intimo-by-ana-julia-graf-kit-96",
       "nome": "Kit Rejuvenescimento Íntimo by Ana Júlia Graf",
       "tamanho": "kit",
       "preco": null,
@@ -973,6 +1070,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-capilar-profissional-nano-plasma-e-tonico-capilar-kit-97",
       "nome": "Kit Capilar Profissional - Nano Plasma e Tônico Capilar",
       "tamanho": "kit",
       "preco": null,
@@ -984,6 +1082,7 @@
       "destaque": false
     },
     {
+      "sku": "kit-hialux-serum-sabonete-e-creme-kit-98",
       "nome": "Kit Hialux - Sérum, Sabonete e Creme",
       "tamanho": "kit",
       "preco": null,
@@ -995,6 +1094,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-gloss-labial-tutti-frutti-10g-99",
       "nome": "Sweet Lips - Gloss Labial Tutti Frutti",
       "tamanho": "10g",
       "preco": 79,
@@ -1003,6 +1103,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-gloss-labial-cereja-10g-100",
       "nome": "Sweet Lips - Gloss Labial Cereja",
       "tamanho": "10g",
       "preco": 79,
@@ -1011,6 +1112,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-gloss-labial-chocolate-10g-101",
       "nome": "Sweet Lips - Gloss Labial Chocolate",
       "tamanho": "10g",
       "preco": 67.15,
@@ -1019,6 +1121,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-fluido-ultra-concentrado-labial-5ml-3-ampolas-102",
       "nome": "Sweet Lips - Fluído Ultra Concentrado Labial",
       "tamanho": "5ml - 3 ampolas",
       "preco": null,
@@ -1028,6 +1131,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-esfoliante-labial-cereja-15g-103",
       "nome": "Sweet Lips - Esfoliante Labial Cereja",
       "tamanho": "15g",
       "preco": 87,
@@ -1036,6 +1140,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-esfoliante-labial-15g-104",
       "nome": "Sweet Lips - Esfoliante Labial",
       "tamanho": "15g",
       "preco": 87,
@@ -1044,6 +1149,7 @@
       "destaque": false
     },
     {
+      "sku": "sweet-lips-esfoliante-labial-chocolate-15g-105",
       "nome": "Sweet Lips - Esfoliante Labial Chocolate",
       "tamanho": "15g",
       "preco": 73.95,
@@ -1052,6 +1158,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-nano-mascara-ultrassecativa-200g-106",
       "nome": "Kinelyn - Nano Máscara Ultrassecativa",
       "tamanho": "200g",
       "preco": null,
@@ -1063,6 +1170,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-nano-gel-seborregulador-30g-107",
       "nome": "Kinelyn - Nano Gel Seborregulador",
       "tamanho": "30g",
       "preco": 114,
@@ -1073,6 +1181,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-nano-locao-ultrassecativa-60ml-108",
       "nome": "Kinelyn - Nano Loção Ultrassecativa",
       "tamanho": "60ml",
       "preco": 99,
@@ -1083,6 +1192,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-peeling-antiacne-30ml-109",
       "nome": "Black Secret - Peeling Antiacne",
       "tamanho": "30ml",
       "preco": null,
@@ -1094,6 +1204,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-sabonete-seborregulador-110ml-110",
       "nome": "Kinelyn - Sabonete Seborregulador",
       "tamanho": "110ml",
       "preco": 114,
@@ -1104,6 +1215,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-locao-ultrassecativa-fps-30-tonalizante-50ml-111",
       "nome": "Kinelyn - Loção Ultrassecativa FPS 30 Tonalizante",
       "tamanho": "50ml",
       "preco": 134.1,
@@ -1114,6 +1226,7 @@
       "destaque": false
     },
     {
+      "sku": "kinelyn-sabonete-seborregulador-230ml-112",
       "nome": "Kinelyn - Sabonete Seborregulador",
       "tamanho": "230ml",
       "preco": null,
@@ -1125,6 +1238,7 @@
       "destaque": false
     },
     {
+      "sku": "citrogel-nano-gel-clareador-da-pele-30g-113",
       "nome": "Citrogel - Nano Gel Clareador da Pele",
       "tamanho": "30g",
       "preco": 149,
@@ -1135,6 +1249,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-sabonete-glico-renovador-300ml-114",
       "nome": "Black Secret - Sabonete Glico-Renovador",
       "tamanho": "300ml",
       "preco": null,
@@ -1146,6 +1261,7 @@
       "destaque": false
     },
     {
+      "sku": "sepiwhite-gel-clareador-30g-115",
       "nome": "Sepiwhite - Gel Clareador",
       "tamanho": "30g",
       "preco": 179,
@@ -1156,6 +1272,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-clareador-concentrado-60ml-116",
       "nome": "Black Secret - Clareador Concentrado",
       "tamanho": "60ml",
       "preco": 199,
@@ -1166,6 +1283,7 @@
       "destaque": false
     },
     {
+      "sku": "biowhite-nano-locao-clareadora-60ml-117",
       "nome": "Biowhite - Nano Loção Clareadora",
       "tamanho": "60ml",
       "preco": 157,
@@ -1176,6 +1294,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-solucao-pre-peeling-desengordurante-120ml-118",
       "nome": "Black Secret - Solução Pré-peeling Desengordurante",
       "tamanho": "120ml",
       "preco": null,
@@ -1187,6 +1306,7 @@
       "destaque": false
     },
     {
+      "sku": "renotrat-gel-facial-30g-119",
       "nome": "Renotrat - Gel Facial",
       "tamanho": "30g",
       "preco": 169,
@@ -1198,6 +1318,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-micro-spikes-peeling-30g-120",
       "nome": "Black Secret - Micro Spikes Peeling",
       "tamanho": "30g",
       "preco": 220,
@@ -1208,6 +1329,7 @@
       "destaque": false
     },
     {
+      "sku": "black-secret-peeling-facial-2-fases-30g-cada-121",
       "nome": "Black Secret - Peeling Facial 2 Fases",
       "tamanho": "30g cada",
       "preco": null,
@@ -1219,6 +1341,7 @@
       "destaque": false
     },
     {
+      "sku": "hialux-sabonete-clareador-110ml-122",
       "nome": "Hialux - Sabonete Clareador",
       "tamanho": "110ml",
       "preco": 99,
@@ -1229,6 +1352,7 @@
       "destaque": false
     },
     {
+      "sku": "hialux-creme-preenchedor-150g-123",
       "nome": "Hialux - Creme Preenchedor",
       "tamanho": "150g",
       "preco": null,
@@ -1240,6 +1364,7 @@
       "destaque": false
     },
     {
+      "sku": "hialux-serum-preenchedor-30ml-124",
       "nome": "Hialux - Sérum Preenchedor",
       "tamanho": "30ml",
       "preco": 219,
@@ -1250,6 +1375,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-nano-serum-clareador-20-30ml-125",
       "nome": "Life C+ - Nano Sérum Clareador 20%",
       "tamanho": "30ml",
       "preco": 228,
@@ -1260,6 +1386,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-nano-mascara-iluminadora-150g-126",
       "nome": "Life C+ - Nano Máscara Iluminadora",
       "tamanho": "150g",
       "preco": null,
@@ -1271,6 +1398,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-monodose-clareadora-de-vitamina-c-4ml-5-ampolas-127",
       "nome": "Life C+ - Monodose Clareadora de Vitamina C",
       "tamanho": "4ml - 5 ampolas",
       "preco": null,
@@ -1282,6 +1410,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-nano-peeling-abrasivo-c-150g-128",
       "nome": "Life C+ - Nano Peeling Abrasivo C",
       "tamanho": "150g",
       "preco": null,
@@ -1293,6 +1422,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-nano-tonico-300ml-129",
       "nome": "Life C+ - Nano Tônico",
       "tamanho": "300ml",
       "preco": null,
@@ -1304,6 +1434,7 @@
       "destaque": false
     },
     {
+      "sku": "life-c-nano-tonico-110ml-130",
       "nome": "Life C+ - Nano Tônico",
       "tamanho": "110ml",
       "preco": null,
@@ -1315,6 +1446,7 @@
       "destaque": false
     },
     {
+      "sku": "trico-geneticist-nano-plasma-capilar-4ml-5-ampolas-131",
       "nome": "Trico Geneticist - Nano Plasma Capilar",
       "tamanho": "4ml - 5 ampolas",
       "preco": null,
@@ -1326,6 +1458,7 @@
       "destaque": false
     },
     {
+      "sku": "trico-geneticist-nano-mascara-regeneradora-200g-132",
       "nome": "Trico Geneticist - Nano Máscara Regeneradora",
       "tamanho": "200g",
       "preco": 157,
@@ -1336,6 +1469,7 @@
       "destaque": false
     },
     {
+      "sku": "faixa-de-cabelo-rosa-protege-o-cabelo-do-skincare-1-un-133",
       "nome": "Faixa de Cabelo Rosa - Protege o cabelo do skincare",
       "tamanho": "1 un",
       "preco": 35.9,
@@ -1344,6 +1478,7 @@
       "destaque": false
     },
     {
+      "sku": "trico-geneticist-tonico-capilar-antiqueda-110ml-134",
       "nome": "Trico Geneticist - Tônico Capilar Antiqueda",
       "tamanho": "110ml",
       "preco": null,
@@ -1355,6 +1490,7 @@
       "destaque": false
     },
     {
+      "sku": "trico-geneticist-nano-shampoo-revitalizante-250ml-135",
       "nome": "Trico Geneticist - Nano Shampoo Revitalizante",
       "tamanho": "250ml",
       "preco": null,
@@ -1366,6 +1502,7 @@
       "destaque": false
     },
     {
+      "sku": "faixa-de-cabelo-bege-protege-o-cabelo-do-skincare-1-un-136",
       "nome": "Faixa de Cabelo Bege - Protege o cabelo do skincare",
       "tamanho": "1 un",
       "preco": 35.9,
@@ -1374,6 +1511,7 @@
       "destaque": false
     },
     {
+      "sku": "elegance-nano-dual-peeling-esfoliante-500g-137",
       "nome": "Elegance - Nano Dual-Peeling Esfoliante",
       "tamanho": "500g",
       "preco": null,
@@ -1385,6 +1523,7 @@
       "destaque": false
     },
     {
+      "sku": "corpus-mascara-de-argila-amarela-e-colageno-1kg-138",
       "nome": "Corpus - Máscara de Argila Amarela e Colágeno",
       "tamanho": "1kg",
       "preco": null,
@@ -1396,6 +1535,7 @@
       "destaque": false
     },
     {
+      "sku": "elegance-body-nano-spray-lipotermico-5-em-1-300ml-139",
       "nome": "Elegance Body - Nano Spray Lipotérmico 5 em 1",
       "tamanho": "300ml",
       "preco": null,
@@ -1407,6 +1547,7 @@
       "destaque": false
     },
     {
+      "sku": "ocean-ox-by-ana-julia-graf-flocos-de-magnesio-dermico-3-saches-140",
       "nome": "Ocean OX by Ana Júlia Graf - Flocos de Magnésio Dérmico",
       "tamanho": "3 sachês",
       "preco": null,
@@ -1416,6 +1557,7 @@
       "destaque": false
     },
     {
+      "sku": "body-hd-creme-de-massagem-redutor-1kg-141",
       "nome": "Body HD - Creme de Massagem Redutor",
       "tamanho": "1kg",
       "preco": null,
@@ -1427,6 +1569,7 @@
       "destaque": false
     },
     {
+      "sku": "moovy-creme-de-massagem-neutro-1kg-142",
       "nome": "Moovy - Creme de Massagem Neutro",
       "tamanho": "1kg",
       "preco": null,
@@ -1436,6 +1579,7 @@
       "destaque": false
     },
     {
+      "sku": "moovy-creme-de-massagem-ozonizado-1kg-143",
       "nome": "Moovy - Creme de Massagem Ozonizado",
       "tamanho": "1kg",
       "preco": null,
@@ -1447,6 +1591,7 @@
       "destaque": false
     },
     {
+      "sku": "body-hd-gel-crioterapico-1kg-144",
       "nome": "Body HD - Gel Crioterápico",
       "tamanho": "1kg",
       "preco": null,
@@ -1458,6 +1603,7 @@
       "destaque": false
     },
     {
+      "sku": "body-hd-gel-hiperemiante-500g-145",
       "nome": "Body HD - Gel Hiperemiante",
       "tamanho": "500g",
       "preco": null,
@@ -1469,6 +1615,7 @@
       "destaque": false
     },
     {
+      "sku": "body-hd-goma-esfoliante-500g-146",
       "nome": "Body HD - Goma Esfoliante",
       "tamanho": "500g",
       "preco": null,
@@ -1480,6 +1627,7 @@
       "destaque": false
     },
     {
+      "sku": "hidrasol-protetor-solar-fluid-fps-60-50ml-147",
       "nome": "Hidrasol - Protetor Solar Fluid FPS 60",
       "tamanho": "50ml",
       "preco": 129,
