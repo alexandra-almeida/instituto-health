@@ -354,6 +354,30 @@ export const PRODUCT_DETAILS: Record<string, ProdutoDetalhes> = {
       },
     ],
   },
+  'Kit Dermo Estetic - Linha para Limpeza de Pele (6 itens)|kit': {
+    descricao: [
+      'Linha profissional completa para limpeza de pele, organizada em três etapas: preparação, potencialização e reparação. Reúne ativos prebióticos e probióticos que fortalecem a barreira cutânea e dão mais controle e qualidade ao protocolo.',
+      'Na preparação, a pele é higienizada e esfoliada e fica pronta para as etapas seguintes. Na potencialização, a emoliência cria condições para uma extração controlada, com menor esforço e sem perder o equilíbrio da pele. Na reparação, os sinais de irritação das etapas mais intensas, como a extração, são acalmados e a barreira cutânea é fortalecida.',
+      'O kit reúne os 6 itens da linha: Sérum Ultra Calmante 50ml, Sabonete Esfoliante Facial 200ml, Solução Pós Extração 50ml, Solução Ultraemoliente de Trietanolamina 500ml, Loção Tônica Antisséptica 300ml e Máscara Nutri Calm 200g. Venda exclusiva para profissionais.',
+    ],
+    beneficios: [
+      {
+        titulo: 'Preparação eficiente da pele',
+        texto:
+          'Otimiza a limpeza, a esfoliação e a permeação, deixando a pele pronta para as etapas seguintes.',
+      },
+      {
+        titulo: 'Potencialização dos resultados em cabine',
+        texto:
+          'Potencializa a emoliência para uma extração controlada e com menor esforço.',
+      },
+      {
+        titulo: 'Reparação e fortalecimento da barreira cutânea',
+        texto:
+          'Controla sinais de irritação, principalmente após etapas intensas como a extração.',
+      },
+    ],
+  },
 }
 
 export function getProductDetails(

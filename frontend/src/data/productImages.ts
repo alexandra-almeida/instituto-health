@@ -153,6 +153,7 @@ import imgRotinaReducaoDePorosEspumaDeLimpezaEPadMultifuncionalKit from '../asse
 import imgRotinaSkincareEssencialSaboneteSerumEFotoprotetorKit from '../assets/products/tulipia-rotina-skincare-essencial.png'
 import imgRotinaVitaminaCSaboneteESerumKit from '../assets/products/tulipia-rotina-vitamina-c.png'
 import imgUltimateEsteticNanoMascaraTensoraDeOuro250g from '../assets/products/tulipia-ultimate-estetic-mascara-tensora-de-ouro-250g.png'
+import imgKitDermoEsteticLinhaParaLimpezaDePeleKit from '../assets/products/tulipia-kit-dermo-estetic-linha-para-limpeza-de-pele-kit.webp'
 
 export const PRODUCT_IMAGES: Record<string, string> = {
   'Calmskin - Pomada Multirreparadora|30g': imgCalmskinPomadaMultiReparadora30g,
@@ -300,6 +301,7 @@ export const PRODUCT_IMAGES: Record<string, string> = {
   'Rotina Skincare Essencial - Sabonete, Sérum e Fotoprotetor|kit': imgRotinaSkincareEssencialSaboneteSerumEFotoprotetorKit,
   'Rotina Vitamina C - Sabonete e Sérum|kit': imgRotinaVitaminaCSaboneteESerumKit,
   'Ultimate Estetic+ - Nano Máscara Tensora de Ouro|250g': imgUltimateEsteticNanoMascaraTensoraDeOuro250g,
+  'Kit Dermo Estetic - Linha para Limpeza de Pele (6 itens)|kit': imgKitDermoEsteticLinhaParaLimpezaDePeleKit,
 }
 
 export function getProductImage(nome: string, tamanho: string): string | undefined {

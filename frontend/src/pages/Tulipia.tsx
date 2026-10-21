@@ -19,7 +19,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
-import { PROMO_AMPOLAS_SEMANA_2 } from '../data/promocoes'
+import { PROMO_LANCAMENTOS_SEMANA_3 } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -154,8 +154,8 @@ function Tulipia() {
     setAudience('profissional')
     applyCustomFilter({
       key: 'promo-lancamentos',
-      label: PROMO_AMPOLAS_SEMANA_2.rotuloFiltro,
-      match: (p) => PROMO_AMPOLAS_SEMANA_2.produtos.includes(p.nome),
+      label: PROMO_LANCAMENTOS_SEMANA_3.rotuloFiltro,
+      match: (p) => PROMO_LANCAMENTOS_SEMANA_3.skus.includes(p.id),
     })
   }
 

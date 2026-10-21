@@ -1634,6 +1634,16 @@
       "categoria": "Fotoproteção",
       "cuidado": [],
       "destaque": false
+    },
+    {
+      "sku": "kit-linha-dermo-estetic-para-limpeza-de-pele-kit-148",
+      "nome": "Kit Dermo Estetic - Linha para Limpeza de Pele (6 itens)",
+      "tamanho": "kit",
+      "preco": null,
+      "exclusivoProfissional": true,
+      "categoria": "Kits",
+      "cuidado": [],
+      "destaque": false
     }
   ]
 }

@@ -1,5 +1,5 @@
-import bannerAzul from '../../assets/tulipia-banners/bannerazul.webp'
-import { PROMO_AMPOLAS_SEMANA_2 } from '../../data/promocoes'
+import bannerLancamento from '../../assets/tulipia-banners/banner-lancamento.webp'
+import { PROMO_LANCAMENTOS_SEMANA_3 } from '../../data/promocoes'
 
 interface PromoStripProps {
   onClick: () => void
@@ -16,8 +16,8 @@ function PromoStrip({ onClick }: PromoStripProps) {
       className="mt-8 block w-full overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]"
     >
       <img
-        src={bannerAzul}
-        alt={PROMO_AMPOLAS_SEMANA_2.alt}
+        src={bannerLancamento}
+        alt={PROMO_LANCAMENTOS_SEMANA_3.alt}
         className="aspect-[2720/200] h-auto w-full"
       />
     </button>
