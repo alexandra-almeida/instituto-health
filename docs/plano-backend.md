@@ -292,6 +292,15 @@ também as tabelas da `0002` e conferir na consulta de `database/conferencias/`.
 
 Frontend: nenhuma chave. Só o rewrite de `/api` (e o proxy do Vite em dev).
 
+`CRON_SECRET` (passo 5b): segredo do despertador diário, só no projeto do
+backend na Vercel (Production). Criado pela Alexandra no painel. Opcional:
+sem ele a API sobe normal e só a rota do cron responde 401.
+
+`ORIGEM_FRONTEND` (passo 6): origens do site autorizadas a chamar a API,
+separadas por vírgula (hoje `https://instituto-health.vercel.app`; depois
+entra o domínio próprio). Só no projeto do backend. Obrigatória em produção:
+sem ela a API recusa todo POST de `/api/auth`.
+
 Commitar `backend/.env.example` com os nomes e sem valores.
 
 ## 10. Ordem de implementação
@@ -316,6 +325,29 @@ Etapa A — Base
 Etapa B — Cadastro e login
 4. SKU estável no JSON (seção 4), só frontend.
 5. Módulo `auth` (cadastro, confirmar e-mail, reenviar código) com testes.
+5b. Passo extra, LOGO APÓS o commit do passo 5, em commit separado dos
+   arquivos do auth: "despertador" diário para o Supabase gratuito não pausar
+   por inatividade. Decidido em 21/10/2026; implementado em 22/10/2026 (ver
+   "Progresso"). Desenho aprovado:
+   - `GET /api/cron/manter-ativo`, em módulo próprio `modules/cron/` (routes,
+     controller, service), seguindo a arquitetura da seção 2.
+   - Protegida: só aceita se o cabeçalho `Authorization` for
+     `Bearer <CRON_SECRET>` (é como o Cron da Vercel chama). Sem o cabeçalho
+     certo, 401. Comparar o segredo em tempo constante.
+   - Faz uma leitura leve no Supabase (ex.: `select id` em `perfis` com
+     `limit 1`, ou `head` com contagem) e responde `{ ok: true }`. Não grava
+     nada.
+   - `backend/vercel.json` com `crons`, uma vez por dia (ex.: `0 9 * * *`).
+   - `CRON_SECRET`: variável nova no projeto `healthinstituto-api`
+     (Production). A Alexandra cria o valor no painel da Vercel; no repositório
+     só entra o nome em `backend/.env.example`, sem valor. O valor nunca vai
+     para chat, git nem log. É OPCIONAL, até em produção: se faltar, a API
+     sobe normal e só a rota do cron responde 401 (com um aviso no log, sem
+     valor). Se definida, no mínimo 16 caracteres.
+   - Teste com vitest: 401 sem cabeçalho e com cabeçalho errado, 200 com o
+     certo (Supabase simulado).
+   - Remover ou manter o despertador quando o Supabase passar para o plano Pro
+     (ver seção 12), antes do lançamento.
 6. Módulo `auth` (login, logout, eu, esqueci e redefinir senha) com testes.
 7. Frontend: `api.ts`, `AuthContext`, ligar Cadastro e Login, página
    `/redefinir-senha`.
@@ -359,10 +391,17 @@ Etapa C — Pedidos e pagamento
 - Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
 - SMTP próprio (Resend): depende do domínio.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
-  antes de receber pedidos reais.
+  antes de receber pedidos reais. Ao migrar, decidir se o despertador do passo
+  5b é removido (rota, `crons` e `CRON_SECRET`) ou mantido.
 - Conta PagBank de produção da Juliana.
-- Limite de tentativas (rate limit) nas rotas de autenticação: definir a
-  solução, já que memória local não funciona em Functions.
+- Limite de tentativas (rate limit) nas rotas de autenticação (login,
+  redefinir-senha, confirmar-email, cadastro, reenvio): OBRIGATÓRIO antes do
+  lançamento. Definir a solução, já que memória local não funciona em
+  Functions. Até lá só vale o limite próprio do Supabase.
+- Teste ponta a ponta dos passos 5 a 9 (cadastro, código por e-mail, login,
+  recuperação de senha, comprovante) com e-mail real: fica para DEPOIS do SMTP
+  (Resend + domínio). O e-mail embutido do Supabase tem limite baixo e pode
+  não entregar. Até lá, só testes com Supabase simulado.
 
 ## Progresso
 
@@ -396,3 +435,27 @@ Etapa C — Pedidos e pagamento
   todos idênticos aos ids calculados antes, na mesma ordem. URL, carrinho e
   favoritos continuam usando `product.id`, portanto o mesmo valor. A regra de
   sku fixo para produtos novos está no `CLAUDE.md`.
+- [x] Passo 5 (commit 5fb5cea): módulo `auth` com cadastro, confirmar e-mail e
+  reenviar código, 37 testes com o Supabase simulado. O e-mail com o código sai
+  pelo `auth.resend({ type: 'signup' })` depois de `admin.createUser` com a
+  conta não confirmada. Teste real com e-mail pendente (ver seção 12).
+- [x] Passo 6 (22/10/2026): login, logout, `GET /api/auth/eu`, esqueci a senha e
+  redefinir senha (código de 6 dígitos, `verifyOtp` tipo `recovery`), com os
+  middlewares `autenticar` (renova a sessão pelo cookie de renovação) e
+  `exigirAdmin` (confere `is_admin` no banco) e o `protegerOrigem` (CSRF) em
+  todo POST de `/api/auth`. `ORIGEM_FRONTEND` aceita uma lista separada por
+  vírgula; em produção, sem Origin, Origin fora da lista ou variável vazia, a
+  API recusa com 403 (falha fechado). Redefinir senha encerra todas as sessões
+  do usuário (`admin.signOut` global) e não abre sessão nova. 101 testes com o
+  Supabase simulado. Pendente: o modelo de e-mail "Reset password" no Supabase
+  precisa usar `{{ .Token }}`, como o de confirmação; teste real depois do
+  SMTP.
+- [x] Passo 5b (22/10/2026): despertador diário do Supabase gratuito. Rota
+  `GET /api/cron/manter-ativo` (módulo `cron`), protegida por
+  `Authorization: Bearer <CRON_SECRET>` com comparação em tempo constante,
+  faz só um `select id` em `perfis` com `limit 1` e responde `{ ok: true }`.
+  `backend/vercel.json` (arquivo novo, não existia) com `crons` às 09:00 UTC
+  (06:00 em Brasília). `CRON_SECRET` opcional: se faltar, só a rota do cron
+  responde 401. 122 testes com o Supabase simulado. FALTA a Alexandra criar a
+  variável `CRON_SECRET` no painel e fazer novo deploy. Remover ou manter o
+  despertador quando o Supabase passar para o plano Pro (seção 12).

@@ -7,6 +7,7 @@ export default defineConfig({
     env: {
       SUPABASE_URL: 'https://exemplo.supabase.co',
       SUPABASE_SECRET_KEY: 'chave-falsa-de-teste',
+      CRON_SECRET: 'segredo-falso-de-teste-do-cron',
     },
   },
 })

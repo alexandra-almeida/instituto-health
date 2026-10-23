@@ -21,6 +21,8 @@ export interface PerfisRepository {
     status: StatusDoPerfil
   }): Promise<void>
   buscarPorId(id: string): Promise<Perfil | null>
+  // Leitura mínima só para provar que o banco responde (despertador do cron)
+  verificarConexao(): Promise<void>
 }
 
 // Única camada que lê e grava a tabela `perfis`. is_admin não é parâmetro de
@@ -43,5 +45,10 @@ export const perfisRepository: PerfisRepository = {
       .maybeSingle()
     if (error) throw new Error(`Falha ao buscar perfil (${error.code})`)
     return data as Perfil | null
+  },
+
+  async verificarConexao() {
+    const { error } = await supabaseAdmin.from('perfis').select('id').limit(1)
+    if (error) throw new Error(`Falha ao consultar perfis (${error.code})`)
   },
 }

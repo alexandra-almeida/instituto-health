@@ -18,6 +18,13 @@ const esquema = z.object({
   // da Vercel e, depois, o próprio). Vazia em produção: a API recusa toda
   // requisição que altera dados. Ver middlewares/protegerOrigem.ts
   ORIGEM_FRONTEND: z.string().optional(),
+  // Segredo do Cron da Vercel (rota /api/cron/manter-ativo). Opcional até em
+  // produção: sem ela a API sobe normal e só a rota do cron responde 401.
+  // Definida (não vazia), precisa ter 16 caracteres ou mais.
+  CRON_SECRET: z.preprocess(
+    (valor) => (valor === '' ? undefined : valor),
+    z.string().min(16).optional(),
+  ),
 })
 
 const resultado = esquema.safeParse(process.env)

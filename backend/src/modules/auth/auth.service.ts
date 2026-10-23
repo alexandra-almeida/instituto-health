@@ -27,7 +27,7 @@ const MENSAGEM_CODIGO_ENVIADO =
 
 interface Dependencias {
   auth: AuthClient
-  perfis: PerfisRepository
+  perfis: Pick<PerfisRepository, 'criar' | 'buscarPorId'>
 }
 
 // Mesma resposta para e-mail com conta e sem conta
