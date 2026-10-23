@@ -1,11 +1,18 @@
 import { LayoutGroup, MotionConfig } from 'motion/react'
-import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom'
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from 'react-router-dom'
 import FloatingWhatsapp from './components/FloatingWhatsapp'
 import Footer from './components/Footer'
 import FooterSimple from './components/FooterSimple'
 import Header from './components/Header'
 import ScrollReveal from './components/ScrollReveal'
 import ScrollToTop from './components/ScrollToTop'
+import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { NavProvider } from './context/NavContext'
 import Cadastro from './pages/Cadastro'
@@ -16,6 +23,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import PedidoConfirmado from './pages/PedidoConfirmado'
 import PoliticaDePrivacidade from './pages/PoliticaDePrivacidade'
+import RedefinirSenha from './pages/RedefinirSenha'
 import Procedimentos from './pages/Procedimentos'
 import ProcedimentoDetalhe from './pages/ProcedimentoDetalhe'
 import ProdutosHospitalares from './pages/ProdutosHospitalares'
@@ -57,64 +65,72 @@ function App() {
     // duração real definida no código.
     <MotionConfig reducedMotion="never">
       <NavProvider>
-        <CartProvider>
-          <LayoutGroup>
-            <ScrollToTop />
-            <div className="min-h-screen w-full overflow-x-clip overflow-y-clip bg-offwhite">
-              <Header />
-              <main className="mx-auto w-full max-w-375 px-4 md:px-6">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/tulipia" element={<Tulipia />} />
-                  <Route
-                    path="/tulipia/produto/:slug"
-                    element={<TulipiaProdutoRoute />}
-                  />
-                  <Route
-                    path="/produtos-hospitalares"
-                    element={<ProdutosHospitalares />}
-                  />
-                  <Route path="/procedimentos" element={<Procedimentos />} />
-                  <Route
-                    path="/procedimentos/:slug"
-                    element={<ProcedimentoDetalheRoute />}
-                  />
-                  <Route path="/teleconsulta" element={<Teleconsulta />} />
-                  <Route path="/cursos" element={<Cursos />} />
-                  <Route path="/sobre" element={<Sobre />} />
-                  <Route path="/carrinho" element={<Carrinho />} />
-                  <Route path="/checkout" element={<Checkout />} />
-                  <Route
-                    path="/pedido-confirmado"
-                    element={<PedidoConfirmado />}
-                  />
-                  <Route path="/cadastro" element={<Cadastro />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route
-                    path="/politica-de-privacidade"
-                    element={<PoliticaDePrivacidade />}
-                  />
+        <AuthProvider>
+          <CartProvider>
+            <LayoutGroup>
+              <ScrollToTop />
+              <div className="min-h-screen w-full overflow-x-clip overflow-y-clip bg-offwhite">
+                <Header />
+                <main className="mx-auto w-full max-w-375 px-4 md:px-6">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/tulipia" element={<Tulipia />} />
+                    <Route
+                      path="/tulipia/produto/:slug"
+                      element={<TulipiaProdutoRoute />}
+                    />
+                    <Route
+                      path="/produtos-hospitalares"
+                      element={<ProdutosHospitalares />}
+                    />
+                    <Route path="/procedimentos" element={<Procedimentos />} />
+                    <Route
+                      path="/procedimentos/:slug"
+                      element={<ProcedimentoDetalheRoute />}
+                    />
+                    <Route path="/teleconsulta" element={<Teleconsulta />} />
+                    <Route path="/cursos" element={<Cursos />} />
+                    <Route path="/sobre" element={<Sobre />} />
+                    <Route path="/carrinho" element={<Carrinho />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    <Route
+                      path="/pedido-confirmado"
+                      element={<PedidoConfirmado />}
+                    />
+                    <Route path="/cadastro" element={<Cadastro />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                      path="/redefinir-senha"
+                      element={<RedefinirSenha />}
+                    />
+                    <Route
+                      path="/politica-de-privacidade"
+                      element={<PoliticaDePrivacidade />}
+                    />
 
-                  {/* Rotas antigas, redirecionadas pras equivalentes novas —
+                    {/* Rotas antigas, redirecionadas pras equivalentes novas —
                       pra não quebrar links que já existam por aí (favoritos,
                       anúncios, etc.). /servicos virou 3 páginas separadas
                       (Procedimentos/Teleconsulta/Cursos); redireciona pra
                       Procedimentos, a mais próxima do que "Serviços" era. */}
-                  <Route
-                    path="/servicos"
-                    element={<Navigate to="/procedimentos" replace />}
-                  />
-                  <Route
-                    path="/juliana-gonella"
-                    element={<Navigate to="/sobre" replace />}
-                  />
-                </Routes>
-              </main>
-              <ScrollReveal>{isHome ? <Footer /> : <FooterSimple />}</ScrollReveal>
-              <FloatingWhatsapp />
-            </div>
-          </LayoutGroup>
-        </CartProvider>
+                    <Route
+                      path="/servicos"
+                      element={<Navigate to="/procedimentos" replace />}
+                    />
+                    <Route
+                      path="/juliana-gonella"
+                      element={<Navigate to="/sobre" replace />}
+                    />
+                  </Routes>
+                </main>
+                <ScrollReveal>
+                  {isHome ? <Footer /> : <FooterSimple />}
+                </ScrollReveal>
+                <FloatingWhatsapp />
+              </div>
+            </LayoutGroup>
+          </CartProvider>
+        </AuthProvider>
       </NavProvider>
     </MotionConfig>
   )

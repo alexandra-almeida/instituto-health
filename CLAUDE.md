@@ -7,7 +7,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 
 - React 19 + TypeScript, Vite 8, Tailwind CSS v4, React Router 7, Motion, lucide-react
 - Deploy na Vercel a cada push na `main`, com Root Directory `frontend` (`frontend/vercel.json` reescreve todas as rotas para `index.html`)
-- Backend (Fase 2, ainda não implementado): Node + Express + TypeScript em `backend/`, em camadas (routes, controller, service, repository), publicado como segundo projeto na Vercel. Supabase (Postgres, Storage, Auth) acessado só pelo backend. Pagamento via PagBank.
+- Backend (Fase 2, em andamento: auth e despertador do banco prontos; pedidos e pagamento ainda não, ver "Progresso" no plano): Node + Express + TypeScript em `backend/`, em camadas (routes, controller, service, repository), publicado como segundo projeto na Vercel. Supabase (Postgres, Storage, Auth) acessado só pelo backend. Pagamento via PagBank.
 - ANTES de qualquer tarefa de backend, leia `docs/plano-backend.md` inteiro. Ele é a fonte da verdade; não dependa da memória da conversa.
 
 ## Estrutura do repositório
@@ -21,6 +21,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 
 - `npm run dev` — desenvolvimento (localhost:5173)
 - `npm run build` — checagem de tipos + build (rode antes de commitar)
+- `npm run test` — testes (vitest) da lógica em `src/lib` (cliente da API e destino seguro do login)
 - `npm run lint` / `npm run format`
 
 ## Padrões
@@ -36,18 +37,19 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 
 - `frontend/src/pages/` — uma página por rota (rotas em `frontend/src/App.tsx`)
 - `frontend/src/components/` — componentes; `tulipia/` é específico do catálogo
-- `frontend/src/context/` — carrinho (salvo em localStorage) e navegação
+- `frontend/src/context/` — carrinho (salvo em localStorage), navegação e sessão (`AuthContext`/`useAuth`, que pergunta `GET /api/auth/eu` ao backend; nada de sessão em localStorage)
+- `frontend/src/lib/` — `api.ts` (único ponto de chamada HTTP ao backend, sempre caminhos `/api/...`), `destino.ts` (destino seguro depois do login, só caminhos internos) e `codigo.ts` (código de 6 dígitos e intervalo de reenvio)
 - `frontend/src/data/tulipia-produtos.json` — catálogo Tulípia (147 produtos), tipado em `tulipiaProducts.ts`
 - `frontend/src/data/procedimentos.ts` — 28 procedimentos (texto clínico da Juliana; não reescrever)
 - `frontend/src/data/contact.ts` — WhatsApp e Instagram oficiais
 
-## O que é simulado (sem backend)
+## O que ainda é simulado
 
-Os pontos de integração estão marcados com `TODO(backend)`:
+Cadastro, confirmação de e-mail, reenvio de código, login e redefinição de senha já chamam o backend de verdade, por `frontend/src/lib/api.ts`. O teste ponta a ponta com e-mail real depende do SMTP (Resend + domínio, ver plano). Os pontos que ainda faltam estão marcados com `TODO(backend)`:
 
-- `frontend/src/pages/Cadastro.tsx` — criar conta, reenviar código, confirmar e-mail, upload de comprovante profissional
+- `frontend/src/pages/Cadastro.tsx` — upload do comprovante profissional (passo 8 do plano): o arquivo fica só em memória e ainda não é enviado
 - `frontend/src/pages/Checkout.tsx` — confirmar pedido; pagamento (Pix, crédito, débito) e frete são só interface. O CEP já usa o ViaCEP de verdade. "Até 3x sem juros" é valor de exemplo.
-- `frontend/src/pages/Login.tsx` — formulário completo (e-mail, senha, "esqueci minha senha"), mas sem autenticação real; nunca simula login bem-sucedido nem redireciona
+- Header e página `/minha-conta` (passo 9 do plano): ainda não existem; depois do login o site volta para a página de origem ou para a home
 
 ## Regras de negócio
 

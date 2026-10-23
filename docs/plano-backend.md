@@ -459,3 +459,26 @@ Etapa C — Pedidos e pagamento
   responde 401. 122 testes com o Supabase simulado. FALTA a Alexandra criar a
   variável `CRON_SECRET` no painel e fazer novo deploy. Remover ou manter o
   despertador quando o Supabase passar para o plano Pro (seção 12).
+- [x] Reaplicação da migração 0001 (22/10/2026): o banco do projeto
+  `hykxvlngsiwhjxknuytz` estava sem as tabelas; a `0001` foi colada de novo no
+  SQL Editor e a conferência `database/conferencias/0001_perfis_comprovantes.sql`
+  deu as 14 linhas com `ok = true`. Não está pendente.
+- [x] Passo 7 (22/10/2026): frontend ligado ao auth. `frontend/src/lib/api.ts`
+  (único ponto de chamada HTTP; erro da API vira `ApiError` com `codigo`,
+  `mensagem` e `status`), `AuthContext`/`useAuth` (pergunta `GET /api/auth/eu` ao
+  abrir o site; nada de sessão em localStorage), Cadastro e Login reais e a
+  página `/redefinir-senha` (e-mail, depois código e nova senha, sem abrir
+  sessão). `RESEND_COOLDOWN_SECONDS` subiu de 30 para 60. Decisões:
+  - Home Care cria a conta ao enviar a tela de dados; Profissional guarda os
+    dados só em memória e cria a conta em "Finalizar Cadastro" (ou ao virar
+    Home Care), para ninguém ficar com conta de tipo errado.
+  - Login volta para `?destino=` ou `state.from`, só se for caminho interno
+    (`lib/destino.ts`, contra open redirect); senão vai para `/`. No passo 9 o
+    padrão passa a ser `/minha-conta`.
+  - Conta não confirmada no login abre `/cadastro` direto na confirmação do
+    código, com o reenvio liberado.
+  - O arquivo do comprovante fica em memória no Cadastro até depois do
+    `confirmar-email`; o envio em si é o passo 8 (`TODO(backend)` no ponto).
+  - Testes: vitest no frontend (`npm run test`), só para `api.ts` e
+    `destino.ts`, com `fetch` simulado. A interface foi checada por build e
+    lint; o fluxo no navegador contra a API real fica para depois do SMTP.

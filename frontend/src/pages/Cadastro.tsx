@@ -1,12 +1,9 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
-import type {
-  ChangeEvent,
-  ClipboardEvent,
-  FormEvent,
-  KeyboardEvent,
-} from 'react'
-import { Link } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import AlertaDeFormulario from '../components/AlertaDeFormulario'
+import CodigoInput from '../components/CodigoInput'
 import {
   CheckCircleIcon,
   ChevronLeftIcon,
@@ -17,10 +14,34 @@ import {
 } from '../components/icons'
 import PasswordField from '../components/PasswordField'
 import PrimaryButton from '../components/PrimaryButton'
+import ReenviarCodigo from '../components/ReenviarCodigo'
 import TextField from '../components/TextField'
+import { useAuth } from '../context/useAuth'
 import { WHATSAPP_NUMBER } from '../data/contact'
+import { ApiError, api } from '../lib/api'
+import type { PerfilDaConta } from '../lib/api'
+import { RESEND_COOLDOWN_SECONDS, codigoVazio } from '../lib/codigo'
 
 type Perfil = 'profissional' | 'homecare'
+
+// Dados do passo 2. Ficam só em memória (estado do React), nunca em
+// localStorage ou sessionStorage: a senha em especial só existe até a chamada
+// de cadastro e é descartada logo depois.
+interface DadosConta {
+  nome: string
+  email: string
+  senha: string
+}
+
+function comoApiError(falha: unknown): ApiError {
+  return falha instanceof ApiError
+    ? falha
+    : new ApiError(
+        'erro_servidor',
+        'Algo deu errado. Tente novamente em instantes.',
+        0,
+      )
+}
 
 const PERFIL_LABEL: Record<Perfil, string> = {
   profissional: 'Profissional',
@@ -76,9 +97,6 @@ const PROFISSOES_INVALIDAS = [
 
 const COMPROVANTE_ACCEPT =
   '.jpg,.jpeg,.png,.heic,.pdf,image/jpeg,image/png,image/heic,application/pdf'
-
-const CODIGO_LENGTH = 6
-const RESEND_COOLDOWN_SECONDS = 30
 
 // ---------------------------------------------------------------------
 // Indicador de progresso — "Passo X de 2" + barra de 2 segmentos.
@@ -184,17 +202,23 @@ function EscolhaPerfil({
 // ---------------------------------------------------------------------
 function CriarConta({
   perfil,
+  inicial,
   onVoltar,
-  onSuccess,
+  onEnviar,
 }: {
   perfil: Perfil
+  /** nome e e-mail já digitados, quando a pessoa volta de uma tela seguinte */
+  inicial: { nome: string; email: string } | null
   onVoltar: () => void
-  onSuccess: (email: string) => void
+  /** pode lançar ApiError (Home Care cria a conta aqui); a tela mostra */
+  onEnviar: (dados: DadosConta) => Promise<void>
 }) {
-  const [nome, setNome] = useState('')
-  const [email, setEmail] = useState('')
+  const [nome, setNome] = useState(inicial?.nome ?? '')
+  const [email, setEmail] = useState(inicial?.email ?? '')
   const [senha, setSenha] = useState('')
   const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [erro, setErro] = useState<ApiError | null>(null)
+  const [enviando, setEnviando] = useState(false)
 
   const nomeValido = nome.trim().length >= 3
   const emailValido = EMAIL_REGEX.test(email.trim())
@@ -213,17 +237,21 @@ function CriarConta({
       ? 'As senhas não coincidem.'
       : undefined
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (!formValido) return
+    if (!formValido || enviando) return
 
-    // TODO(backend): ainda não existe API de cadastro. Quando existir, a
-    // chamada real (algo como POST /api/cadastro com { perfil, nome, email,
-    // senha }) entra aqui — só avançar depois da confirmação do servidor
-    // (que também dispararia o envio do código de verificação por e-mail).
-    // Por enquanto isso é só uma simulação visual: nenhum dado é enviado ou
-    // persistido em lugar nenhum (nem localStorage/sessionStorage).
-    onSuccess(email)
+    setEnviando(true)
+    setErro(null)
+    try {
+      // Home Care cria a conta agora (e o servidor envia o código por e-mail);
+      // Profissional só guarda os dados e segue para o comprovante, a conta é
+      // criada no fim dessa tela (ver Cadastro, abaixo)
+      await onEnviar({ nome: nome.trim(), email: email.trim(), senha })
+    } catch (falha) {
+      setErro(comoApiError(falha))
+      setEnviando(false)
+    }
   }
 
   return (
@@ -299,8 +327,14 @@ function CriarConta({
           .
         </p>
 
-        <PrimaryButton type="submit" disabled={!formValido}>
-          Criar Conta
+        {erro && (
+          <AlertaDeFormulario variante="erro">
+            {erro.message}
+          </AlertaDeFormulario>
+        )}
+
+        <PrimaryButton type="submit" disabled={!formValido || enviando}>
+          {enviando ? 'Criando conta...' : 'Criar Conta'}
         </PrimaryButton>
       </form>
     </div>
@@ -314,74 +348,50 @@ function CriarConta({
 // ---------------------------------------------------------------------
 function ConfirmacaoEmail({
   email,
+  cooldownInicial,
   onConfirmado,
 }: {
   email: string
-  onConfirmado: () => void
+  /** segundos até liberar o reenvio; 0 quando a pessoa chegou pelo Login */
+  cooldownInicial: number
+  onConfirmado: (perfil: PerfilDaConta) => void
 }) {
-  const [digitos, setDigitos] = useState<string[]>(
-    Array(CODIGO_LENGTH).fill(''),
-  )
-  const [resendCooldown, setResendCooldown] = useState(RESEND_COOLDOWN_SECONDS)
-  const inputsRef = useRef<Array<HTMLInputElement | null>>([])
+  const { confirmarEmail } = useAuth()
+  const [digitos, setDigitos] = useState<string[]>(codigoVazio())
+  const [erro, setErro] = useState<ApiError | null>(null)
+  const [aviso, setAviso] = useState<string | null>(null)
+  const [enviando, setEnviando] = useState(false)
 
   const codigoCompleto = digitos.every((digito) => digito.length === 1)
 
-  useEffect(() => {
-    if (resendCooldown <= 0) return
-    const timer = window.setInterval(() => {
-      setResendCooldown((current) => Math.max(0, current - 1))
-    }, 1000)
-    return () => window.clearInterval(timer)
-  }, [resendCooldown])
-
-  function handleChange(index: number, value: string) {
-    const digito = value.replace(/\D/g, '').slice(-1)
-    setDigitos((current) => {
-      const next = [...current]
-      next[index] = digito
-      return next
-    })
-    if (digito && index < CODIGO_LENGTH - 1) {
-      inputsRef.current[index + 1]?.focus()
+  async function handleReenviar(): Promise<boolean> {
+    setErro(null)
+    try {
+      // O servidor responde igual exista o e-mail ou não, e respeita o
+      // intervalo de 60 s do Supabase
+      const resposta = await api.reenviarCodigo(email)
+      setAviso(resposta.mensagem)
+      return true
+    } catch (falha) {
+      setErro(comoApiError(falha))
+      return false
     }
   }
 
-  function handleKeyDown(index: number, event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'Backspace' && !digitos[index] && index > 0) {
-      inputsRef.current[index - 1]?.focus()
+  async function handleConfirmar() {
+    if (!codigoCompleto || enviando) return
+
+    setEnviando(true)
+    setErro(null)
+    try {
+      // Confirmar o código já abre a sessão (cookies httpOnly gravados pelo
+      // servidor); só depois disso o fluxo avança
+      const { perfil } = await confirmarEmail(email, digitos.join(''))
+      onConfirmado(perfil)
+    } catch (falha) {
+      setErro(comoApiError(falha))
+      setEnviando(false)
     }
-  }
-
-  function handlePaste(event: ClipboardEvent<HTMLInputElement>) {
-    const colado = event.clipboardData
-      .getData('text')
-      .replace(/\D/g, '')
-      .slice(0, CODIGO_LENGTH)
-    if (!colado) return
-    event.preventDefault()
-    const next = Array(CODIGO_LENGTH).fill('')
-    for (let i = 0; i < colado.length; i++) next[i] = colado[i]
-    setDigitos(next)
-    inputsRef.current[Math.min(colado.length, CODIGO_LENGTH) - 1]?.focus()
-  }
-
-  function handleReenviar() {
-    if (resendCooldown > 0) return
-    // TODO(backend): ainda não existe envio real de e-mail — quando existir,
-    // o reenvio de verdade do código entra aqui. Por enquanto só reinicia o
-    // timer visual, sem reenviar nada.
-    setResendCooldown(RESEND_COOLDOWN_SECONDS)
-  }
-
-  function handleConfirmar() {
-    if (!codigoCompleto) return
-    // TODO(backend): ainda não existe backend nem envio real de código por
-    // e-mail. Quando existir, a validação de verdade do código digitado
-    // (ex: POST /api/cadastro/confirmar-email com { email, codigo }) entra
-    // aqui — só chamar onConfirmado() depois da confirmação do servidor.
-    // Por enquanto qualquer sequência de 6 dígitos avança o fluxo.
-    onConfirmado()
   }
 
   return (
@@ -391,38 +401,41 @@ function ConfirmacaoEmail({
           Confirme seu e-mail
         </h1>
         <p className="mt-2 text-sm text-verde-health/70">
-          Enviamos um código de 6 números para{' '}
+          Digite o código de 6 números enviado para{' '}
           <span className="font-medium text-verde-health">{email}</span>
         </p>
       </div>
 
-      <div className="mt-8 flex justify-center gap-2 xs:gap-3">
-        {digitos.map((digito, index) => (
-          <input
-            key={index}
-            ref={(el) => {
-              inputsRef.current[index] = el
-            }}
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={1}
-            value={digito}
-            onChange={(event) => handleChange(index, event.target.value)}
-            onKeyDown={(event) => handleKeyDown(index, event)}
-            onPaste={handlePaste}
-            aria-label={`Dígito ${index + 1} do código`}
-            className="h-12 w-10 rounded-xl border border-[#04452E]/12 bg-white/60 text-center text-lg font-semibold text-verde-health shadow-[0_2px_8px_-4px_rgba(4,32,18,0.08)] focus:border-dourado-health/60 focus:ring-2 focus:ring-dourado-health/15 focus:outline-none xs:h-14 xs:w-12"
-          />
-        ))}
+      <div className="mt-8">
+        <CodigoInput
+          digitos={digitos}
+          onChange={(proximo) => {
+            setDigitos(proximo)
+            setErro(null)
+          }}
+          disabled={enviando}
+        />
       </div>
+
+      {erro && (
+        <div className="mt-6">
+          <AlertaDeFormulario variante="erro">
+            {erro.message}
+          </AlertaDeFormulario>
+        </div>
+      )}
+      {aviso && !erro && (
+        <div className="mt-6">
+          <AlertaDeFormulario>{aviso}</AlertaDeFormulario>
+        </div>
+      )}
 
       <PrimaryButton
         className="mt-8"
-        disabled={!codigoCompleto}
+        disabled={!codigoCompleto || enviando}
         onClick={handleConfirmar}
       >
-        Confirmar código
+        {enviando ? 'Confirmando...' : 'Confirmar código'}
       </PrimaryButton>
 
       <p className="mt-4 text-center text-xs text-verde-health/55">
@@ -431,20 +444,10 @@ function ConfirmacaoEmail({
       </p>
 
       <div className="mt-4 text-center">
-        <button
-          type="button"
-          onClick={handleReenviar}
-          disabled={resendCooldown > 0}
-          className={`text-sm font-medium ${
-            resendCooldown > 0
-              ? 'cursor-not-allowed text-verde-health/40'
-              : 'text-dourado-health hover:underline'
-          }`}
-        >
-          {resendCooldown > 0
-            ? `Reenviar código em ${resendCooldown}s`
-            : 'Reenviar código'}
-        </button>
+        <ReenviarCodigo
+          onReenviar={handleReenviar}
+          segundosIniciais={cooldownInicial}
+        />
       </div>
 
       <p className="mt-8 text-center text-xs text-verde-health/55">
@@ -466,36 +469,62 @@ function ConfirmacaoEmail({
 // Comprovante Profissional — só pra quem escolheu perfil "Profissional".
 // ---------------------------------------------------------------------
 function ComprovanteProfissional({
+  arquivo,
+  onArquivoChange,
   onFinalizar,
   onSwitchToHomeCare,
+  onVoltarAosDados,
 }: {
-  onFinalizar: () => void
-  onSwitchToHomeCare: () => void
+  /** o arquivo mora no Cadastro (só em memória) para sobreviver até depois
+   * da confirmação do e-mail, quando o envio acontece (passo 8 do plano) */
+  arquivo: File | null
+  onArquivoChange: (arquivo: File | null) => void
+  /** cria a conta como profissional; pode lançar ApiError */
+  onFinalizar: () => Promise<void>
+  /** cria a conta como Home Care; pode lançar ApiError */
+  onSwitchToHomeCare: () => Promise<void>
+  onVoltarAosDados: () => void
 }) {
-  const [arquivo, setArquivo] = useState<File | null>(null)
   const [confirmado, setConfirmado] = useState(false)
+  const [erro, setErro] = useState<ApiError | null>(null)
+  const [enviando, setEnviando] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const podeFinalizar = arquivo !== null && confirmado
+  // Erros que só se resolvem corrigindo a tela de dados (senha, e-mail...)
+  const erroDeDados =
+    erro?.codigo === 'senha_fraca' || erro?.codigo === 'dados_invalidos'
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    setArquivo(event.target.files?.[0] ?? null)
+    onArquivoChange(event.target.files?.[0] ?? null)
   }
 
   function handleRemoverArquivo() {
-    setArquivo(null)
+    onArquivoChange(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  // A conta só é criada aqui (e não na tela de dados) porque quem escolhe
+  // Home Care nesta tela precisa ter a conta criada com o tipo certo
+  async function criarConta(acao: () => Promise<void>) {
+    if (enviando) return
+    setEnviando(true)
+    setErro(null)
+    try {
+      await acao()
+    } catch (falha) {
+      setErro(comoApiError(falha))
+      setEnviando(false)
+    }
   }
 
   function handleFinalizar() {
     if (!podeFinalizar) return
-    // TODO(backend): ainda não existe upload real. Quando existir, o envio
-    // do arquivo (ex: POST multipart/form-data pra /api/cadastro/comprovante)
-    // entra aqui — só chamar onFinalizar() depois da confirmação do
-    // servidor. Por enquanto o arquivo escolhido (`arquivo`) nunca sai do
-    // navegador: não é enviado nem salvo em lugar nenhum, é só validação
-    // visual da interface.
-    onFinalizar()
+    void criarConta(onFinalizar)
+  }
+
+  function handleSwitchToHomeCare() {
+    void criarConta(onSwitchToHomeCare)
   }
 
   return (
@@ -505,8 +534,8 @@ function ComprovanteProfissional({
           Comprovante Profissional
         </h1>
         <p className="mt-2 text-sm text-verde-health/70">
-          Envie seu certificado, diploma ou comprovante de aptidão para
-          validar sua conta profissional.
+          Envie seu certificado, diploma ou comprovante de aptidão para validar
+          sua conta profissional.
         </p>
       </div>
 
@@ -600,33 +629,51 @@ function ComprovanteProfissional({
 
         <div className="mt-3 ml-8 rounded-xl border border-amber-300/50 bg-amber-50/70 px-4 py-3 text-xs leading-relaxed text-amber-800 backdrop-blur-sm">
           <strong className="font-semibold">Atenção:</strong> Seu comprovante
-          será revisado na primeira compra. Caso não esteja de acordo com
-          nosso termo de uso, a compra poderá ser cancelada.
+          será revisado na primeira compra. Caso não esteja de acordo com nosso
+          termo de uso, a compra poderá ser cancelada.
         </div>
       </div>
 
+      {erro && (
+        <div className="mt-8">
+          <AlertaDeFormulario variante="erro">
+            <p>{erro.message}</p>
+            {erroDeDados && (
+              <button
+                type="button"
+                onClick={onVoltarAosDados}
+                className="mt-2 font-medium text-dourado-health hover:underline"
+              >
+                Corrigir meus dados
+              </button>
+            )}
+          </AlertaDeFormulario>
+        </div>
+      )}
+
       <PrimaryButton
         className="mt-8"
-        disabled={!podeFinalizar}
+        disabled={!podeFinalizar || enviando}
         onClick={handleFinalizar}
       >
-        Finalizar Cadastro
+        {enviando ? 'Criando conta...' : 'Finalizar Cadastro'}
       </PrimaryButton>
 
       <button
         type="button"
-        onClick={onSwitchToHomeCare}
+        onClick={handleSwitchToHomeCare}
+        disabled={enviando}
         className="mt-4 w-full rounded-2xl border border-[#04452E]/10 bg-white/60 px-4 py-3 text-left text-sm text-verde-health/70 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.06)] backdrop-blur-sm transition-all hover:border-dourado-health/40"
       >
-        Não é profissional da estética? Sem problema. Sua conta passa para
-        Home Care agora e você segue comprando com preço de cliente final.
+        Não é profissional da estética? Sem problema. Sua conta passa para Home
+        Care agora e você segue comprando com preço de cliente final.
       </button>
     </div>
   )
 }
 
 // ---------------------------------------------------------------------
-// Tela de sucesso — sem backend ainda, é só a confirmação visual do fluxo.
+// Tela de sucesso: a conta existe e o e-mail está confirmado.
 // ---------------------------------------------------------------------
 function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
   const titulo =
@@ -634,7 +681,7 @@ function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
   const mensagem =
     variant === 'profissional'
       ? 'Seu comprovante será analisado na primeira compra.'
-      : 'Em breve você poderá fazer login.'
+      : 'Seu e-mail foi confirmado e sua conta está pronta.'
 
   return (
     <div className="flex flex-col items-center gap-4 py-10 text-center">
@@ -658,52 +705,79 @@ function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
 // pros dois perfis, o comprovante só pra profissional — por isso nenhuma
 // das duas entra na contagem do indicador (fica escondido nelas e no
 // sucesso).
-type View =
-  | 'perfil'
-  | 'dados'
-  | 'confirmacao-email'
-  | 'comprovante'
-  | 'sucesso'
+type View = 'perfil' | 'dados' | 'confirmacao-email' | 'comprovante' | 'sucesso'
 
 function Cadastro() {
-  const [view, setView] = useState<View>('perfil')
+  // O Login manda para cá quem tentou entrar sem ter confirmado o e-mail, com
+  // o e-mail em location.state: abrimos direto na confirmação do código
+  const location = useLocation()
+  const vindoDoLogin = (location.state as { confirmarEmail?: unknown } | null)
+    ?.confirmarEmail
+  const emailDoLogin =
+    typeof vindoDoLogin === 'string' && EMAIL_REGEX.test(vindoDoLogin.trim())
+      ? vindoDoLogin.trim()
+      : null
+
+  const [view, setView] = useState<View>(
+    emailDoLogin ? 'confirmacao-email' : 'perfil',
+  )
   const [perfil, setPerfil] = useState<Perfil | null>(null)
-  const [email, setEmail] = useState('')
-  const [successVariant, setSuccessVariant] = useState<
-    'padrao' | 'profissional'
-  >('padrao')
+  const [email, setEmail] = useState(emailDoLogin ?? '')
+  // Só em memória: nunca em localStorage ou sessionStorage. A senha em
+  // `dados` é descartada assim que a conta é criada.
+  const [dados, setDados] = useState<DadosConta | null>(null)
+  const [arquivo, setArquivo] = useState<File | null>(null)
+  const [perfilCriado, setPerfilCriado] = useState<PerfilDaConta | null>(null)
 
-  function handleDadosConcluidos(emailConfirmado: string) {
-    setEmail(emailConfirmado)
-    // Profissional passa pelo comprovante ANTES de confirmar o e-mail; Home
-    // Care não tem comprovante, então já vai direto pra confirmação.
-    if (perfil === 'profissional') {
-      setView('comprovante')
-    } else {
-      setSuccessVariant('padrao')
-      setView('confirmacao-email')
+  // Cria a conta no servidor (que também envia o código por e-mail) e segue
+  // para a confirmação. Lança ApiError para a tela de origem mostrar.
+  async function registrar(tipo: Perfil, conta: DadosConta) {
+    await api.cadastro({ perfil: tipo, ...conta })
+    setDados(null)
+    setPerfil(tipo)
+    setEmail(conta.email)
+    setView('confirmacao-email')
+  }
+
+  async function handleDadosConcluidos(conta: DadosConta) {
+    if (!perfil) return
+    if (perfil === 'homecare') {
+      // Home Care não tem comprovante: cria a conta já e vai à confirmação
+      await registrar('homecare', conta)
+      return
     }
+    // Profissional passa pelo comprovante ANTES de confirmar o e-mail. A conta
+    // só é criada no fim dessa tela, para quem trocar para Home Care nela não
+    // ficar com uma conta profissional criada à toa.
+    setDados(conta)
+    setEmail(conta.email)
+    setView('comprovante')
   }
 
-  function handleComprovanteFinalizado() {
-    setSuccessVariant('profissional')
-    setView('confirmacao-email')
+  async function handleComprovanteFinalizado() {
+    if (!dados) return
+    await registrar('profissional', dados)
   }
 
-  function handleEmailConfirmado() {
-    // A ramificação por perfil já aconteceu antes (em handleDadosConcluidos
-    // / handleComprovanteFinalizado) — confirmar o e-mail é sempre a última
-    // etapa antes do sucesso, pros dois perfis.
+  async function handleSwitchToHomeCare() {
+    if (!dados) return
+    // Troca de perfil acontece durante o comprovante, que vem ANTES da
+    // confirmação de e-mail: a conta nasce Home Care e ainda falta confirmar.
+    await registrar('homecare', dados)
+    setArquivo(null)
+  }
+
+  function handleEmailConfirmado(perfilConfirmado: PerfilDaConta) {
+    setPerfilCriado(perfilConfirmado)
+    // TODO(backend): passo 8 do plano. Neste ponto a sessão já está aberta
+    // (o confirmar-email gravou os cookies) e o `arquivo` do comprovante
+    // ainda está em memória. Se perfilConfirmado.tipo for 'profissional' e
+    // houver `arquivo`, enviar agora: POST /api/comprovantes/url-de-envio,
+    // envio direto do arquivo para a URL assinada e POST
+    // /api/comprovantes/confirmar. Falha no envio não desfaz a conta: a página
+    // Minha Conta (passo 9) oferece reenviar. Até esse passo, o arquivo nunca
+    // sai do navegador.
     setView('sucesso')
-  }
-
-  function handleSwitchToHomeCare() {
-    // Troca de perfil acontece durante o comprovante, que agora vem ANTES
-    // da confirmação de e-mail — então ainda falta confirmar o e-mail,
-    // mesmo virando Home Care (não pula direto pro sucesso).
-    setPerfil('homecare')
-    setSuccessVariant('padrao')
-    setView('confirmacao-email')
   }
 
   return (
@@ -736,26 +810,39 @@ function Cadastro() {
           {view === 'dados' && perfil && (
             <CriarConta
               perfil={perfil}
+              inicial={dados ? { nome: dados.nome, email: dados.email } : null}
               onVoltar={() => setView('perfil')}
-              onSuccess={handleDadosConcluidos}
+              onEnviar={handleDadosConcluidos}
             />
           )}
 
           {view === 'confirmacao-email' && (
             <ConfirmacaoEmail
               email={email}
+              cooldownInicial={emailDoLogin ? 0 : RESEND_COOLDOWN_SECONDS}
               onConfirmado={handleEmailConfirmado}
             />
           )}
 
           {view === 'comprovante' && (
             <ComprovanteProfissional
+              arquivo={arquivo}
+              onArquivoChange={setArquivo}
               onFinalizar={handleComprovanteFinalizado}
               onSwitchToHomeCare={handleSwitchToHomeCare}
+              onVoltarAosDados={() => setView('dados')}
             />
           )}
 
-          {view === 'sucesso' && <ContaCriada variant={successVariant} />}
+          {view === 'sucesso' && (
+            <ContaCriada
+              variant={
+                perfilCriado?.tipo === 'profissional'
+                  ? 'profissional'
+                  : 'padrao'
+              }
+            />
+          )}
         </motion.div>
       </AnimatePresence>
     </motion.section>

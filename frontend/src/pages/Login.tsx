@@ -1,29 +1,30 @@
 import { motion } from 'motion/react'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import AlertaDeFormulario from '../components/AlertaDeFormulario'
 import PasswordField from '../components/PasswordField'
 import PrimaryButton from '../components/PrimaryButton'
 import TextField from '../components/TextField'
+import { useAuth } from '../context/useAuth'
+import { ApiError } from '../lib/api'
+import { destinoSeguro } from '../lib/destino'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-type Aviso = 'login' | 'esqueci-senha'
-
-const AVISO_TEXTO: Record<Aviso, string> = {
-  login: 'O acesso à conta estará disponível em breve.',
-  'esqueci-senha':
-    'A recuperação de senha estará disponível em breve. Enquanto isso, fale com a gente pelo WhatsApp.',
-}
-
-// Página de login — só interface, ainda não existe backend de autenticação
-// (ver TODO(backend) abaixo). Mesmos componentes de campo/botão do
-// Cadastro (ver src/components/TextField.tsx, PasswordField.tsx,
-// PrimaryButton.tsx), extraídos de lá pra serem reaproveitados aqui.
+// Página de login. A sessão é aberta pelo backend em cookies httpOnly (ver
+// src/lib/api.ts e src/context/AuthContext.tsx); aqui nunca passa token. Mesmos
+// componentes de campo/botão do Cadastro (TextField, PasswordField,
+// PrimaryButton).
 function Login() {
+  const { status, entrar } = useAuth()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
-  const [aviso, setAviso] = useState<Aviso | null>(null)
+  const [erro, setErro] = useState<ApiError | null>(null)
+  const [enviando, setEnviando] = useState(false)
 
   const emailValido = EMAIL_REGEX.test(email.trim())
   const formValido = emailValido && senha.length > 0
@@ -31,33 +32,47 @@ function Login() {
   const emailError =
     email.length > 0 && !emailValido ? 'Digite um e-mail válido.' : undefined
 
+  // Destino depois de entrar: ?destino=/carrinho ou o estado da navegação
+  // (state.from). destinoSeguro só aceita caminho interno do site; qualquer
+  // outra coisa vira "/". No passo 9 o destino padrão passa a ser /minha-conta.
+  const origem = (location.state as { from?: unknown } | null)?.from
+  const destino = destinoSeguro(searchParams.get('destino') ?? origem)
+
+  // Quem já está logado (ou acabou de entrar) sai desta tela
+  if (status === 'logado') return <Navigate to={destino} replace />
+
   function handleChangeEmail(value: string) {
     setEmail(value)
-    setAviso(null)
+    setErro(null)
   }
 
   function handleChangeSenha(value: string) {
     setSenha(value)
-    setAviso(null)
+    setErro(null)
   }
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault()
-    if (!formValido) return
+    if (!formValido || enviando) return
 
-    // TODO(backend): ainda não existe API de autenticação. Quando existir, a
-    // chamada real (algo como POST /api/login com { email, senha }) entra
-    // aqui — só então redirecionar pra área logada. Por enquanto nenhum
-    // dado é enviado ou persistido em lugar nenhum (nem localStorage/
-    // sessionStorage), e o login nunca é simulado como bem-sucedido.
-    setAviso('login')
-  }
-
-  function handleEsqueciSenha() {
-    // TODO(backend): ainda não existe fluxo de recuperação de senha. Quando
-    // existir, o envio do e-mail de redefinição (ex: POST
-    // /api/recuperar-senha com { email }) entra aqui.
-    setAviso('esqueci-senha')
+    setEnviando(true)
+    setErro(null)
+    try {
+      // Sucesso: o AuthContext passa a 'logado' e o <Navigate> acima leva ao
+      // destino
+      await entrar(email.trim(), senha)
+    } catch (falha) {
+      setErro(
+        falha instanceof ApiError
+          ? falha
+          : new ApiError(
+              'erro_servidor',
+              'Algo deu errado. Tente novamente em instantes.',
+              0,
+            ),
+      )
+      setEnviando(false)
+    }
   }
 
   return (
@@ -96,26 +111,34 @@ function Login() {
         />
 
         <div className="-mt-3 flex justify-end">
-          <button
-            type="button"
-            onClick={handleEsqueciSenha}
+          <Link
+            to="/redefinir-senha"
+            state={{ email: email.trim() }}
             className="text-xs font-medium text-dourado-health hover:underline"
           >
             Esqueci minha senha
-          </button>
+          </Link>
         </div>
 
-        {aviso && (
-          <div
-            role="status"
-            className="rounded-2xl border border-[#04452E]/10 bg-verde-health/5 px-4 py-3 text-sm leading-relaxed text-verde-health shadow-[0_2px_10px_-4px_rgba(4,32,18,0.06)] backdrop-blur-sm"
-          >
-            {AVISO_TEXTO[aviso]}
-          </div>
+        {erro && (
+          <AlertaDeFormulario variante="erro">
+            <p>{erro.message}</p>
+            {erro.codigo === 'email_nao_confirmado' && (
+              // Abre o Cadastro direto na confirmação do código, com o e-mail
+              // já preenchido
+              <Link
+                to="/cadastro"
+                state={{ confirmarEmail: email.trim() }}
+                className="mt-2 inline-block font-medium text-dourado-health hover:underline"
+              >
+                Confirmar meu e-mail
+              </Link>
+            )}
+          </AlertaDeFormulario>
         )}
 
-        <PrimaryButton type="submit" disabled={!formValido}>
-          Entrar
+        <PrimaryButton type="submit" disabled={!formValido || enviando}>
+          {enviando ? 'Entrando...' : 'Entrar'}
         </PrimaryButton>
       </form>
 
