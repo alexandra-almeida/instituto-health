@@ -2,14 +2,18 @@ import { z } from 'zod'
 
 // Lê e valida as variáveis de ambiente uma única vez, na subida do app.
 // Se algo estiver faltando ou errado, o processo falha logo no início em vez
-// de quebrar no meio de uma requisição. As variáveis do Supabase e do PagBank
-// entram aqui nos próximos passos, com os nomes reais criados pela integração.
+// de quebrar no meio de uma requisição. Do Supabase o backend usa só estas
+// duas (decisão de 16/10/2026 no plano, seção 9). As do PagBank entram nos
+// próximos passos.
 const esquema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
     .default('development'),
   // Só usada no desenvolvimento local; na Vercel não existe listen
   PORTA: z.coerce.number().int().positive().default(3333),
+  SUPABASE_URL: z.url(),
+  // Chave secreta: ignora o RLS. Nunca registrar em log nem devolver ao cliente
+  SUPABASE_SECRET_KEY: z.string().min(1),
 })
 
 const resultado = esquema.safeParse(process.env)
