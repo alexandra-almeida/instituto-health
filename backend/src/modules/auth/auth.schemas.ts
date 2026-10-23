@@ -36,6 +36,32 @@ export const confirmarEmailSchema = z.object({
 
 export const reenviarCodigoSchema = z.object({ email })
 
+// No login não se exige o mínimo de 8: só que a senha tenha sido informada
+export const loginSchema = z.object({
+  email,
+  senha: z
+    .string({ error: 'Informe a senha.' })
+    .min(1, 'Informe a senha.')
+    .max(72, 'A senha deve ter no máximo 72 caracteres.'),
+})
+
+export const esqueciSenhaSchema = z.object({ email })
+
+export const redefinirSenhaSchema = z.object({
+  email,
+  codigo: z
+    .string({ error: 'Informe o código.' })
+    .trim()
+    .regex(/^\d{6}$/, 'O código tem 6 números.'),
+  novaSenha: z
+    .string({ error: 'Informe a nova senha.' })
+    .min(8, 'A senha deve ter pelo menos 8 caracteres.')
+    .max(72, 'A senha deve ter no máximo 72 caracteres.'),
+})
+
 export type CadastroEntrada = z.infer<typeof cadastroSchema>
 export type ConfirmarEmailEntrada = z.infer<typeof confirmarEmailSchema>
 export type ReenviarCodigoEntrada = z.infer<typeof reenviarCodigoSchema>
+export type LoginEntrada = z.infer<typeof loginSchema>
+export type EsqueciSenhaEntrada = z.infer<typeof esqueciSenhaSchema>
+export type RedefinirSenhaEntrada = z.infer<typeof redefinirSenhaSchema>

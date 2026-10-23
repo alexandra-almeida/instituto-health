@@ -14,6 +14,12 @@ function criarFakes() {
     apagarUsuario: vi.fn<AuthClient['apagarUsuario']>(),
     enviarCodigoDeConfirmacao: vi.fn<AuthClient['enviarCodigoDeConfirmacao']>(),
     confirmarCodigo: vi.fn<AuthClient['confirmarCodigo']>(),
+    entrar: vi.fn<AuthClient['entrar']>(),
+    validarToken: vi.fn<AuthClient['validarToken']>(),
+    renovarSessao: vi.fn<AuthClient['renovarSessao']>(),
+    encerrarSessao: vi.fn<AuthClient['encerrarSessao']>(),
+    enviarCodigoDeRecuperacao: vi.fn<AuthClient['enviarCodigoDeRecuperacao']>(),
+    redefinirSenha: vi.fn<AuthClient['redefinirSenha']>(),
   }
   const perfis = {
     criar: vi.fn<PerfisRepository['criar']>(),

@@ -1,4 +1,4 @@
-import type { Response } from 'express'
+import type { Request, Response } from 'express'
 
 export const COOKIE_ACESSO = 'ih_acesso'
 export const COOKIE_RENOVACAO = 'ih_renovacao'
@@ -33,6 +33,30 @@ export function gravarSessao(res: Response, sessao: Sessao) {
     ...base,
     maxAge: TRINTA_DIAS_EM_MS,
   })
+}
+
+// Lê só os dois cookies da sessão do cabeçalho Cookie. Feito à mão para não
+// depender de um pacote só para isso; valor com escape inválido é ignorado.
+export function lerSessao(req: Request): {
+  accessToken?: string
+  refreshToken?: string
+} {
+  const encontrados: Record<string, string> = {}
+  for (const parte of (req.headers.cookie ?? '').split(';')) {
+    const separador = parte.indexOf('=')
+    if (separador === -1) continue
+    const nome = parte.slice(0, separador).trim()
+    if (nome !== COOKIE_ACESSO && nome !== COOKIE_RENOVACAO) continue
+    try {
+      encontrados[nome] = decodeURIComponent(parte.slice(separador + 1).trim())
+    } catch {
+      // cookie malformado: trata como ausente
+    }
+  }
+  return {
+    accessToken: encontrados[COOKIE_ACESSO] || undefined,
+    refreshToken: encontrados[COOKIE_RENOVACAO] || undefined,
+  }
 }
 
 export function limparSessao(res: Response) {

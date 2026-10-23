@@ -14,6 +14,10 @@ const esquema = z.object({
   SUPABASE_URL: z.url(),
   // Chave secreta: ignora o RLS. Nunca registrar em log nem devolver ao cliente
   SUPABASE_SECRET_KEY: z.string().min(1),
+  // Origens do site que podem chamar a API, separadas por vírgula (o domínio
+  // da Vercel e, depois, o próprio). Vazia em produção: a API recusa toda
+  // requisição que altera dados. Ver middlewares/protegerOrigem.ts
+  ORIGEM_FRONTEND: z.string().optional(),
 })
 
 const resultado = esquema.safeParse(process.env)
