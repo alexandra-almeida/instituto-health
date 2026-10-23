@@ -388,6 +388,14 @@ Etapa C — Pedidos e pagamento
   (decisão da Juliana; sugestão: apagar após 90 dias).
 - Exclusão de conta e dos arquivos (LGPD): implementar antes de abrir o
   cadastro ao público.
+- Limpeza periódica de arquivos órfãos no bucket `comprovantes-profissionais`:
+  arquivos enviados à URL assinada mas nunca confirmados (sem linha em
+  `comprovantes_profissionais`) e com mais de 24 h devem ser apagados, por
+  exemplo por um job do Cron da Vercel. Até lá, o limite de 10 arquivos por
+  pasta (passo 8) contém o estrago.
+- Painel admin (Fase 3), visualização de comprovantes: arquivos HEIC podem não
+  abrir no Windows. Prever uma visualização no próprio painel ou a conversão
+  para JPEG ao exibir (sem alterar o arquivo original guardado).
 - Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
 - SMTP próprio (Resend): depende do domínio.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
@@ -482,3 +490,22 @@ Etapa C — Pedidos e pagamento
   - Testes: vitest no frontend (`npm run test`), só para `api.ts` e
     `destino.ts`, com `fetch` simulado. A interface foi checada por build e
     lint; o fluxo no navegador contra a API real fica para depois do SMTP.
+- [x] Passo 8 (22/10/2026): comprovantes. Backend: módulo `comprovantes`
+  (`POST /api/comprovantes/url-de-envio`, `POST /api/comprovantes/confirmar`,
+  `GET /api/comprovantes`), todas com sessão e os POST com `protegerOrigem`.
+  O caminho no bucket é gerado pelo backend (`<id da sessão>/<uuid>.<ext>`, a
+  extensão sai do tipo); só profissional `pendente` ou `recusado` envia
+  (homecare 403, aprovado 409). Valida tipo (jpeg, png, heic, pdf) e tamanho
+  (até 10 MB) e, na confirmação, só grava se o arquivo existe no bucket, com
+  tamanho, tipo e extensão coerentes e a assinatura do conteúdo (primeiros
+  bytes) batendo com o tipo; arquivo inválido é apagado do bucket. Limites: 5
+  registrados e 10 arquivos na pasta por pessoa. Confirmar duas vezes é
+  idempotente. O módulo nunca altera o status do perfil (o service não recebe o
+  repository de perfis). Frontend: `api.enviarComprovante` (URL de envio, PUT
+  direto na URL assinada sem cookies, confirmação), envio automático depois do
+  `confirmar-email` e tela de sucesso com os estados enviando, enviado e erro
+  com "Tentar enviar de novo". Se a página for fechada, o arquivo se perde: o
+  reenvio fica em Minha Conta (passo 9, usa o `GET /api/comprovantes`). Até lá
+  não há tela para escolher outro arquivo. Testes com Supabase simulado no
+  backend e `fetch` simulado no frontend. Teste real parcial (usuário
+  confirmado pelo admin, sem e-mail) feito depois do commit, ver abaixo.

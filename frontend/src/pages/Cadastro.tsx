@@ -675,13 +675,34 @@ function ComprovanteProfissional({
 // ---------------------------------------------------------------------
 // Tela de sucesso: a conta existe e o e-mail está confirmado.
 // ---------------------------------------------------------------------
-function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
-  const titulo =
-    variant === 'profissional' ? 'Conta criada!' : 'Conta criada com sucesso!'
-  const mensagem =
-    variant === 'profissional'
-      ? 'Seu comprovante será analisado na primeira compra.'
-      : 'Seu e-mail foi confirmado e sua conta está pronta.'
+// Andamento do envio do comprovante depois da confirmação do e-mail. 'nenhum'
+// vale para Home Care e para quem chegou pelo Login sem arquivo em memória.
+type EnvioDoComprovante = 'nenhum' | 'enviando' | 'enviado' | 'erro'
+
+const MENSAGEM_DO_ENVIO: Record<EnvioDoComprovante, string> = {
+  nenhum:
+    'Seu e-mail foi confirmado e sua conta está pronta. Falta enviar o comprovante profissional, o que poderá ser feito em Minha Conta, em breve.',
+  enviando: 'Estamos enviando seu comprovante. Não feche esta página.',
+  enviado: 'Comprovante recebido. Ele será analisado na primeira compra.',
+  erro: 'Sua conta foi criada, mas não conseguimos enviar o comprovante.',
+}
+
+function ContaCriada({
+  variant,
+  envio,
+  erroDoEnvio,
+  onTentarDeNovo,
+}: {
+  variant: 'padrao' | 'profissional'
+  envio: EnvioDoComprovante
+  erroDoEnvio: ApiError | null
+  onTentarDeNovo: () => void
+}) {
+  const profissional = variant === 'profissional'
+  const titulo = profissional ? 'Conta criada!' : 'Conta criada com sucesso!'
+  const mensagem = profissional
+    ? MENSAGEM_DO_ENVIO[envio]
+    : 'Seu e-mail foi confirmado e sua conta está pronta.'
 
   return (
     <div className="flex flex-col items-center gap-4 py-10 text-center">
@@ -689,13 +710,36 @@ function ContaCriada({ variant }: { variant: 'padrao' | 'profissional' }) {
         <CheckCircleIcon className="h-9 w-9" />
       </span>
       <h1 className="font-flatline text-2xl text-verde-health">{titulo}</h1>
-      <p className="max-w-sm text-sm text-verde-health/70">{mensagem}</p>
-      <Link
-        to="/"
-        className="font-flatline mt-2 inline-flex items-center justify-center rounded-full bg-emerald-dark px-8 py-3 text-sm uppercase leading-none text-offwhite transition-colors hover:bg-emerald-dark/90"
-      >
-        Voltar para a home
-      </Link>
+      <p aria-live="polite" className="max-w-sm text-sm text-verde-health/70">
+        {mensagem}
+      </p>
+
+      {profissional && envio === 'erro' && (
+        <div className="flex w-full max-w-sm flex-col gap-3 text-left">
+          {erroDoEnvio && (
+            <AlertaDeFormulario variante="erro">
+              {erroDoEnvio.message}
+            </AlertaDeFormulario>
+          )}
+          <PrimaryButton onClick={onTentarDeNovo}>
+            Tentar enviar de novo
+          </PrimaryButton>
+          <p className="text-center text-xs text-verde-health/55">
+            Não feche esta página até terminar. Se fechar, o arquivo precisará
+            ser enviado de novo depois.
+          </p>
+        </div>
+      )}
+
+      {/* Enquanto o arquivo está sendo enviado, sair da página o perderia */}
+      {envio !== 'enviando' && (
+        <Link
+          to="/"
+          className="font-flatline mt-2 inline-flex items-center justify-center rounded-full bg-emerald-dark px-8 py-3 text-sm uppercase leading-none text-offwhite transition-colors hover:bg-emerald-dark/90"
+        >
+          Voltar para a home
+        </Link>
+      )}
     </div>
   )
 }
@@ -728,6 +772,8 @@ function Cadastro() {
   const [dados, setDados] = useState<DadosConta | null>(null)
   const [arquivo, setArquivo] = useState<File | null>(null)
   const [perfilCriado, setPerfilCriado] = useState<PerfilDaConta | null>(null)
+  const [envio, setEnvio] = useState<EnvioDoComprovante>('nenhum')
+  const [erroDoEnvio, setErroDoEnvio] = useState<ApiError | null>(null)
 
   // Cria a conta no servidor (que também envia o código por e-mail) e segue
   // para a confirmação. Lança ApiError para a tela de origem mostrar.
@@ -767,17 +813,36 @@ function Cadastro() {
     setArquivo(null)
   }
 
+  // Envia o comprovante (3 etapas, ver api.enviarComprovante). Falha aqui não
+  // desfaz a conta: o `arquivo` continua em memória para "Tentar enviar de
+  // novo". Se a página for fechada ou recarregada o arquivo se perde, e a
+  // página Minha Conta (passo 9) oferecerá reenviar.
+  async function enviarComprovante(paraEnviar: File) {
+    setEnvio('enviando')
+    setErroDoEnvio(null)
+    try {
+      await api.enviarComprovante(paraEnviar)
+      setArquivo(null)
+      setEnvio('enviado')
+    } catch (falha) {
+      setErroDoEnvio(comoApiError(falha))
+      setEnvio('erro')
+    }
+  }
+
   function handleEmailConfirmado(perfilConfirmado: PerfilDaConta) {
     setPerfilCriado(perfilConfirmado)
-    // TODO(backend): passo 8 do plano. Neste ponto a sessão já está aberta
-    // (o confirmar-email gravou os cookies) e o `arquivo` do comprovante
-    // ainda está em memória. Se perfilConfirmado.tipo for 'profissional' e
-    // houver `arquivo`, enviar agora: POST /api/comprovantes/url-de-envio,
-    // envio direto do arquivo para a URL assinada e POST
-    // /api/comprovantes/confirmar. Falha no envio não desfaz a conta: a página
-    // Minha Conta (passo 9) oferece reenviar. Até esse passo, o arquivo nunca
-    // sai do navegador.
     setView('sucesso')
+    // A sessão já está aberta (o confirmar-email gravou os cookies httpOnly) e
+    // o arquivo ainda está em memória: o envio começa agora, sem a pessoa
+    // precisar fazer nada. Home Care não tem comprovante.
+    if (perfilConfirmado.tipo === 'profissional' && arquivo) {
+      void enviarComprovante(arquivo)
+    }
+  }
+
+  function handleTentarEnviarDeNovo() {
+    if (arquivo) void enviarComprovante(arquivo)
   }
 
   return (
@@ -841,6 +906,9 @@ function Cadastro() {
                   ? 'profissional'
                   : 'padrao'
               }
+              envio={envio}
+              erroDoEnvio={erroDoEnvio}
+              onTentarDeNovo={handleTentarEnviarDeNovo}
             />
           )}
         </motion.div>

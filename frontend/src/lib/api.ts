@@ -7,6 +7,12 @@
 // arquivo nunca lê, guarda nem repassa token, e nada de sessão vai para
 // localStorage ou sessionStorage.
 
+import {
+  TAMANHO_MAXIMO_COMPROVANTE,
+  tipoDoComprovante,
+  type TipoDeComprovante,
+} from './comprovante'
+
 export type TipoDePerfil = 'profissional' | 'homecare'
 export type StatusDoPerfil = 'pendente' | 'aprovado' | 'recusado'
 
@@ -30,9 +36,18 @@ export interface Mensagem {
   mensagem: string
 }
 
+// Comprovante já registrado no servidor. O caminho do arquivo no bucket nunca
+// chega ao navegador depois do envio.
+export interface ComprovanteEnviado {
+  id: string
+  enviadoEm: string
+}
+
 const MENSAGEM_SEM_CONEXAO =
   'Não foi possível conectar. Confira sua internet e tente de novo.'
 const MENSAGEM_ERRO_GENERICO = 'Algo deu errado. Tente novamente em instantes.'
+const MENSAGEM_FALHA_NO_ENVIO =
+  'Não foi possível enviar o arquivo. Confira sua internet e tente de novo.'
 
 // Erro devolvido pela API no formato { erro: { codigo, mensagem } }. A
 // mensagem já vem em português, pronta para mostrar na tela; o `codigo` serve
@@ -109,6 +124,75 @@ async function requisicao<T>(
   )
 }
 
+// Envia o arquivo direto para a URL assinada do Storage (ele não passa pelo
+// nosso backend: o limite de corpo das Functions da Vercel é menor que 10 MB).
+// A URL já leva o token de envio, então a chamada não manda cookies
+// (`credentials: 'omit'`) nem Authorization. A URL é segredo: nunca vai para
+// log nem para mensagem de erro.
+async function enviarParaUrlAssinada(
+  urlDeEnvio: string,
+  arquivo: File,
+  tipo: TipoDeComprovante,
+) {
+  let resposta: Response
+  try {
+    resposta = await fetch(urlDeEnvio, {
+      method: 'PUT',
+      credentials: 'omit',
+      headers: { 'Content-Type': tipo },
+      body: arquivo,
+    })
+  } catch {
+    throw new ApiError('falha_no_envio', MENSAGEM_FALHA_NO_ENVIO, 0)
+  }
+  if (!resposta.ok) {
+    throw new ApiError(
+      'falha_no_envio',
+      MENSAGEM_FALHA_NO_ENVIO,
+      resposta.status,
+    )
+  }
+}
+
+// Envia o comprovante em 3 etapas (plano, seção 6): pede a URL de envio,
+// manda o arquivo para ela e confirma no backend, que só então registra. Recusa
+// na hora o que já se sabe inválido (tipo ou tamanho). Cada chamada usa um
+// caminho novo; nada fica registrado no banco enquanto não houver sucesso.
+async function enviarComprovante(arquivo: File): Promise<ComprovanteEnviado> {
+  const tipo = tipoDoComprovante(arquivo)
+  if (!tipo) {
+    throw new ApiError(
+      'tipo_nao_aceito',
+      'Tipo de arquivo não aceito. Envie JPG, PNG, HEIC ou PDF.',
+      0,
+    )
+  }
+  if (arquivo.size < 1) {
+    throw new ApiError('arquivo_vazio', 'O arquivo está vazio.', 0)
+  }
+  if (arquivo.size > TAMANHO_MAXIMO_COMPROVANTE) {
+    throw new ApiError(
+      'arquivo_grande',
+      'O arquivo deve ter no máximo 10 MB.',
+      0,
+    )
+  }
+
+  const { caminho, urlDeEnvio } = await requisicao<{
+    caminho: string
+    urlDeEnvio: string
+  }>('POST', '/comprovantes/url-de-envio', { tipo, tamanho: arquivo.size })
+
+  await enviarParaUrlAssinada(urlDeEnvio, arquivo, tipo)
+
+  const { comprovante } = await requisicao<{ comprovante: ComprovanteEnviado }>(
+    'POST',
+    '/comprovantes/confirmar',
+    { caminho },
+  )
+  return comprovante
+}
+
 export const api = {
   cadastro: (dados: {
     perfil: TipoDePerfil
@@ -141,4 +225,9 @@ export const api = {
     codigo: string
     novaSenha: string
   }) => requisicao<Mensagem>('POST', '/auth/redefinir-senha', dados),
+
+  listarComprovantes: () =>
+    requisicao<{ comprovantes: ComprovanteEnviado[] }>('GET', '/comprovantes'),
+
+  enviarComprovante,
 }
