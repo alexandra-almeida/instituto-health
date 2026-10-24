@@ -106,8 +106,10 @@ export const comprovantesRepository: ComprovantesRepository = {
 
   async obterInfo(caminho) {
     const bucket = supabaseAdmin.storage.from(BUCKET)
+    // Arquivo ausente: a SDK devolve data=false JUNTO com um erro (400/404), e
+    // só lança nas demais falhas (rede, 5xx). Por isso o `error` não pode ser
+    // tratado como falha antes de olhar o `data`.
     const existe = await bucket.exists(caminho)
-    if (existe.error) throw new Error('Falha ao consultar o comprovante')
     if (!existe.data) return null
 
     const { data, error } = await bucket.info(caminho)
