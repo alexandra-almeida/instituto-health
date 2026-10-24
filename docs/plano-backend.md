@@ -146,7 +146,8 @@ Tabelas (nomes fixos, não renomear):
   duas vezes.
 
 Bucket: `comprovantes-profissionais`, privado, tipos `image/jpeg`, `image/png`,
-`image/heic`, `application/pdf`, limite de 10 MB.
+`image/heic`, `application/pdf`, limite de 10 MB. (A API só gera URL de envio
+para jpeg, png e pdf; ver "Pendências" sobre o `image/heic` que sobrou aqui.)
 
 Regras de negócio que os services garantem:
 
@@ -393,9 +394,14 @@ Etapa C — Pedidos e pagamento
   `comprovantes_profissionais`) e com mais de 24 h devem ser apagados, por
   exemplo por um job do Cron da Vercel. Até lá, o limite de 10 arquivos por
   pasta (passo 8) contém o estrago.
-- Painel admin (Fase 3), visualização de comprovantes: arquivos HEIC podem não
-  abrir no Windows. Prever uma visualização no próprio painel ou a conversão
-  para JPEG ao exibir (sem alterar o arquivo original guardado).
+- Bucket `comprovantes-profissionais` ainda lista `image/heic` em
+  `allowed_mime_types` (migração 0001, já aplicada e conferida). O backend e o
+  site aceitam só JPEG, PNG e PDF desde 24/10/2026, então o bucket aceita um
+  pouco mais do que o necessário (sem risco, a API nunca gera URL para HEIC).
+  Na próxima migração (0002) restringir o bucket a jpeg, png e pdf e ajustar a
+  linha 14 da conferência `database/conferencias/0001_perfis_comprovantes.sql`.
+  Sem urgência. (A antiga pendência de visualizar HEIC no painel admin deixou
+  de existir.)
 - Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
 - SMTP próprio (Resend): depende do domínio.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
@@ -509,3 +515,21 @@ Etapa C — Pedidos e pagamento
   não há tela para escolher outro arquivo. Testes com Supabase simulado no
   backend e `fetch` simulado no frontend. Teste real parcial (usuário
   confirmado pelo admin, sem e-mail) feito depois do commit, ver abaixo.
+- [x] Teste real parcial do passo 8 (24/10/2026), sem e-mail, no projeto
+  `hykxvlngsiwhjxknuytz`: usuário já confirmado pelo admin
+  (`teste-comprovante@example.com`), login pelo backend de verdade, URL de envio,
+  `PUT` de um PDF pequeno direto na URL assinada com corpo cru (o Storage
+  aceitou), confirmação (201), confirmação repetida (200, mesmo id), listagem,
+  recusa de arquivo inexistente, de caminho de outra pessoa, de tamanho acima de
+  10 MB e de HTML rotulado como PDF (apagado do bucket), e o status do perfil
+  seguiu `pendente`. O teste achou um bug que os testes simulados não pegaram:
+  para arquivo inexistente a SDK devolve `exists` com `data=false` JUNTO com um
+  erro, e o repository tratava o erro como falha (500 em vez de 400
+  `arquivo_nao_encontrado`). Corrigido, com teste do repository no formato real
+  da resposta, e o teste real repetido deu tudo certo. No fim tudo foi apagado e
+  conferido (bucket, `comprovantes_profissionais`, `perfis` por cascade e o
+  usuário no Auth, com a mesma quantidade de usuários de antes).
+- [x] Ajuste de HEIC (24/10/2026): o comprovante aceita só `image/jpeg`,
+  `image/png` e `application/pdf`, no campo de arquivo do Cadastro, na validação
+  do navegador e no backend (schema, extensão, assinatura e caminho). O iPhone
+  converte a foto para JPEG sozinho quando o campo só lista esses tipos.

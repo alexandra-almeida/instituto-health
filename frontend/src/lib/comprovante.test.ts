@@ -6,11 +6,7 @@ describe('tipoDoComprovante', () => {
     ['diploma.pdf', 'application/pdf', 'application/pdf'],
     ['foto.jpg', 'image/jpeg', 'image/jpeg'],
     ['foto.png', 'image/png', 'image/png'],
-    ['foto.heic', 'image/heic', 'image/heic'],
-    // alguns navegadores dão outro nome ao HEIC
-    ['foto.heic', 'image/heif', 'image/heic'],
-    // iPhone no Safari costuma deixar o tipo vazio: vale a extensão
-    ['IMG_0001.HEIC', '', 'image/heic'],
+    // sem tipo informado pelo navegador: vale a extensão
     ['foto.jpeg', '', 'image/jpeg'],
     ['scan.PDF', '', 'application/pdf'],
     ['foto.jpg', 'application/octet-stream', 'image/jpeg'],
@@ -23,6 +19,10 @@ describe('tipoDoComprovante', () => {
     ['programa.exe', 'application/x-msdownload'],
     ['pagina.html', 'text/html'],
     ['animacao.gif', 'image/gif'],
+    // HEIC não é aceito: o iPhone converte para JPEG ao escolher a foto
+    ['foto.heic', 'image/heic'],
+    ['foto.heif', 'image/heif'],
+    ['IMG_0001.HEIC', ''],
     ['sem-extensao', ''],
     ['', ''],
   ])('%s com tipo "%s" não é aceito', (name, type) => {

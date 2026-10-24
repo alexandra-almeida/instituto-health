@@ -42,32 +42,10 @@ describe('conferirAssinatura', () => {
     expect(conferirAssinatura('application/pdf', ascii('%PDF'))).toBe(false)
   })
 
-  it.each(['heic', 'heix', 'mif1', 'msf1', 'hevc'])(
-    'heic com a marca %s',
-    (marca) => {
-      const arquivo = Uint8Array.from([
-        0,
-        0,
-        0,
-        0x18,
-        ...ascii('ftyp'),
-        ...ascii(marca),
-      ])
-      expect(conferirAssinatura('image/heic', arquivo)).toBe(true)
-    },
-  )
-
-  it('heic recusa marca de outro formato (mp4) e arquivo sem ftyp', () => {
-    const mp4 = Uint8Array.from([
-      0,
-      0,
-      0,
-      0x18,
-      ...ascii('ftyp'),
-      ...ascii('isom'),
-    ])
-    expect(conferirAssinatura('image/heic', mp4)).toBe(false)
-    expect(conferirAssinatura('image/heic', ascii('GIF89a000000'))).toBe(false)
+  it('HEIC não é mais aceito, nem como tipo nem como extensão', () => {
+    expect(TIPOS_ACEITOS).not.toContain('image/heic')
+    expect(Object.values(EXTENSAO_DO_TIPO)).not.toContain('heic')
+    expect(TIPO_DA_EXTENSAO).not.toHaveProperty('heic')
   })
 
   it('arquivo vazio ou curto demais nunca passa', () => {

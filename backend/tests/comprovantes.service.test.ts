@@ -71,7 +71,6 @@ describe('gerarUrlDeEnvio', () => {
   it.each([
     ['image/jpeg', 'jpg'],
     ['image/png', 'png'],
-    ['image/heic', 'heic'],
     ['application/pdf', 'pdf'],
   ] as const)(
     'a extensão de %s é %s, vinda do tipo',
@@ -231,6 +230,7 @@ describe('confirmar', () => {
     ['subpasta extra', `${ID}/x/${UUID}.pdf`],
     ['nome que não é uuid', `${ID}/meu-diploma.pdf`],
     ['extensão não aceita', `${ID}/${UUID}.exe`],
+    ['extensão heic (não aceita)', `${ID}/${UUID}.heic`],
     ['extensão dupla', `${ID}/${UUID}.pdf.exe`],
     ['com query', `${ID}/${UUID}.pdf?x=1`],
     ['sem pasta', `${UUID}.pdf`],

@@ -93,6 +93,7 @@ describe('POST /api/comprovantes/url-de-envio', () => {
 
   it.each([
     ['tipo fora da lista', { tipo: 'text/html', tamanho: 10 }],
+    ['tipo heic (não aceito)', { tipo: 'image/heic', tamanho: 10 }],
     ['sem tipo', { tamanho: 10 }],
     ['tamanho zero', { tipo: 'image/png', tamanho: 0 }],
     ['tamanho negativo', { tipo: 'image/png', tamanho: -5 }],
@@ -120,7 +121,7 @@ describe('POST /api/comprovantes/url-de-envio', () => {
     const resposta = await request(app)
       .post('/api/comprovantes/url-de-envio')
       .set('Cookie', COOKIE)
-      .send({ tipo: 'image/heic', tamanho: 10 * 1024 * 1024 })
+      .send({ tipo: 'image/png', tamanho: 10 * 1024 * 1024 })
 
     expect(resposta.status).toBe(200)
   })

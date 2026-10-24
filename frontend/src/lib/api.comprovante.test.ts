@@ -91,17 +91,31 @@ describe('enviarComprovante', () => {
     }
   })
 
-  it('HEIC sem tipo no navegador é enviado como image/heic', async () => {
+  it('JPG sem tipo no navegador é enviado como image/jpeg (vale a extensão)', async () => {
     const fetchFalso = simularSequencia(respostasDeSucesso())
 
-    await api.enviarComprovante(arquivoDe(500, 'IMG_0001.HEIC', ''))
+    await api.enviarComprovante(arquivoDe(500, 'foto.JPG', ''))
 
     expect(fetchFalso.mock.calls[0]?.[1]?.body).toBe(
-      JSON.stringify({ tipo: 'image/heic', tamanho: 500 }),
+      JSON.stringify({ tipo: 'image/jpeg', tamanho: 500 }),
     )
     expect(fetchFalso.mock.calls[1]?.[1]?.headers).toEqual({
-      'Content-Type': 'image/heic',
+      'Content-Type': 'image/jpeg',
     })
+  })
+
+  it('HEIC é recusado antes de qualquer chamada, com mensagem em português', async () => {
+    const fetchFalso = simularSequencia([])
+
+    const erro = await api
+      .enviarComprovante(arquivoDe(500, 'IMG_0001.HEIC', 'image/heic'))
+      .catch((e: unknown) => e)
+
+    expect(erro).toMatchObject({ codigo: 'tipo_nao_aceito' })
+    expect((erro as Error).message).toBe(
+      'Tipo de arquivo não aceito. Envie JPG, PNG ou PDF.',
+    )
+    expect(fetchFalso).not.toHaveBeenCalled()
   })
 
   it.each([

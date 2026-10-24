@@ -163,7 +163,7 @@ async function enviarComprovante(arquivo: File): Promise<ComprovanteEnviado> {
   if (!tipo) {
     throw new ApiError(
       'tipo_nao_aceito',
-      'Tipo de arquivo não aceito. Envie JPG, PNG, HEIC ou PDF.',
+      'Tipo de arquivo não aceito. Envie JPG, PNG ou PDF.',
       0,
     )
   }

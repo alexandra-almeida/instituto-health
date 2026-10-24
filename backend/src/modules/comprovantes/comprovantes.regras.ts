@@ -1,6 +1,10 @@
-// Regras fixas dos comprovantes profissionais (plano, seção 6). O bucket
-// `comprovantes-profissionais` tem os mesmos limites; aqui o backend confere
-// de novo porque o bucket só olha o Content-Type que o navegador declarou.
+// Regras fixas dos comprovantes profissionais (plano, seção 6). O backend
+// confere de novo o que o navegador declarou, porque o bucket só olha o
+// Content-Type informado por quem envia.
+//
+// HEIC não é aceito (decisão de 24/10/2026): o iPhone converte a foto para JPEG
+// sozinho quando o campo de arquivo só lista JPEG, PNG e PDF, e a Juliana não
+// precisa lidar com um formato que não abre no Windows.
 
 export const TAMANHO_MAXIMO_BYTES = 10 * 1024 * 1024
 
@@ -13,7 +17,6 @@ export const LIMITE_DE_ARQUIVOS_NA_PASTA = 10
 export const TIPOS_ACEITOS = [
   'image/jpeg',
   'image/png',
-  'image/heic',
   'application/pdf',
 ] as const
 
@@ -24,14 +27,12 @@ export type TipoDeComprovante = (typeof TIPOS_ACEITOS)[number]
 export const EXTENSAO_DO_TIPO: Record<TipoDeComprovante, string> = {
   'image/jpeg': 'jpg',
   'image/png': 'png',
-  'image/heic': 'heic',
   'application/pdf': 'pdf',
 }
 
 export const TIPO_DA_EXTENSAO: Record<string, TipoDeComprovante> = {
   jpg: 'image/jpeg',
   png: 'image/png',
-  heic: 'image/heic',
   pdf: 'application/pdf',
 }
 
@@ -39,25 +40,11 @@ export const TIPO_DA_EXTENSAO: Record<string, TipoDeComprovante> = {
 // formatos acima
 export const BYTES_DA_ASSINATURA = 16
 
-const comecaCom = (bytes: Uint8Array, esperado: number[], deslocamento = 0) =>
-  esperado.every((byte, i) => bytes[deslocamento + i] === byte)
+const comecaCom = (bytes: Uint8Array, esperado: number[]) =>
+  esperado.every((byte, i) => bytes[i] === byte)
 
 const texto = (bytes: Uint8Array, inicio: number, fim: number) =>
   String.fromCharCode(...bytes.slice(inicio, fim))
-
-// Marcas de arquivo HEIC/HEIF (bytes 8 a 12, logo depois de "ftyp")
-const MARCAS_HEIC = new Set([
-  'heic',
-  'heix',
-  'heim',
-  'heis',
-  'hevc',
-  'hevx',
-  'hevm',
-  'hevs',
-  'mif1',
-  'msf1',
-])
 
 // Confere se o começo do arquivo é mesmo do tipo declarado: um HTML ou um
 // executável rotulado como PDF não passa.
@@ -72,9 +59,5 @@ export function conferirAssinatura(
       return comecaCom(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
     case 'application/pdf':
       return texto(bytes, 0, 5) === '%PDF-'
-    case 'image/heic':
-      return (
-        texto(bytes, 4, 8) === 'ftyp' && MARCAS_HEIC.has(texto(bytes, 8, 12))
-      )
   }
 }

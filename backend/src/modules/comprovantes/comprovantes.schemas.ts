@@ -6,7 +6,7 @@ import { TAMANHO_MAXIMO_BYTES, TIPOS_ACEITOS } from './comprovantes.regras.js'
 // descartados pelo middleware `validar`.
 export const urlDeEnvioSchema = z.object({
   tipo: z.enum(TIPOS_ACEITOS, {
-    error: 'Tipo de arquivo não aceito. Envie JPG, PNG, HEIC ou PDF.',
+    error: 'Tipo de arquivo não aceito. Envie JPG, PNG ou PDF.',
   }),
   tamanho: z
     .number({ error: 'Informe o tamanho do arquivo.' })

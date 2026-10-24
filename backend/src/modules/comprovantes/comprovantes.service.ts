@@ -36,7 +36,7 @@ interface Dependencias {
 }
 
 const MENSAGEM_ARQUIVO_INVALIDO =
-  'O arquivo enviado não é válido. Envie um JPG, PNG, HEIC ou PDF de até 10 MB.'
+  'O arquivo enviado não é válido. Envie um JPG, PNG ou PDF de até 10 MB.'
 
 function limiteAtingido() {
   return new ErroDeNegocio(

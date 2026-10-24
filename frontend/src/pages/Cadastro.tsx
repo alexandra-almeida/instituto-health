@@ -96,7 +96,7 @@ const PROFISSOES_INVALIDAS = [
 ]
 
 const COMPROVANTE_ACCEPT =
-  '.jpg,.jpeg,.png,.heic,.pdf,image/jpeg,image/png,image/heic,application/pdf'
+  '.jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf'
 
 // ---------------------------------------------------------------------
 // Indicador de progresso — "Passo X de 2" + barra de 2 segmentos.
@@ -600,7 +600,7 @@ function ComprovanteProfissional({
               Clique para selecionar o arquivo
             </span>
             <span className="text-xs text-verde-health/55">
-              JPG, PNG, HEIC (iPhone) ou PDF
+              JPG, PNG ou PDF
             </span>
           </button>
         )}
@@ -681,7 +681,7 @@ type EnvioDoComprovante = 'nenhum' | 'enviando' | 'enviado' | 'erro'
 
 const MENSAGEM_DO_ENVIO: Record<EnvioDoComprovante, string> = {
   nenhum:
-    'Seu e-mail foi confirmado e sua conta está pronta. Falta enviar o comprovante profissional, o que poderá ser feito em Minha Conta, em breve.',
+    'Seu e-mail foi confirmado e sua conta está pronta. Falta enviar o comprovante profissional. Você pode fazer isso em Minha Conta.',
   enviando: 'Estamos enviando seu comprovante. Não feche esta página.',
   enviado: 'Comprovante recebido. Ele será analisado na primeira compra.',
   erro: 'Sua conta foi criada, mas não conseguimos enviar o comprovante.',
