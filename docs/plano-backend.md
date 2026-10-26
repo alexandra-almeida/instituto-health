@@ -580,12 +580,15 @@ Etapa C — Pedidos e pagamento
   status do pedido `aguardando_pagamento`, `pago`, `cancelado`, `enviado`,
   `entregue`; preço profissional também em produtos não exclusivos; apagar a
   conta mantém o pedido (lembrete de LGPD na seção 12).
-- [ ] Passo 10, carga (25/10/2026, escrita e testada, AINDA NÃO aplicada ao
-  banco): `npm run seed:produtos` e `npm run seed:precos-profissionais`, em
-  `backend/`, com a lógica em `database/seeds/lib/` e testes em
-  `backend/tests/`. Simulação por padrão, `--aplicar` para gravar, nunca apagam
-  nada. Na simulação de 25/10/2026 o catálogo mostrou 149 novos, 0 alterados, 0
-  iguais, 0 ausentes e 0 preços arredondados (os 5 preços que pareciam ter mais
-  de 2 casas, 71,1 quatro vezes e 67,15, são só ruído de ponto flutuante: já
-  são exatos). Falta aplicar o catálogo e, quando a Juliana entregar a lista,
-  carregar os preços de profissional.
+- [x] Passo 10, carga (25/10/2026): `npm run seed:produtos` e
+  `npm run seed:precos-profissionais`, em `backend/`, com a lógica em
+  `database/seeds/lib/` e testes em `backend/tests/`. Simulação por padrão,
+  `--aplicar` para gravar, nunca apagam nada. O catálogo foi APLICADO em
+  25/10/2026 (149 produtos gravados) e conferido relendo o banco: 149 produtos;
+  82 exclusivos de profissional, todos com preço nulo; 67 não exclusivos, todos
+  com preço público, de R$ 35,90 a R$ 646,00; 0 não exclusivos sem preço; os 149
+  com `ativo = true`; `precos_profissionais` vazia. Uma nova simulação deu 0
+  novos, 0 alterados e 149 iguais. Os 5 preços que pareciam ter mais de 2 casas
+  (71,1 quatro vezes e 67,15) eram só ruído de ponto flutuante: já são exatos.
+  AINDA FALTA carregar os preços de profissional, quando a Juliana entregar a
+  lista (`seed:precos-profissionais`, planilha fora do git).
