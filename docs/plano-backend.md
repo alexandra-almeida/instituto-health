@@ -134,9 +134,11 @@ Tabelas (nomes fixos, não renomear):
 - `enderecos`: `id`, `perfil_id`, `cep`, `rua`, `numero`, `complemento`,
   `bairro`, `cidade`, `estado`, `nome_destinatario`, `telefone`, `created_at`
   (mesmos campos do formulário do Checkout.tsx).
-- `pedidos`: `id`, `perfil_id`, endereço COPIADO no pedido (não só FK, para o
-  histórico não mudar se o endereço for editado), `status`, `forma_pagamento`,
-  `subtotal`, `frete`, `total`, `created_at`, `updated_at`.
+- `pedidos`: `id`, `numero` (sequencial, único e gerado pelo banco a partir de
+  1001, para uso humano: "Pedido nº 1023"), `perfil_id` (pode ser nulo: compra
+  sem cadastro ou conta apagada), `email`, endereço COPIADO no pedido (não só
+  FK, para o histórico não mudar se o endereço for editado), `status`,
+  `forma_pagamento`, `subtotal`, `frete`, `total`, `created_at`, `updated_at`.
 - `itens_pedido`: `id`, `pedido_id` (cascade), `sku`, `nome`, `variacao`,
   `quantidade` (> 0), `preco_unitario`.
 - `pagamentos`: `id`, `pedido_id`, `pagbank_order_id`, `pagbank_charge_id`,
@@ -228,6 +230,12 @@ Princípios que não mudam:
   com os preços da tabela `produtos` (ou `precos_profissionais` para
   profissional aprovado). Preço vindo do navegador é ignorado.
 - Itens `exclusivo_profissional` só entram no pedido de profissional aprovado.
+- Produto sem preço aplicável NUNCA é vendido, e o service recusa o pedido
+  (não é uma regra que o banco garanta sozinho). Vale para: produto NÃO
+  exclusivo com `preco` nulo (sem preço público); produto `ativo = false`;
+  exclusivo, ou qualquer item para profissional, sem linha em
+  `precos_profissionais` no caso de a venda exigir preço profissional. Nunca se
+  cai para outro preço, nem para zero, quando o preço certo não existe.
 - Dados de cartão nunca chegam ao nosso backend em texto puro: o navegador
   criptografa/tokeniza com a biblioteca oficial do PagBank e o backend recebe
   só o resultado.
@@ -360,6 +368,14 @@ Etapa C — Pedidos e pagamento
     `pedidos`, `itens_pedido`, `pagamentos`, `eventos_webhook`; script de
     carga dos produtos a partir do JSON.
 11. Leitura da documentação do PagBank e resumo para aprovação (sem código).
+    Itens a confirmar nessa leitura, além do que o resumo já cobrir:
+    - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
+      entra numa migração `0003` com a coluna em `pedidos` (e o formulário do
+      Checkout passa a pedir). A 0002 NÃO tem essa coluna.
+    - Como o aviso (webhook) se identifica, para decidir como montar o
+      `eventos_webhook.evento_id` (id do aviso ou charge + status).
+    - Quais dados de Pix (QR Code, copia-e-cola, validade) e de cartão precisam
+      ser guardados; se precisarem de colunas, entram na mesma `0003`.
 12. Módulo `pedidos`: criação com total calculado no servidor, com testes.
 13. `pagbank.client.ts` e pagamento por Pix no sandbox.
 14. Webhook e atualização de status.
@@ -388,7 +404,13 @@ Etapa C — Pedidos e pagamento
 - Comprovantes de profissionais recusados: por quanto tempo guardar
   (decisão da Juliana; sugestão: apagar após 90 dias).
 - Exclusão de conta e dos arquivos (LGPD): implementar antes de abrir o
-  cadastro ao público.
+  cadastro ao público. Lembrete do passo 10: apagar a conta apaga perfil,
+  endereços salvos e comprovantes (cascade), mas NÃO apaga os pedidos
+  (`pedidos.perfil_id` vira nulo e o pedido fica, por causa de nota fiscal e
+  histórico) e pedido com pagamento não pode ser apagado (`restrict`). Os
+  pedidos guardam e-mail, nome, telefone e endereço de entrega; ao implementar a
+  exclusão, decidir com a Juliana o prazo de guarda e se esses dados são
+  anonimizados depois dele.
 - Limpeza periódica de arquivos órfãos no bucket `comprovantes-profissionais`:
   arquivos enviados à URL assinada mas nunca confirmados (sem linha em
   `comprovantes_profissionais`) e com mais de 24 h devem ser apagados, por
