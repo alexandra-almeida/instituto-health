@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'motion/react'
 import type { Transition } from 'motion/react'
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import { useNav } from '../context/useNav'
 import BrandIcon from './BrandIcon'
@@ -52,6 +53,29 @@ function NavLinks({
         )
       })}
     </nav>
+  )
+}
+
+// Deslogado continua levando ao cadastro; logado leva a Minha Conta e ganha um
+// pontinho dourado (o mesmo tom do badge do carrinho) para mostrar que há sessão.
+function AccountLink({ visible }: { visible: boolean }) {
+  const { status } = useAuth()
+  const logado = status === 'logado'
+  return (
+    <Link
+      to={logado ? '/minha-conta' : '/cadastro'}
+      aria-label={logado ? 'Minha conta' : 'Cadastro'}
+      tabIndex={visible ? undefined : -1}
+      className="relative rounded-full p-2 text-emerald-dark transition-colors hover:bg-emerald-dark/8"
+    >
+      <UserIcon className="h-6 w-6" />
+      {logado && (
+        <span
+          aria-hidden="true"
+          className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-gold ring-2 ring-offwhite"
+        />
+      )}
+    </Link>
   )
 }
 
@@ -145,14 +169,7 @@ function Header() {
         />
 
         <div className="flex shrink-0 items-center gap-1">
-          <Link
-            to="/cadastro"
-            aria-label="Cadastro"
-            tabIndex={visible ? undefined : -1}
-            className="rounded-full p-2 text-emerald-dark transition-colors hover:bg-emerald-dark/8"
-          >
-            <UserIcon className="h-6 w-6" />
-          </Link>
+          <AccountLink visible={visible} />
           <CartLink />
 
           <button

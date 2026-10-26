@@ -8,7 +8,7 @@ import PrimaryButton from '../components/PrimaryButton'
 import TextField from '../components/TextField'
 import { useAuth } from '../context/useAuth'
 import { ApiError } from '../lib/api'
-import { destinoSeguro } from '../lib/destino'
+import { destinoDoLogin } from '../lib/destino'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -33,10 +33,11 @@ function Login() {
     email.length > 0 && !emailValido ? 'Digite um e-mail válido.' : undefined
 
   // Destino depois de entrar: ?destino=/carrinho ou o estado da navegação
-  // (state.from). destinoSeguro só aceita caminho interno do site; qualquer
-  // outra coisa vira "/". No passo 9 o destino padrão passa a ser /minha-conta.
+  // (state.from). Sem nenhum destino vai para Minha Conta; com destino, só
+  // caminho interno do site é aceito (ver lib/destino.ts) e qualquer outra
+  // coisa vira "/".
   const origem = (location.state as { from?: unknown } | null)?.from
-  const destino = destinoSeguro(searchParams.get('destino') ?? origem)
+  const destino = destinoDoLogin(searchParams.get('destino') ?? origem)
 
   // Quem já está logado (ou acabou de entrar) sai desta tela
   if (status === 'logado') return <Navigate to={destino} replace />

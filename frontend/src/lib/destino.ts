@@ -1,3 +1,6 @@
+// Para onde o login leva quando não veio nenhum destino na URL
+export const DESTINO_PADRAO_DO_LOGIN = '/minha-conta'
+
 // Páginas do próprio fluxo de acesso: voltar para elas depois de entrar
 // deixaria a pessoa de volta no formulário
 const PAGINAS_DE_ACESSO = ['/login', '/cadastro', '/redefinir-senha']
@@ -27,4 +30,12 @@ export function destinoSeguro(valor: unknown): string {
   if (PAGINAS_DE_ACESSO.includes(caminho ?? '')) return '/'
 
   return valor
+}
+
+// Destino do login: sem destino informado vai para Minha Conta; informado, passa
+// pelo destinoSeguro (e um destino inválido vai para "/", nunca para fora do
+// site).
+export function destinoDoLogin(valor: unknown): string {
+  if (valor === undefined || valor === null) return DESTINO_PADRAO_DO_LOGIN
+  return destinoSeguro(valor)
 }

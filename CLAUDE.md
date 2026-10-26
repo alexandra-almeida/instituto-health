@@ -38,17 +38,16 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 - `frontend/src/pages/` — uma página por rota (rotas em `frontend/src/App.tsx`)
 - `frontend/src/components/` — componentes; `tulipia/` é específico do catálogo
 - `frontend/src/context/` — carrinho (salvo em localStorage), navegação e sessão (`AuthContext`/`useAuth`, que pergunta `GET /api/auth/eu` ao backend; nada de sessão em localStorage)
-- `frontend/src/lib/` — `api.ts` (único ponto de chamada HTTP ao backend, sempre caminhos `/api/...`), `destino.ts` (destino seguro depois do login, só caminhos internos), `codigo.ts` (código de 6 dígitos e intervalo de reenvio) e `comprovante.ts` (tipos e tamanho aceitos no comprovante)
+- `frontend/src/lib/` — `api.ts` (único ponto de chamada HTTP ao backend, sempre caminhos `/api/...`), `destino.ts` (destino seguro depois do login, só caminhos internos), `codigo.ts` (código de 6 dígitos e intervalo de reenvio) `comprovante.ts` (tipos e tamanho aceitos no comprovante) e `conta.ts` (rótulos e datas de Minha Conta)
 - `frontend/src/data/tulipia-produtos.json` — catálogo Tulípia (147 produtos), tipado em `tulipiaProducts.ts`
 - `frontend/src/data/procedimentos.ts` — 28 procedimentos (texto clínico da Juliana; não reescrever)
 - `frontend/src/data/contact.ts` — WhatsApp e Instagram oficiais
 
 ## O que ainda é simulado
 
-Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de senha e envio do comprovante profissional já chamam o backend de verdade, por `frontend/src/lib/api.ts` (o arquivo do comprovante vai direto para uma URL assinada do Storage, nunca pelo corpo de uma chamada ao backend, e fica só em memória no navegador). O teste ponta a ponta com e-mail real depende do SMTP (Resend + domínio, ver plano). Os pontos que ainda faltam estão marcados com `TODO(backend)`:
+Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de senha, envio do comprovante profissional e a página Minha Conta (`/minha-conta`, com reenvio do comprovante e Sair) já chamam o backend de verdade, por `frontend/src/lib/api.ts` (o arquivo do comprovante vai direto para uma URL assinada do Storage, nunca pelo corpo de uma chamada ao backend, e fica só em memória no navegador). O teste ponta a ponta com e-mail real depende do SMTP (Resend + domínio, ver plano). Os pontos que ainda faltam estão marcados com `TODO(backend)`:
 
 - `frontend/src/pages/Checkout.tsx` — confirmar pedido; pagamento (Pix, crédito, débito) e frete são só interface. O CEP já usa o ViaCEP de verdade. "Até 3x sem juros" é valor de exemplo.
-- Header e página `/minha-conta` (passo 9 do plano): ainda não existem; depois do login o site volta para a página de origem ou para a home
 
 ## Regras de negócio
 

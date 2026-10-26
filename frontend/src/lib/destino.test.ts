@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { destinoSeguro } from './destino'
+import { destinoDoLogin, destinoSeguro } from './destino'
 
 describe('destinoSeguro', () => {
   it.each([
@@ -54,4 +54,30 @@ describe('destinoSeguro', () => {
     expect(destinoSeguro('/loginx')).toBe('/loginx')
     expect(destinoSeguro('/minha/login')).toBe('/minha/login')
   })
+})
+
+describe('destinoDoLogin', () => {
+  it('sem destino vai para Minha Conta', () => {
+    expect(destinoDoLogin(undefined)).toBe('/minha-conta')
+    expect(destinoDoLogin(null)).toBe('/minha-conta')
+  })
+
+  it('destino interno válido é respeitado', () => {
+    expect(destinoDoLogin('/carrinho')).toBe('/carrinho')
+    expect(destinoDoLogin('/minha-conta')).toBe('/minha-conta')
+  })
+
+  it.each([
+    'https://site-falso.example',
+    '//site-falso.example',
+    '/\\site-falso.example',
+    '/login',
+    '',
+    42,
+  ])(
+    'destino informado mas inválido (%j) vai para "/", não para Minha Conta',
+    (destino) => {
+      expect(destinoDoLogin(destino)).toBe('/')
+    },
+  )
 })

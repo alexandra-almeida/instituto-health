@@ -21,6 +21,7 @@ import Checkout from './pages/Checkout'
 import Cursos from './pages/Cursos'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import MinhaConta from './pages/MinhaConta'
 import PedidoConfirmado from './pages/PedidoConfirmado'
 import PoliticaDePrivacidade from './pages/PoliticaDePrivacidade'
 import RedefinirSenha from './pages/RedefinirSenha'
@@ -99,6 +100,7 @@ function App() {
                     />
                     <Route path="/cadastro" element={<Cadastro />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/minha-conta" element={<MinhaConta />} />
                     <Route
                       path="/redefinir-senha"
                       element={<RedefinirSenha />}

@@ -1,20 +1,19 @@
 import { AnimatePresence, motion } from 'motion/react'
-import { useRef, useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import AlertaDeFormulario from '../components/AlertaDeFormulario'
 import CodigoInput from '../components/CodigoInput'
 import {
   CheckCircleIcon,
   ChevronLeftIcon,
-  FileIcon,
   HomeIcon,
   ShieldCheckIcon,
-  UploadIcon,
 } from '../components/icons'
 import PasswordField from '../components/PasswordField'
 import PrimaryButton from '../components/PrimaryButton'
 import ReenviarCodigo from '../components/ReenviarCodigo'
+import SeletorDeComprovante from '../components/SeletorDeComprovante'
 import TextField from '../components/TextField'
 import { useAuth } from '../context/useAuth'
 import { WHATSAPP_NUMBER } from '../data/contact'
@@ -94,9 +93,6 @@ const PROFISSOES_INVALIDAS = [
   'Epilador',
   'Podólogo',
 ]
-
-const COMPROVANTE_ACCEPT =
-  '.jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf'
 
 // ---------------------------------------------------------------------
 // Indicador de progresso — "Passo X de 2" + barra de 2 segmentos.
@@ -488,21 +484,11 @@ function ComprovanteProfissional({
   const [confirmado, setConfirmado] = useState(false)
   const [erro, setErro] = useState<ApiError | null>(null)
   const [enviando, setEnviando] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const podeFinalizar = arquivo !== null && confirmado
   // Erros que só se resolvem corrigindo a tela de dados (senha, e-mail...)
   const erroDeDados =
     erro?.codigo === 'senha_fraca' || erro?.codigo === 'dados_invalidos'
-
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    onArquivoChange(event.target.files?.[0] ?? null)
-  }
-
-  function handleRemoverArquivo() {
-    onArquivoChange(null)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
 
   // A conta só é criada aqui (e não na tela de dados) porque quem escolhe
   // Home Care nesta tela precisa ter a conta criada com o tipo certo
@@ -555,84 +541,13 @@ function ComprovanteProfissional({
         </div>
       </div>
 
-      <div className="mt-6">
-        <h2 className="font-flatline flex items-center gap-2 text-base text-verde-health">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-verde-health text-xs text-offwhite">
-            1
-          </span>
-          Selecione seu comprovante
-        </h2>
-        <p className="mt-2 ml-8 text-sm text-verde-health/70">
-          Certificados de cursos da área de estética com somatória mínima de
-          100h/aula.
-        </p>
-
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept={COMPROVANTE_ACCEPT}
-          onChange={handleFileChange}
-          className="sr-only"
-        />
-
-        {arquivo ? (
-          <div className="mt-3 flex items-center justify-between gap-3 rounded-2xl border border-[#04452E]/10 bg-white/70 px-4 py-3.5 shadow-[0_2px_10px_-4px_rgba(4,32,18,0.08)] backdrop-blur-sm">
-            <span className="flex min-w-0 items-center gap-2.5 text-sm text-verde-health">
-              <FileIcon className="h-5 w-5 shrink-0 text-dourado-health" />
-              <span className="truncate">{arquivo.name}</span>
-            </span>
-            <button
-              type="button"
-              onClick={handleRemoverArquivo}
-              className="shrink-0 text-xs font-medium text-verde-health/60 hover:text-dourado-health"
-            >
-              Remover
-            </button>
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            className="mt-3 flex w-full flex-col items-center gap-2 rounded-2xl border border-dashed border-[#04452E]/15 bg-white/40 px-6 py-8 text-center backdrop-blur-sm transition-all hover:border-dourado-health/60 hover:bg-dourado-health/5"
-          >
-            <UploadIcon className="h-7 w-7 text-verde-health/50" />
-            <span className="text-sm font-medium text-verde-health">
-              Clique para selecionar o arquivo
-            </span>
-            <span className="text-xs text-verde-health/55">
-              JPG, PNG ou PDF
-            </span>
-          </button>
-        )}
-      </div>
-
-      <div className="mt-6">
-        <h2 className="font-flatline flex items-center gap-2 text-base text-verde-health">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-verde-health text-xs text-offwhite">
-            2
-          </span>
-          Confirme a veracidade
-        </h2>
-
-        <label className="mt-3 ml-8 flex items-start gap-2.5 text-sm text-verde-health/80">
-          <input
-            type="checkbox"
-            checked={confirmado}
-            onChange={(event) => setConfirmado(event.target.checked)}
-            className="mt-0.5 h-4 w-4 shrink-0 accent-dourado-health"
-          />
-          <span>
-            Afirmo para todos os efeitos e sob pena da lei, que o documento
-            enviado pertence a mim e é verídico.
-          </span>
-        </label>
-
-        <div className="mt-3 ml-8 rounded-xl border border-amber-300/50 bg-amber-50/70 px-4 py-3 text-xs leading-relaxed text-amber-800 backdrop-blur-sm">
-          <strong className="font-semibold">Atenção:</strong> Seu comprovante
-          será revisado na primeira compra. Caso não esteja de acordo com nosso
-          termo de uso, a compra poderá ser cancelada.
-        </div>
-      </div>
+      <SeletorDeComprovante
+        arquivo={arquivo}
+        onArquivoChange={onArquivoChange}
+        confirmado={confirmado}
+        onConfirmadoChange={setConfirmado}
+        disabled={enviando}
+      />
 
       {erro && (
         <div className="mt-8">
@@ -725,8 +640,7 @@ function ContaCriada({
             Tentar enviar de novo
           </PrimaryButton>
           <p className="text-center text-xs text-verde-health/55">
-            Não feche esta página até terminar. Se fechar, o arquivo precisará
-            ser enviado de novo depois.
+            Se fechar esta página, escolha o arquivo de novo em Minha Conta.
           </p>
         </div>
       )}
@@ -738,6 +652,17 @@ function ContaCriada({
           className="font-flatline mt-2 inline-flex items-center justify-center rounded-full bg-emerald-dark px-8 py-3 text-sm uppercase leading-none text-offwhite transition-colors hover:bg-emerald-dark/90"
         >
           Voltar para a home
+        </Link>
+      )}
+
+      {/* Profissional com o comprovante por enviar (erro ou sem arquivo)
+          reenvia em Minha Conta */}
+      {profissional && (envio === 'erro' || envio === 'nenhum') && (
+        <Link
+          to="/minha-conta"
+          className="text-sm font-medium text-dourado-health hover:underline"
+        >
+          Ir para Minha conta
         </Link>
       )}
     </div>

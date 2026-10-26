@@ -533,3 +533,16 @@ Etapa C — Pedidos e pagamento
   `image/png` e `application/pdf`, no campo de arquivo do Cadastro, na validação
   do navegador e no backend (schema, extensão, assinatura e caminho). O iPhone
   converte a foto para JPEG sozinho quando o campo só lista esses tipos.
+- [x] Passo 9 (25/10/2026): Header reativo e página `/minha-conta`. O ícone de
+  conta leva a `/cadastro` deslogado e a `/minha-conta` logado, com um pontinho
+  dourado e o rótulo "Minha conta". Minha Conta mostra nome, e-mail e tipo e
+  andamento da conta ("Profissional, em análise" e afins), o comprovante do
+  profissional não aprovado (lista dos enviados, ou "Falta enviar o comprovante
+  profissional." com o seletor já aberto; "Enviar outro comprovante" quando já
+  existe um) e o botão Sair. O reenvio usa o mesmo `api.enviarComprovante` do
+  Cadastro, via o componente `SeletorDeComprovante` extraído de lá. Sem sessão,
+  vai para `/login?destino=/minha-conta`. O login sem destino na URL agora leva
+  a `/minha-conta` (`destinoDoLogin`; destino inválido continua indo para `/`).
+  Na tela de sucesso do Cadastro, o profissional com erro no envio ou sem
+  arquivo ganha o link "Ir para Minha conta". Testes (vitest) das funções puras
+  em `lib/conta.ts` e de `destinoDoLogin`.
