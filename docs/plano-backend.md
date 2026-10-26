@@ -568,3 +568,24 @@ Etapa C — Pedidos e pagamento
   Na tela de sucesso do Cadastro, o profissional com erro no envio ou sem
   arquivo ganha o link "Ir para Minha conta". Testes (vitest) das funções puras
   em `lib/conta.ts` e de `destinoDoLogin`.
+- [x] Passo 10, migração (25/10/2026): `database/migrations/0002_produtos_pedidos_pagamentos.sql`
+  (`produtos`, `precos_profissionais`, `enderecos`, `pedidos` com `numero`
+  sequencial a partir de 1001, `itens_pedido`, `pagamentos` e `eventos_webhook`,
+  RLS ligado sem políticas e `revoke` para `anon` e `authenticated`, inclusive na
+  sequência do `numero`) colada no SQL Editor do projeto `hykxvlngsiwhjxknuytz`
+  ("Success. No rows returned"); a conferência
+  `database/conferencias/0002_produtos_pedidos_pagamentos.sql` deu as 19 linhas
+  com `ok = true`. Preparada para compra sem cadastro (`perfil_id` nulo, e-mail
+  sempre no pedido) e para o frete real (colunas nulas). Decisões aprovadas:
+  status do pedido `aguardando_pagamento`, `pago`, `cancelado`, `enviado`,
+  `entregue`; preço profissional também em produtos não exclusivos; apagar a
+  conta mantém o pedido (lembrete de LGPD na seção 12).
+- [ ] Passo 10, carga (25/10/2026, escrita e testada, AINDA NÃO aplicada ao
+  banco): `npm run seed:produtos` e `npm run seed:precos-profissionais`, em
+  `backend/`, com a lógica em `database/seeds/lib/` e testes em
+  `backend/tests/`. Simulação por padrão, `--aplicar` para gravar, nunca apagam
+  nada. Na simulação de 25/10/2026 o catálogo mostrou 149 novos, 0 alterados, 0
+  iguais, 0 ausentes e 0 preços arredondados (os 5 preços que pareciam ter mais
+  de 2 casas, 71,1 quatro vezes e 67,15, são só ruído de ponto flutuante: já
+  são exatos). Falta aplicar o catálogo e, quando a Juliana entregar a lista,
+  carregar os preços de profissional.

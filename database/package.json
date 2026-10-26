@@ -1,0 +1,6 @@
+{
+  "name": "instituto-health-database",
+  "private": true,
+  "type": "module",
+  "description": "Só marca os scripts de carga em seeds/ como módulos ES. Sem dependências: eles usam as do backend/."
+}

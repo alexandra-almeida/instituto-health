@@ -55,6 +55,7 @@ Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de s
 - Produtos com `exclusivoProfissional` ficam com preço oculto e compra desabilitada no modo Home Care.
 - Dados de cartão nunca passam pelo nosso servidor (tokenização no gateway).
 - SKU: todo produto de `frontend/src/data/tulipia-produtos.json` tem um campo `sku` fixo e único, que é o `id` do produto (URL `/tulipia/produto/:slug`, chave do carrinho, favoritos salvos no navegador e, no futuro, o banco). Produto novo entra com sku próprio, adicionado no FINAL da lista, e o sku de um produto existente NUNCA é alterado, mesmo que o nome, o tamanho ou a posição mudem. Sku novo segue o padrão `nome-tamanho-N` em minúsculas e sem acentos, com N = número do próximo índice livre, e não pode repetir nenhum existente.
+- Catálogo no banco (passo 10): o JSON do site continua sendo a fonte do catálogo e do preço público; o servidor calcula os pedidos com a cópia na tabela `produtos`. Depois de adicionar produto ou mudar nome, tamanho, preço público ou `exclusivoProfissional` no JSON, rode em `backend/`: `npm run seed:produtos` (simulação) e, com o resumo conferido, `npm run seed:produtos -- --aplicar`. Sem isso o servidor recusa o item. A carga nunca apaga produto nem mexe em `ativo`. O preço de profissional só existe no banco (nunca no JSON nem no código do site): entra por `npm run seed:precos-profissionais`, a partir de uma planilha em `database/seeds/dados/`, que fica fora do git e NUNCA é commitada.
 
 ## Pendências (aguardando a Juliana)
 

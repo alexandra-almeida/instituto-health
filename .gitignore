@@ -29,3 +29,7 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Planilhas da carga do banco (preço de profissional é confidencial e nunca vai
+# para o git; ver database/seeds/0002_precos_profissionais.ts)
+database/seeds/dados/

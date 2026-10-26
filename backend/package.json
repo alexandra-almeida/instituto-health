@@ -10,7 +10,9 @@
     "dev": "tsx watch --env-file-if-exists=.env src/server.ts",
     "build": "tsc",
     "lint": "eslint .",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed:produtos": "tsx --env-file=.env ../database/seeds/0002_produtos.ts",
+    "seed:precos-profissionais": "tsx --env-file=.env ../database/seeds/0002_precos_profissionais.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

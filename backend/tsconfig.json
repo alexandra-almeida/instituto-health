@@ -21,5 +21,7 @@
     "noUncheckedIndexedAccess": true,
     "skipLibCheck": true
   },
-  "include": ["src", "tests"]
+  // ../database/seeds: os scripts de carga (usam o supabase.ts do backend)
+  // também passam pela checagem de tipos do `npm run build`
+  "include": ["src", "tests", "../database/seeds"]
 }
