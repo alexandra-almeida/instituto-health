@@ -3,7 +3,7 @@ import { z } from 'zod'
 // Lê e valida as variáveis de ambiente uma única vez, na subida do app.
 // Se algo estiver faltando ou errado, o processo falha logo no início em vez
 // de quebrar no meio de uma requisição. Do Supabase o backend usa só estas
-// duas (decisão de 16/10/2026 no plano, seção 9). As do PagBank entram nos
+// duas (decisão de 16/10/2026 no plano, seção 9). As da Rede entram nos
 // próximos passos.
 const esquema = z.object({
   NODE_ENV: z

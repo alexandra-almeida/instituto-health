@@ -18,7 +18,7 @@ no fim deste arquivo a cada passo concluído.
 - Escopo desta fase: cadastro/login e pagamento. Frete real fica para depois
   (transportadora ainda não escolhida pela cliente).
 - Backend separado do frontend, em camadas (routes, controller, service,
-  repository). O frontend NUNCA fala direto com o Supabase nem com o PagBank.
+  repository). O frontend NUNCA fala direto com o Supabase nem com a Rede.
 - Linguagem e framework: Node + Express + TypeScript, na pasta `backend/`
   deste mesmo repositório, com `package.json` próprio.
 - Hospedagem: Vercel, como um SEGUNDO projeto apontando para `backend/`
@@ -30,7 +30,12 @@ no fim deste arquivo a cada passo concluído.
 - Banco, arquivos e e-mail de confirmação: Supabase, criado pelo Marketplace
   da Vercel no time da cliente (cobrança na fatura da Vercel dela), plano
   gratuito para começar, região São Paulo. Acessado só pelo backend.
-- Gateway de pagamento: PagBank.
+- Gateway de pagamento: Rede (e.Rede, Itaú), com crédito, débito e Pix.
+  Decisão de 26/10/2026: a Juliana contratou a Rede (maquininha a caminho) e
+  o pedido de habilitação de vendas online (e.Rede) e do token vai ao gerente.
+  HISTÓRICO: até 25/10/2026 o gateway decidido era o PagBank; a troca foi
+  registrada na seção "Progresso". As menções ao PagBank que restam neste
+  plano são histórico (ou nomes de colunas da 0002, renomeados na 0003).
 - Fluxo do cadastro profissional mantém a ordem das telas atuais
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
 - Migrações SQL: versionadas em `database/migrations/`. A Alexandra cola cada
@@ -59,7 +64,7 @@ backend/
         pagamentos.service.ts
         pagamentos.schemas.ts
         pagamentos.webhook.ts
-        pagbank.client.ts
+        rede.client.ts
     repositories/        um arquivo por tabela (perfis.repository.ts, ...)
     middlewares/         autenticar, exigirAdmin, validar, tratarErros
     lib/                 supabase.ts (clientes), erros.ts, cookies.ts
@@ -77,7 +82,7 @@ Responsabilidade de cada camada (não misturar):
 - service: regras de negócio. Não conhece `req`/`res`. Chama repositories e
   clients.
 - repository: única camada que acessa o Postgres/Storage do Supabase.
-- client (`pagbank.client.ts`): única parte que faz chamadas HTTP ao PagBank.
+- client (`rede.client.ts`): única parte que faz chamadas HTTP à Rede.
 - schemas: validação de entrada com zod. Todo endpoint valida o corpo.
 
 Padrões:
@@ -142,8 +147,10 @@ Tabelas (nomes fixos, não renomear):
 - `itens_pedido`: `id`, `pedido_id` (cascade), `sku`, `nome`, `variacao`,
   `quantidade` (> 0), `preco_unitario`.
 - `pagamentos`: `id`, `pedido_id`, `pagbank_order_id`, `pagbank_charge_id`,
-  `status`, `valor`, `forma`, `created_at`, `updated_at`.
-- `eventos_webhook`: `id`, identificador do evento do PagBank (único),
+  `status`, `valor`, `forma`, `created_at`, `updated_at`. (Nomes da migração
+  0002, ainda com o prefixo `pagbank_`. A 0003 os renomeia para nomes neutros
+  `gateway_order_id`, `gateway_charge_id` e `gateway_status`, ver "Progresso".)
+- `eventos_webhook`: `id`, identificador do evento do gateway (único),
   `recebido_em`, `processado_em`. Serve para não processar o mesmo aviso
   duas vezes.
 
@@ -217,12 +224,15 @@ Detalhes obrigatórios:
 - Se o envio falhar ou o arquivo se perder (página recarregada), a conta segue
   criada e a página Minha Conta oferece reenviar.
 
-## 7. Pedidos e pagamento (PagBank)
+## 7. Pedidos e pagamento (Rede / e.Rede)
+
+Troca de gateway em 26/10/2026: PagBank saiu e a Rede (e.Rede, Itaú) entrou.
+O resumo do PagBank feito em 26/10/2026 ficou sem uso.
 
 ANTES de escrever código desta etapa, leia a documentação oficial atual do
-PagBank (API de pedidos/cobranças, Pix, cartão, webhooks, ambiente sandbox) e
-apresente à Alexandra um resumo do que será usado. Não implemente a partir de
-memória.
+e.Rede (developer.userede.com.br: autorização de crédito e débito, 3DS, Pix,
+notificações, cancelamento, ambiente sandbox) e apresente à Alexandra um resumo
+do que será usado. Não implemente a partir de memória.
 
 Princípios que não mudam:
 
@@ -237,17 +247,25 @@ Princípios que não mudam:
   `precos_profissionais` no caso de a venda exigir preço profissional. Nunca se
   cai para outro preço, nem para zero, quando o preço certo não existe.
 - Dados de cartão nunca chegam ao nosso backend em texto puro: o navegador
-  criptografa/tokeniza com a biblioteca oficial do PagBank e o backend recebe
-  só o resultado.
-- A chave do PagBank é secreta e fica só no backend.
-- Um pedido só vira "pago" a partir da confirmação do PagBank (webhook), nunca
-  por uma chamada do navegador. Ao receber o aviso, o backend consulta o
-  pedido na API do PagBank para confirmar o status antes de alterar o banco.
-- Webhook idempotente (tabela `eventos_webhook`) e com a verificação de
-  autenticidade que a documentação do PagBank indicar.
-- Desenvolver e testar tudo no sandbox. Produção só com a conta PagBank da
+  criptografa/tokeniza e o backend recebe só o resultado. EM ABERTO desde
+  26/10/2026: o manual do e.Rede (v1.32) não traz criptografia nem tokenização
+  no navegador; a autorização recebe `cardNumber` e `securityCode` no corpo,
+  numa chamada servidor a servidor. Esta regra NÃO pode ser aplicada como está
+  até a Alexandra decidir (ver "Progresso", passo 11, e a seção 12).
+- As credenciais da Rede (PV e chave de integração) são secretas e ficam só no
+  backend. O `access_token` OAuth dura 24 minutos e nunca vai para log nem
+  para o navegador.
+- Um pedido só vira "pago" a partir da confirmação da Rede, nunca por uma
+  chamada do navegador. No Pix, ao receber o aviso, o backend consulta a
+  transação na API da Rede (por TID) para confirmar o status antes de alterar o
+  banco. No crédito e no débito, o resultado vem na resposta da autorização
+  (ver o resumo do passo 11).
+- Aviso idempotente (tabela `eventos_webhook`) e com a verificação de
+  autenticidade que a documentação da Rede indicar (o resumo do passo 11 diz o
+  que existe e o que não existe).
+- Desenvolver e testar tudo no sandbox. Produção só com a conta Rede da
   Juliana (CNPJ da clínica).
-- Parcelamento, juros e débito seguem o que o PagBank oferecer de fato;
+- Parcelamento, juros e débito seguem o que a Rede oferecer de fato;
   o "até 3x sem juros" atual é só exemplo.
 - Frete: enquanto não houver transportadora, manter a regra de frete estimado
   que o Checkout.tsx usa hoje, movida para o service de pedidos.
@@ -257,7 +275,7 @@ Endpoints previstos (ajustar após ler a documentação):
 - `POST /api/pedidos` { itens, endereco, formaPagamento, dadosDoPagamento }
 - `GET /api/pedidos/:id` (dono do pedido ou admin)
 - `GET /api/pedidos` (lista do usuário logado)
-- `POST /api/pagamentos/webhook` (chamado pelo PagBank)
+- `POST /api/pagamentos/webhook` (chamado pela Rede)
 - `GET /api/produtos/precos-profissionais` (só profissional aprovado)
 
 ## 8. Frontend
@@ -277,7 +295,10 @@ Endpoints previstos (ajustar após ler a documentação):
 ## 9. Variáveis de ambiente
 
 Backend (projeto do backend na Vercel e `backend/.env` local, nunca no git):
-as variáveis do Supabase, `PAGBANK_TOKEN`, `PAGBANK_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
+as variáveis do Supabase, `REDE_PV` (clientId), `REDE_CHAVE_INTEGRACAO`
+(clientSecret), `REDE_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
+(nomes provisórios da Rede, a confirmar no passo 13; antes do 26/10/2026 eram
+`PAGBANK_TOKEN` e `PAGBANK_AMBIENTE`),
 `COOKIE_SECRET` (se necessário).
 
 Variáveis do Supabase: a integração do Marketplace cria e sincroniza as
@@ -367,7 +388,8 @@ Etapa C — Pedidos e pagamento
 10. Migração `0002`: `produtos`, `precos_profissionais`, `enderecos`,
     `pedidos`, `itens_pedido`, `pagamentos`, `eventos_webhook`; script de
     carga dos produtos a partir do JSON.
-11. Leitura da documentação do PagBank e resumo para aprovação (sem código).
+11. Leitura da documentação da Rede (e.Rede) e resumo para aprovação (sem
+    código). (Trocado de PagBank para Rede em 26/10/2026.)
     Itens a confirmar nessa leitura, além do que o resumo já cobrir:
     - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
       entra numa migração `0003` com a coluna em `pedidos` (e o formulário do
@@ -377,9 +399,9 @@ Etapa C — Pedidos e pagamento
     - Quais dados de Pix (QR Code, copia-e-cola, validade) e de cartão precisam
       ser guardados; se precisarem de colunas, entram na mesma `0003`.
 12. Módulo `pedidos`: criação com total calculado no servidor, com testes.
-13. `pagbank.client.ts` e pagamento por Pix no sandbox.
-14. Webhook e atualização de status.
-15. Cartão de crédito no sandbox (e débito, se o PagBank oferecer de forma
+13. `rede.client.ts` e pagamento por Pix no sandbox.
+14. Aviso (webhook) do Pix e atualização de status.
+15. Cartão de crédito no sandbox (e débito, se a Rede oferecer de forma
     viável).
 16. Frontend: ligar Checkout e PedidoConfirmado.
 
@@ -395,7 +417,9 @@ Etapa C — Pedidos e pagamento
 - Vercel: criar o projeto do backend (Root Directory `backend`) e cadastrar as
   variáveis de ambiente. A chave service role nunca vai para chat, git ou
   frontend.
-- PagBank: criar conta de testes (sandbox) e gerar o token.
+- Rede: pedir ao gerente da Juliana a habilitação de vendas online (e.Rede) e
+  as credenciais; criar o projeto de sandbox no portal de desenvolvedores
+  (ver o resumo do passo 11 para o que ainda não está claro).
 
 ## 12. Pendências e decisões em aberto
 
@@ -429,7 +453,9 @@ Etapa C — Pedidos e pagamento
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
   antes de receber pedidos reais. Ao migrar, decidir se o despertador do passo
   5b é removido (rota, `crons` e `CRON_SECRET`) ou mantido.
-- Conta PagBank de produção da Juliana.
+- Credenciais de produção da Rede da Juliana (e.Rede habilitado no PV dela).
+- Dados de cartão e a regra de "nunca em texto no nosso backend": o e.Rede
+  recebe o cartão pelo servidor (decisão em aberto, ver "Progresso").
 - Limite de tentativas (rate limit) nas rotas de autenticação (login,
   redefinir-senha, confirmar-email, cadastro, reenvio): OBRIGATÓRIO antes do
   lançamento. Definir a solução, já que memória local não funciona em
@@ -592,3 +618,26 @@ Etapa C — Pedidos e pagamento
   (71,1 quatro vezes e 67,15) eram só ruído de ponto flutuante: já são exatos.
   AINDA FALTA carregar os preços de profissional, quando a Juliana entregar a
   lista (`seed:precos-profissionais`, planilha fora do git).
+- [x] Push dos commits do passo 10 (26/10/2026): `7967581..442ebe1` na `main`;
+  os deploys dos dois projetos (`instituto-health` e `healthinstituto-api`)
+  ficaram Ready.
+- [x] Troca de gateway (26/10/2026): PagBank saiu, entrou a Rede (e.Rede, Itaú)
+  com crédito, débito e Pix. Motivo: a Juliana já contratou a Rede (maquininha
+  a caminho). O pedido de habilitação de vendas online (e.Rede) e do token vai
+  ao gerente. Um resumo da documentação do PagBank chegou a ser feito e não
+  será usado. Ajustados neste arquivo: seções 1, 2, 4, 7, 9, 10, 11 e 12 e o
+  `CLAUDE.md`. O código da migração 0002 e a conferência ainda citam
+  `pagbank_*` (a migração já foi aplicada e não se edita).
+- [ ] Migração 0003 (a escrever, SQL a ser mostrado à Alexandra antes): além de
+  `cpf_cnpj`/dados de Pix que o resumo do passo 11 indicar, renomear em
+  `pagamentos` as colunas `pagbank_order_id` para `gateway_order_id`,
+  `pagbank_charge_id` para `gateway_charge_id` e `pagbank_status` para
+  `gateway_status`, e os índices `pagamentos_pagbank_order_id_idx` e
+  `pagamentos_pagbank_charge_id_idx` para `pagamentos_gateway_order_id_idx` e
+  `pagamentos_gateway_charge_id_idx`. Ajustar na mesma entrega a conferência
+  `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0003.
+  Na Rede o TID (até 20 caracteres) faz o papel do id de transação; ver o
+  resumo do passo 11 para o que cada coluna guarda.
+- [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
+  v1.32 (23/03/2026) e resumo apresentado à Alexandra, sem código. Decisão em
+  aberto: o e.Rede recebe o cartão pelo servidor (ver seção 7).
