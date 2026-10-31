@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 import FadedImage from '../components/FadedImage'
 import ScrollReveal from '../components/ScrollReveal'
 import {
-  CATEGORIA_IMAGEM,
   CATEGORIAS,
+  imagemDoProcedimento,
   PROCEDIMENTOS,
 } from '../data/procedimentos'
 import type { Procedimento, ProcedimentoCategoria } from '../data/procedimentos'
@@ -22,7 +22,7 @@ function ProcedimentoCard({ procedimento }: { procedimento: Procedimento }) {
     >
       <div className="relative flex h-28 w-28 items-center justify-center">
         <FadedImage
-          src={CATEGORIA_IMAGEM[procedimento.categoria]}
+          src={imagemDoProcedimento(procedimento)}
           alt=""
           className="h-full w-full rounded-full"
         />
@@ -48,8 +48,8 @@ function ProcedimentoCard({ procedimento }: { procedimento: Procedimento }) {
 
 // Listagem de procedimentos — filtro por categoria em pills (mesmo padrão
 // de segmented control já usado em outras páginas do site) + grid de
-// cards. Nenhuma foto real existe ainda por procedimento, então cada card
-// usa a foto genérica da categoria (ver CATEGORIA_IMAGEM).
+// cards. Cada card usa a foto do procedimento, ou a da categoria quando ele
+// ainda não tem foto própria (ver imagemDoProcedimento).
 function Procedimentos() {
   const [filtro, setFiltro] = useState<FiltroCategoria>('Todos')
 

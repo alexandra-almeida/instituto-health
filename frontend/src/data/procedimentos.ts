@@ -2,19 +2,36 @@ import bgFisioterapiaSorriso from '../assets/hero-bg/bg-1-fisioterapia-sorriso.j
 import bgFisioterapiaExplicacao from '../assets/hero-bg/bg-2-fisioterapia-explicacao.jpg'
 import bgMassagemFacial from '../assets/hero-bg/bg-3-massagem-facial.jpg'
 import bgProcedimentoEstetico from '../assets/hero-bg/bg-4-procedimento-estetico.jpg'
+import imgDrenagemCorporal from '../assets/procedimentos-novas/drenagem-linfatica-corporal.webp'
+import imgIntradermoCorporal from '../assets/procedimentos-novas/intradermoterapia-corporal.webp'
+import imgMicroCorporal from '../assets/procedimentos-novas/microagulhamento-corporal.webp'
+import imgRadiofrequencia from '../assets/procedimentos-novas/radiofrequencia-facial-corporal.webp'
+import imgPeim from '../assets/procedimentos-novas/peim-microvasos.webp'
+import imgDrenagemFacial from '../assets/procedimentos-novas/drenagem-linfatica-facial.webp'
+import imgSubcisao from '../assets/procedimentos-novas/subcisao.webp'
+import imgPeriocular from '../assets/procedimentos-novas/tratamento-periocular.webp'
+import imgMesoCapilar from '../assets/procedimentos-novas/mesoterapia-capilar.webp'
+import imgMicroCapilarFem from '../assets/procedimentos-novas/microagulhamento-capilar-feminino.webp'
+import imgMicroCapilarMasc from '../assets/procedimentos-novas/microagulhamento-capilar-masculino.webp'
+import imgMesoCapilarPistola from '../assets/procedimentos-novas/mesoterapia-capilar-pistola.webp'
+import imgInjetavelOmbro from '../assets/procedimentos-novas/injetavel-ombro.webp'
+import imgPosFacial from '../assets/procedimentos-novas/pos-operatorio-facial.webp'
+import imgPosCorporal from '../assets/procedimentos-novas/pos-operatorio-corporal.webp'
 
 export type ProcedimentoCategoria =
   | 'Corporal'
   | 'Facial'
   | 'Capilar'
-  | 'Fisioterapia/Pós-operatório'
+  | 'Fisioterapia'
+  | 'Pós-operatório'
   | 'Bem-estar'
 
 export const CATEGORIAS: ProcedimentoCategoria[] = [
   'Corporal',
   'Facial',
   'Capilar',
-  'Fisioterapia/Pós-operatório',
+  'Fisioterapia',
+  'Pós-operatório',
   'Bem-estar',
 ]
 
@@ -28,6 +45,9 @@ export interface Procedimento {
   informacoesAdicionais?: string
   atencao?: string
   intercorrencias?: string[]
+  /** foto própria do procedimento; sem ela vale a foto da categoria (ver
+   * imagemDoProcedimento) */
+  imagem?: string
   /** false só no Jato de Plasma — texto ainda parcial, recebido cortado,
    * aguardando o restante (indicações formais, objetivos, informações
    * adicionais e/ou atenção, no mesmo padrão dos demais). */
@@ -43,15 +63,21 @@ function slugify(text: string): string {
     .replace(/(^-+|-+$)/g, '')
 }
 
-// Nenhuma foto real foi enviada ainda para os procedimentos — cada
-// categoria usa uma das fotos genéricas já existentes no site (mesmo
-// banco de imagens do hero/vitrines), só como placeholder visual.
+// Foto genérica de cada categoria, usada pelos procedimentos que ainda não
+// têm foto própria (campo `imagem`, ver imagemDoProcedimento).
 export const CATEGORIA_IMAGEM: Record<ProcedimentoCategoria, string> = {
   Corporal: bgFisioterapiaExplicacao,
   Facial: bgProcedimentoEstetico,
   Capilar: bgMassagemFacial,
-  'Fisioterapia/Pós-operatório': bgFisioterapiaSorriso,
+  Fisioterapia: bgFisioterapiaSorriso,
+  'Pós-operatório': bgFisioterapiaSorriso,
   'Bem-estar': bgMassagemFacial,
+}
+
+export function imagemDoProcedimento(
+  procedimento: Pick<Procedimento, 'imagem' | 'categoria'>,
+): string {
+  return procedimento.imagem ?? CATEGORIA_IMAGEM[procedimento.categoria]
 }
 
 interface ProcedimentoInput extends Omit<Procedimento, 'slug' | 'completo'> {
@@ -66,6 +92,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Drenagem Linfática Corporal',
     categoria: 'Corporal',
+    imagem: imgDrenagemCorporal,
     descricao:
       'Técnica manual composta por movimentos suaves, rítmicos e direcionados, realizados sobre a pele com o objetivo de favorecer o deslocamento da linfa pelos vasos linfáticos e auxiliar na redução de edema.',
     indicacoes: [
@@ -105,6 +132,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Intradermoterapia Corporal',
     categoria: 'Corporal',
+    imagem: imgIntradermoCorporal,
     descricao:
       'Técnica de aplicação de substâncias em planos superficiais da pele, utilizando múltiplas pequenas aplicações, de acordo com o objetivo do protocolo e a indicação profissional.',
     indicacoes: [
@@ -124,6 +152,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Microagulhamento Corporal',
     categoria: 'Corporal',
+    imagem: imgMicroCorporal,
     descricao:
       'Técnica de microperfuração controlada aplicada à pele corporal, utilizada em protocolos específicos de remodelação e melhora da qualidade cutânea.',
     indicacoes: [
@@ -151,6 +180,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Tratamento da Flacidez Facial e Corporal',
     categoria: 'Corporal',
+    imagem: imgRadiofrequencia,
     descricao:
       'A flacidez está relacionada à redução da qualidade e quantidade de componentes responsáveis pela sustentação dos tecidos, incluindo alterações de colágeno, elastina e tecido muscular, além das modificações decorrentes do envelhecimento e de variações de peso. O tratamento busca melhorar a firmeza, o contorno e a qualidade dos tecidos.',
     informacoesAdicionais:
@@ -164,11 +194,46 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
     informacoesAdicionais:
       'O tratamento deve ser individualizado de acordo com o grau e as características predominantes. A avaliação pode considerar grau de celulite, flacidez associada, adiposidade localizada, edema, qualidade da pele, hábitos alimentares e nível de atividade física. Podem ser utilizados recursos manuais, tecnologias, exercícios e outros procedimentos, isoladamente ou em associação. Não existe um único protocolo universal para todos os casos.',
   },
+  {
+    nome: 'Procedimento Estético Injetável de Microvasos — PEIM',
+    categoria: 'Corporal',
+    imagem: imgPeim,
+    descricao:
+      'Procedimento destinado ao tratamento estético de determinados microvasos/telangiectasias, realizado por meio da aplicação de substância esclerosante no vaso selecionado.',
+    indicacoes: [
+      'Telangiectasias e microvasos selecionados para tratamento estético',
+      'Determinadas alterações vasculares superficiais após avaliação',
+    ],
+    objetivos: [
+      'Promover a obliteração do vaso tratado e, posteriormente, sua reabsorção pelo organismo, reduzindo sua visibilidade.',
+    ],
+    informacoesAdicionais:
+      'É indispensável realizar avaliação vascular e clínica antes do procedimento. O profissional deve conhecer anatomia vascular, indicação, técnica de aplicação, substância utilizada e manejo das intercorrências.',
+    intercorrencias: [
+      'Dor ou ardência',
+      'Eritema',
+      'Equimoses',
+      'Hiperpigmentação',
+      'Inflamação',
+      'Tromboflebite superficial',
+      'Reações alérgicas',
+      'Extravasamento e lesão tecidual',
+    ],
+  },
+  {
+    nome: 'Desintoxicação Metabólica',
+    categoria: 'Corporal',
+    descricao:
+      'Termo utilizado em alguns protocolos estéticos e de bem-estar para designar estratégias voltadas à melhora de hábitos alimentares, hidratação, funcionamento intestinal e suporte às funções fisiológicas do organismo.',
+    informacoesAdicionais:
+      'É importante utilizar o conceito com responsabilidade. O organismo possui sistemas próprios de metabolização e eliminação de substâncias, principalmente por meio do fígado, rins, intestino, pulmões e pele. Por isso, protocolos de "detox" não devem ser apresentados como capazes de eliminar toxinas acumuladas de maneira inespecífica ou substituir tratamentos médicos. Um programa de cuidado metabólico pode envolver alimentação equilibrada, hidratação adequada, sono, atividade física, controle do consumo de álcool e ultraprocessados e acompanhamento nutricional quando necessário.',
+  },
 
   // ------------------------------------------------------------------ FACIAL
   {
     nome: 'Drenagem Linfática Facial',
     categoria: 'Facial',
+    imagem: imgDrenagemFacial,
     descricao:
       'Técnica manual realizada na região facial, cervical e áreas relacionadas à drenagem linfática, utilizando movimentos delicados e direcionados.',
     indicacoes: [
@@ -289,6 +354,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Subcisão',
     categoria: 'Facial',
+    imagem: imgSubcisao,
     descricao:
       'A subcisão é uma técnica minimamente invasiva utilizada principalmente para tratar determinadas cicatrizes deprimidas e alterações de relevo da pele. O procedimento utiliza uma agulha ou instrumento específico para romper bandas fibrosas que tracionam a pele para planos mais profundos.',
     indicacoes: [
@@ -318,6 +384,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Tratamento de Olheiras e Rejuvenescimento do Olhar',
     categoria: 'Facial',
+    imagem: imgPeriocular,
     descricao:
       'As olheiras possuem diferentes causas e podem estar relacionadas à hiperpigmentação, alterações vasculares, sombra causada por depressões anatômicas, bolsas, flacidez ou combinação desses fatores. O tratamento busca melhorar a aparência da região periorbital e proporcionar aspecto mais descansado e rejuvenescido.',
     informacoesAdicionais:
@@ -349,6 +416,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Intradermoterapia Capilar',
     categoria: 'Capilar',
+    imagem: imgMesoCapilar,
     descricao:
       'Técnica de aplicação intradérmica superficial no couro cabeludo, utilizando substâncias selecionadas conforme a avaliação e o objetivo do tratamento.',
     indicacoes: [
@@ -365,6 +433,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Microagulhamento Capilar',
     categoria: 'Capilar',
+    imagem: imgMicroCapilarFem,
     descricao:
       'Técnica que utiliza microperfurações controladas no couro cabeludo. Pode ser empregada isoladamente ou como parte de protocolos capilares específicos.',
     indicacoes: [
@@ -399,6 +468,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Alopecia Androgenética — Masculina e Feminina',
     categoria: 'Capilar',
+    imagem: imgMicroCapilarMasc,
     descricao:
       'A alopecia androgenética é uma forma comum de queda de cabelo caracterizada pela miniaturização progressiva dos folículos geneticamente predispostos, levando à redução da densidade capilar. Nos homens, é comum observar rarefação na região frontal e/ou superior do couro cabeludo. Nas mulheres, frequentemente ocorre redução difusa da densidade, principalmente na região central.',
     informacoesAdicionais:
@@ -407,16 +477,49 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Alopecia Areata',
     categoria: 'Capilar',
+    imagem: imgMesoCapilarPistola,
     descricao:
       'A alopecia areata é uma condição caracterizada pela perda de pelos ou cabelos em áreas delimitadas, geralmente formando placas bem definidas. Possui relação com mecanismos autoimunes. Pode apresentar evolução variável, com períodos de estabilização, recuperação ou surgimento de novas áreas.',
     informacoesAdicionais:
       'O diagnóstico deve ser realizado por profissional habilitado, especialmente porque outras doenças podem produzir áreas semelhantes de perda capilar. O tratamento depende da extensão, localização, duração e evolução do quadro. Em casos suspeitos ou diagnosticados, procedimentos estéticos devem ser considerados apenas como complementares e dentro de um plano terapêutico adequado.',
   },
 
-  // ------------------------------------------- FISIOTERAPIA / PÓS-OPERATÓRIO
+  // ------------------------------------------------------------ FISIOTERAPIA
+  // Os cinco primeiros textos são RASCUNHO para a Juliana revisar (ver plano).
+  {
+    nome: 'Neuropediatria',
+    categoria: 'Fisioterapia',
+    descricao:
+      'Atendimento de fisioterapia voltado a crianças, com avaliação individual feita pela equipe do Instituto Health.',
+  },
+  {
+    nome: 'Neurologia adulto',
+    categoria: 'Fisioterapia',
+    descricao:
+      'Atendimento de fisioterapia voltado a adultos, com avaliação individual feita pela equipe do Instituto Health.',
+  },
+  {
+    nome: 'Ortopedia',
+    categoria: 'Fisioterapia',
+    descricao:
+      'Atendimento de fisioterapia para o sistema musculoesquelético, com avaliação individual feita pela equipe do Instituto Health.',
+  },
+  {
+    nome: 'Pilates',
+    categoria: 'Fisioterapia',
+    descricao:
+      'Aulas de Pilates acompanhadas pela equipe do Instituto Health.',
+  },
+  {
+    nome: 'Condicionamento físico',
+    categoria: 'Fisioterapia',
+    descricao:
+      'Atividades físicas orientadas pela equipe do Instituto Health, de acordo com a avaliação de cada pessoa.',
+  },
   {
     nome: 'Intradermoterapia para Processos Inflamatórios e Alívio da Dor (Fisioterapia)',
-    categoria: 'Fisioterapia/Pós-operatório',
+    categoria: 'Fisioterapia',
+    imagem: imgInjetavelOmbro,
     descricao:
       'Recurso injetável que pode ser utilizado dentro de protocolos específicos para determinadas condições dolorosas ou inflamatórias, mediante avaliação clínica e definição adequada das substâncias.',
     indicacoes: [
@@ -430,34 +533,12 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
     informacoesAdicionais:
       'Não é adequado definir uma "fórmula padrão" para dor ou inflamação. A escolha das substâncias deve considerar diagnóstico, mecanismo da dor, contraindicações, medicamentos em uso e habilitação profissional.',
   },
-  {
-    nome: 'Procedimento Estético Injetável de Microvasos — PEIM',
-    categoria: 'Fisioterapia/Pós-operatório',
-    descricao:
-      'Procedimento destinado ao tratamento estético de determinados microvasos/telangiectasias, realizado por meio da aplicação de substância esclerosante no vaso selecionado.',
-    indicacoes: [
-      'Telangiectasias e microvasos selecionados para tratamento estético',
-      'Determinadas alterações vasculares superficiais após avaliação',
-    ],
-    objetivos: [
-      'Promover a obliteração do vaso tratado e, posteriormente, sua reabsorção pelo organismo, reduzindo sua visibilidade.',
-    ],
-    informacoesAdicionais:
-      'É indispensável realizar avaliação vascular e clínica antes do procedimento. O profissional deve conhecer anatomia vascular, indicação, técnica de aplicação, substância utilizada e manejo das intercorrências.',
-    intercorrencias: [
-      'Dor ou ardência',
-      'Eritema',
-      'Equimoses',
-      'Hiperpigmentação',
-      'Inflamação',
-      'Tromboflebite superficial',
-      'Reações alérgicas',
-      'Extravasamento e lesão tecidual',
-    ],
-  },
+
+  // ---------------------------------------------------------- PÓS-OPERATÓRIO
   {
     nome: 'Pós-Operatório Facial',
-    categoria: 'Fisioterapia/Pós-operatório',
+    categoria: 'Pós-operatório',
+    imagem: imgPosFacial,
     descricao:
       'Conjunto de recursos fisioterapêuticos e estéticos utilizados após procedimentos cirúrgicos faciais, com objetivo de auxiliar na recuperação dos tecidos e no controle das alterações decorrentes do procedimento.',
     indicacoes: [
@@ -480,7 +561,8 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   },
   {
     nome: 'Pós-Operatório Corporal',
-    categoria: 'Fisioterapia/Pós-operatório',
+    categoria: 'Pós-operatório',
+    imagem: imgPosCorporal,
     descricao:
       'Programa de acompanhamento destinado a auxiliar a recuperação funcional e tecidual após procedimentos cirúrgicos corporais.',
     indicacoes: [
@@ -500,15 +582,33 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
     informacoesAdicionais:
       'O tratamento deve respeitar as fases de cicatrização e as orientações do cirurgião. Técnicas e aparelhos não devem ser utilizados indiscriminadamente sobre áreas recém-operadas.',
   },
+  // Texto abaixo é RASCUNHO para a Juliana revisar (ver plano).
+  {
+    nome: 'Pós-operatório de cirurgias ortopédicas e neurológicas',
+    categoria: 'Pós-operatório',
+    descricao:
+      'Acompanhamento de fisioterapia após cirurgias ortopédicas e neurológicas, conforme orientação da equipe médica responsável.',
+  },
 
   // --------------------------------------------------------------- BEM-ESTAR
+  // Textos abaixo são RASCUNHO para a Juliana revisar (ver plano).
   {
-    nome: 'Desintoxicação Metabólica',
+    nome: 'Liberação miofascial',
     categoria: 'Bem-estar',
     descricao:
-      'Termo utilizado em alguns protocolos estéticos e de bem-estar para designar estratégias voltadas à melhora de hábitos alimentares, hidratação, funcionamento intestinal e suporte às funções fisiológicas do organismo.',
-    informacoesAdicionais:
-      'É importante utilizar o conceito com responsabilidade. O organismo possui sistemas próprios de metabolização e eliminação de substâncias, principalmente por meio do fígado, rins, intestino, pulmões e pele. Por isso, protocolos de "detox" não devem ser apresentados como capazes de eliminar toxinas acumuladas de maneira inespecífica ou substituir tratamentos médicos. Um programa de cuidado metabólico pode envolver alimentação equilibrada, hidratação adequada, sono, atividade física, controle do consumo de álcool e ultraprocessados e acompanhamento nutricional quando necessário.',
+      'Técnica manual aplicada sobre os tecidos musculares, definida em avaliação individual.',
+  },
+  {
+    nome: 'Ventosaterapia',
+    categoria: 'Bem-estar',
+    descricao:
+      'Técnica que utiliza copos de sucção sobre a pele, aplicada pela equipe do Instituto Health após avaliação.',
+  },
+  {
+    nome: 'Massagem relaxante',
+    categoria: 'Bem-estar',
+    descricao:
+      'Massagem manual com foco em relaxamento, realizada no Instituto Health.',
   },
 ]
 

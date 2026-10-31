@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 import { Link } from 'react-router-dom'
 import { WHATSAPP_NUMBER } from '../data/contact'
-import { CATEGORIA_IMAGEM } from '../data/procedimentos'
+import { imagemDoProcedimento } from '../data/procedimentos'
 import type { Procedimento } from '../data/procedimentos'
 import FadedImage from './FadedImage'
 import ScrollReveal from './ScrollReveal'
@@ -46,7 +46,7 @@ function ServicoPage({ data, parentLabel, parentPath }: ServicoPageProps) {
       <div className="flex flex-col items-center gap-4 text-center">
         <div className="relative h-40 w-40 sm:h-48 sm:w-48">
           <FadedImage
-            src={CATEGORIA_IMAGEM[data.categoria]}
+            src={imagemDoProcedimento(data)}
             alt=""
             className="h-full w-full rounded-full"
           />

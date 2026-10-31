@@ -641,3 +641,46 @@ Etapa C — Pedidos e pagamento
 - [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
   v1.32 (23/03/2026) e resumo apresentado à Alexandra, sem código. Decisão em
   aberto: o e.Rede recebe o cartão pelo servidor (ver seção 7).
+
+## Frontend: procedimentos (30/10/2026)
+
+Tarefa separada do backend, registrada aqui porque este é o arquivo de
+acompanhamento do projeto.
+
+- [x] Abas da página /procedimentos reorganizadas (ordem: Corporal, Facial,
+  Capilar, Fisioterapia, Pós-operatório, Bem-estar). "Fisioterapia/Pós-operatório"
+  virou duas abas. PEIM e Desintoxicação Metabólica passaram para Corporal. Pós-Operatório
+  Facial e Corporal passaram para Pós-operatório, com os nomes de antes. Nenhum
+  procedimento foi apagado nem renomeado (o slug da URL vem do nome). A página
+  Sobre lista as categorias novas sozinha, pois lê `CATEGORIAS`.
+- [x] Fotos por procedimento (campo `imagem` em `data/procedimentos.ts`; sem ele
+  vale a foto da categoria): 15 fotos da pasta `procedimentos-novas/`.
+  `desintoxicacao-metabolica.webp` (tem texto dentro, ilegível no círculo) e
+  `laser-corporal.webp` (nenhum procedimento cita laser) ficam na pasta, SEM uso
+  e FORA do git. A Desintoxicação segue com a foto da categoria até a Juliana
+  mandar uma versão sem texto.
+- [x] `FadedImage` com `loading="lazy"` e `decoding="async"`.
+
+### Para a Juliana revisar
+
+Textos novos, escritos como RASCUNHO, curtos e sem indicação, duração nem
+contraindicação (só o que o nome já diz). Todos precisam da revisão dela:
+
+- Fisioterapia: Neuropediatria, Neurologia adulto, Ortopedia, Pilates,
+  Condicionamento físico.
+- Pós-operatório: Pós-operatório de cirurgias ortopédicas e neurológicas.
+- Bem-estar: Liberação miofascial, Ventosaterapia, Massagem relaxante.
+
+Fotos a confirmar com ela:
+
+- A foto de radiofrequência (`radiofrequencia-facial-corporal`) está em
+  "Tratamento da Flacidez Facial e Corporal". Ela deve confirmar se combina com
+  o tratamento de flacidez dela (o texto não cita radiofrequência).
+- As 5 fotos reais (`drenagem-linfatica-corporal`, `drenagem-linfatica-facial`,
+  `intradermoterapia-corporal`, `microagulhamento-corporal` e `laser-corporal`)
+  têm estilo diferente das 12 geradas. Trocar depois por versões no mesmo
+  estilo, se a Juliana quiser. A licença dessas 5 fotos está por confirmar.
+- Pós-Operatório Corporal e Pós-Operatório Facial usam fotos com pontos e
+  hematomas à mostra; ela deve confirmar que quer essas imagens no site.
+- Os procedimentos novos e os sem foto própria usam a foto genérica da
+  categoria.

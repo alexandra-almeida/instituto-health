@@ -14,6 +14,8 @@ function FadedImage({ src, alt, className }: FadedImageProps) {
     <img
       src={src}
       alt={alt}
+      loading="lazy"
+      decoding="async"
       className={`object-cover ${className ?? ''}`}
       style={{
         maskImage: FADE_MASK,
