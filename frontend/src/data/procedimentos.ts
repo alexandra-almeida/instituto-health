@@ -17,6 +17,28 @@ import imgMesoCapilarPistola from '../assets/procedimentos-novas/mesoterapia-cap
 import imgInjetavelOmbro from '../assets/procedimentos-novas/injetavel-ombro.webp'
 import imgPosFacial from '../assets/procedimentos-novas/pos-operatorio-facial.webp'
 import imgPosCorporal from '../assets/procedimentos-novas/pos-operatorio-corporal.webp'
+import imgHidrolipoclasia from '../assets/procedimentos-novas/hidrolipoclasia-ultrassonica.webp'
+import imgEstrias from '../assets/procedimentos-novas/tratamento-estrias.webp'
+import imgCelulite from '../assets/procedimentos-novas/tratamento-celulite.webp'
+import imgDesintoxicacao from '../assets/procedimentos-novas/desintoxicacao-metabolica-2.webp'
+import imgLimpezaDePele from '../assets/procedimentos-novas/limpeza-de-pele.webp'
+import imgIntradermoFacial from '../assets/procedimentos-novas/intradermoterapia-facial.webp'
+import imgDermaplaning from '../assets/procedimentos-novas/dermaplaning.webp'
+import imgMicroFacial from '../assets/procedimentos-novas/microagulhamento-facial.webp'
+import imgClareamento from '../assets/procedimentos-novas/clareamento-de-manchas.webp'
+import imgRejuvenescimento from '../assets/procedimentos-novas/rejuvenescimento-facial.webp'
+import imgToxina from '../assets/procedimentos-novas/toxina-botulinica.webp'
+import imgJatoDePlasma from '../assets/procedimentos-novas/jato-de-plasma-2.webp'
+import imgPosTransplante from '../assets/procedimentos-novas/pos-transplante-capilar.webp'
+import imgNeuropediatria from '../assets/procedimentos-novas/neuropediatria.webp'
+import imgNeurologiaAdulto from '../assets/procedimentos-novas/neurologia-adulto.webp'
+import imgOrtopedia from '../assets/procedimentos-novas/ortopedia.webp'
+import imgPilates from '../assets/procedimentos-novas/pilates.webp'
+import imgCondicionamento from '../assets/procedimentos-novas/condicionamento-fisico.webp'
+import imgPosOrtoNeuro from '../assets/procedimentos-novas/pos-operatorio-ortopedico-neurologico.webp'
+import imgMiofascial from '../assets/procedimentos-novas/liberacao-miofascial.webp'
+import imgVentosa from '../assets/procedimentos-novas/ventosaterapia.webp'
+import imgMassagem from '../assets/procedimentos-novas/massagem-relaxante.webp'
 
 export type ProcedimentoCategoria =
   | 'Corporal'
@@ -117,6 +139,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Hidrolipocasia Ultrassônica',
     categoria: 'Corporal',
+    imagem: imgHidrolipoclasia,
     descricao:
       'Procedimento corporal que associa a aplicação de solução em tecido subcutâneo, quando indicada, à utilização de ultrassom como recurso complementar, dentro de protocolos destinados a alterações localizadas.',
     indicacoes: [
@@ -172,6 +195,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Tratamento de Estrias',
     categoria: 'Corporal',
+    imagem: imgEstrias,
     descricao:
       'As estrias são alterações lineares da pele relacionadas à ruptura e remodelação das fibras de colágeno e elastina. O tratamento busca melhorar sua textura, coloração e aspecto geral. Podem ser classificadas, de maneira geral, em estrias recentes (rubras) e estrias antigas (albas).',
     informacoesAdicionais:
@@ -189,6 +213,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Tratamento da Celulite',
     categoria: 'Corporal',
+    imagem: imgCelulite,
     descricao:
       'A celulite, também denominada lipodistrofia ginóide, caracteriza-se por alterações na aparência da pele, especialmente em regiões como glúteos e coxas. Sua formação envolve múltiplos fatores, incluindo tecido adiposo, septos fibrosos, microcirculação e características da pele.',
     informacoesAdicionais:
@@ -223,6 +248,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Desintoxicação Metabólica',
     categoria: 'Corporal',
+    imagem: imgDesintoxicacao,
     descricao:
       'Termo utilizado em alguns protocolos estéticos e de bem-estar para designar estratégias voltadas à melhora de hábitos alimentares, hidratação, funcionamento intestinal e suporte às funções fisiológicas do organismo.',
     informacoesAdicionais:
@@ -255,6 +281,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Limpeza de Pele Regenerativa',
     categoria: 'Facial',
+    imagem: imgLimpezaDePele,
     descricao:
       'Protocolo de higienização e tratamento da pele que associa a limpeza profunda a recursos destinados à recuperação e manutenção da barreira cutânea. O protocolo pode ser personalizado de acordo com o estado e as necessidades da pele.',
     indicacoes: [
@@ -278,6 +305,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Intradermoterapia Facial',
     categoria: 'Facial',
+    imagem: imgIntradermoFacial,
     descricao:
       'Procedimento que utiliza aplicações intradérmicas superficiais para introdução de substâncias selecionadas conforme a necessidade da pele e o objetivo terapêutico ou estético.',
     indicacoes: [
@@ -297,6 +325,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Dermaplaning (Facial)',
     categoria: 'Facial',
+    imagem: imgDermaplaning,
     descricao:
       'Técnica de esfoliação mecânica superficial realizada com instrumento específico, promovendo a remoção controlada de células córneas superficiais e pelos finos da face.',
     indicacoes: [
@@ -317,6 +346,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Microagulhamento Facial',
     categoria: 'Facial',
+    imagem: imgMicroFacial,
     descricao:
       'Procedimento realizado com dispositivo contendo microagulhas, produzindo microperfurações controladas na pele. Essas microlesões desencadeiam uma resposta reparadora e podem estimular processos relacionados à remodelação tecidual.',
     indicacoes: [
@@ -338,6 +368,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Clareamento de Manchas — Face, Mãos e Braços',
     categoria: 'Facial',
+    imagem: imgClareamento,
     descricao:
       'Conjunto de estratégias destinadas à melhora de alterações de pigmentação da pele, buscando reduzir a intensidade e a extensão das manchas e promover maior uniformidade do tom cutâneo. Pode envolver protocolos tópicos, peelings, tecnologias, microagulhamento ou associações terapêuticas, conforme o diagnóstico e o tipo de hiperpigmentação.',
     informacoesAdicionais:
@@ -346,6 +377,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Rejuvenescimento Facial',
     categoria: 'Facial',
+    imagem: imgRejuvenescimento,
     descricao:
       'Conjunto de procedimentos destinados à melhora dos sinais relacionados ao envelhecimento cutâneo, como linhas finas, alterações de textura, perda de luminosidade, flacidez e alterações da qualidade da pele. Pode envolver diferentes recursos, utilizados isoladamente ou associados, de acordo com a avaliação individual.',
     informacoesAdicionais:
@@ -369,6 +401,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Toxina Botulínica — Botox®',
     categoria: 'Facial',
+    imagem: imgToxina,
     descricao:
       'A toxina botulínica é uma substância que atua temporariamente na transmissão neuromuscular, reduzindo a contração dos músculos nos locais em que é aplicada. Na estética facial, é utilizada principalmente para suavizar linhas de expressão dinâmicas, relacionadas à atividade muscular.',
     indicacoes: [
@@ -393,6 +426,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Jato de Plasma',
     categoria: 'Facial',
+    imagem: imgJatoDePlasma,
     descricao:
       'O jato de plasma é um recurso utilizado em procedimentos estéticos que promove uma ação localizada sobre a pele por meio de uma descarga de plasma. A energia gerada provoca uma estimulação controlada dos tecidos, podendo favorecer processos de renovação e remodelação da pele.',
     indicacoes: [
@@ -450,6 +484,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Pós-Transplante Capilar',
     categoria: 'Capilar',
+    imagem: imgPosTransplante,
     descricao:
       'Acompanhamento especializado realizado após transplante capilar, com objetivo de auxiliar na recuperação do couro cabeludo e orientar os cuidados durante o período pós-operatório.',
     indicacoes: [
@@ -489,30 +524,35 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Neuropediatria',
     categoria: 'Fisioterapia',
+    imagem: imgNeuropediatria,
     descricao:
       'Atendimento de fisioterapia voltado a crianças, com avaliação individual feita pela equipe do Instituto Health.',
   },
   {
     nome: 'Neurologia adulto',
     categoria: 'Fisioterapia',
+    imagem: imgNeurologiaAdulto,
     descricao:
       'Atendimento de fisioterapia voltado a adultos, com avaliação individual feita pela equipe do Instituto Health.',
   },
   {
     nome: 'Ortopedia',
     categoria: 'Fisioterapia',
+    imagem: imgOrtopedia,
     descricao:
       'Atendimento de fisioterapia para o sistema musculoesquelético, com avaliação individual feita pela equipe do Instituto Health.',
   },
   {
     nome: 'Pilates',
     categoria: 'Fisioterapia',
+    imagem: imgPilates,
     descricao:
       'Aulas de Pilates acompanhadas pela equipe do Instituto Health.',
   },
   {
     nome: 'Condicionamento físico',
     categoria: 'Fisioterapia',
+    imagem: imgCondicionamento,
     descricao:
       'Atividades físicas orientadas pela equipe do Instituto Health, de acordo com a avaliação de cada pessoa.',
   },
@@ -586,6 +626,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Pós-operatório de cirurgias ortopédicas e neurológicas',
     categoria: 'Pós-operatório',
+    imagem: imgPosOrtoNeuro,
     descricao:
       'Acompanhamento de fisioterapia após cirurgias ortopédicas e neurológicas, conforme orientação da equipe médica responsável.',
   },
@@ -595,18 +636,21 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
   {
     nome: 'Liberação miofascial',
     categoria: 'Bem-estar',
+    imagem: imgMiofascial,
     descricao:
       'Técnica manual aplicada sobre os tecidos musculares, definida em avaliação individual.',
   },
   {
     nome: 'Ventosaterapia',
     categoria: 'Bem-estar',
+    imagem: imgVentosa,
     descricao:
       'Técnica que utiliza copos de sucção sobre a pele, aplicada pela equipe do Instituto Health após avaliação.',
   },
   {
     nome: 'Massagem relaxante',
     categoria: 'Bem-estar',
+    imagem: imgMassagem,
     descricao:
       'Massagem manual com foco em relaxamento, realizada no Instituto Health.',
   },

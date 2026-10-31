@@ -654,11 +654,16 @@ acompanhamento do projeto.
   procedimento foi apagado nem renomeado (o slug da URL vem do nome). A página
   Sobre lista as categorias novas sozinha, pois lê `CATEGORIAS`.
 - [x] Fotos por procedimento (campo `imagem` em `data/procedimentos.ts`; sem ele
-  vale a foto da categoria): 15 fotos da pasta `procedimentos-novas/`.
-  `desintoxicacao-metabolica.webp` (tem texto dentro, ilegível no círculo) e
-  `laser-corporal.webp` (nenhum procedimento cita laser) ficam na pasta, SEM uso
-  e FORA do git. A Desintoxicação segue com a foto da categoria até a Juliana
-  mandar uma versão sem texto.
+  vale a foto da categoria). Primeiro 15 fotos da pasta `procedimentos-novas/`
+  e, em 31/10/2026, mais 22: hoje os 37 procedimentos têm foto própria.
+  A Juliana APROVOU todas as fotos novas em 31/10/2026, inclusive as que têm
+  texto dentro (jalecos bordados, "Pilates" na parede, "Ultrassom Estético" na
+  tela, quadro de coração na Neuropediatria). O texto delas fica ilegível no
+  círculo do card (112 px); só serve como imagem.
+  Ficam na pasta, SEM uso e FORA do git: `jato-de-plasma.webp`,
+  `desintoxicacao-metabolica.webp` (versão antiga, com texto) e
+  `laser-corporal.webp` (nenhum procedimento cita laser). A Desintoxicação
+  Metabólica usa `desintoxicacao-metabolica-2`.
 - [x] `FadedImage` com `loading="lazy"` e `decoding="async"`.
 
 ### Para a Juliana revisar
@@ -682,5 +687,13 @@ Fotos a confirmar com ela:
   estilo, se a Juliana quiser. A licença dessas 5 fotos está por confirmar.
 - Pós-Operatório Corporal e Pós-Operatório Facial usam fotos com pontos e
   hematomas à mostra; ela deve confirmar que quer essas imagens no site.
-- Os procedimentos novos e os sem foto própria usam a foto genérica da
-  categoria.
+- Nenhum procedimento depende mais da foto genérica da categoria
+  (`CATEGORIA_IMAGEM`), que continua no código só como reserva para
+  procedimentos futuros sem foto.
+
+### Melhoria futura (não agora)
+
+Gerar versões menores das fotos (cerca de 600 px de largura) para os cards da
+listagem, se a página /procedimentos ficar pesada no celular. Hoje são 37 fotos
+de 87 a 142 KB (cerca de 3,6 MB no total), carregadas aos poucos com `lazy`.
+Os originais ficam para a página de detalhe.
