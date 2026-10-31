@@ -59,9 +59,9 @@ function NavLinks({
 
 // Textos da conta, no lugar do antigo ícone de pessoa (ninguém entendia o que
 // ele era). Deslogado leva ao cadastro; logado leva a Minha Conta. O texto
-// completo ("Cadastre-se" / "Olá, Maria!") só aparece onde há espaço; nos
-// demais lugares vai a versão curta ("Entrar" / "Olá!"), que cabe no mesmo
-// espaço do ícone de antes e por isso não aperta a marca.
+// completo ("Cadastre-se" / "Olá, Maria!") aparece a partir de 480 px; abaixo
+// disso vai a versão curta ("Entrar" / "Olá!"), que cabe no mesmo espaço do
+// ícone de antes e por isso não aperta a marca.
 function useContaNoHeader() {
   const { status, perfil } = useAuth()
   const logado = status === 'logado'
@@ -77,10 +77,10 @@ function useContaNoHeader() {
 
 // Mesma altura e largura mínima do botão do carrinho (40 px) e, na versão
 // curta, texto de 11 px sem folga lateral: "Entrar" ocupa 39,8 px, ou seja, o
-// espaço do ícone. A versão completa (de 480 a 1023 px e a partir de 1280 px)
-// ganha folga lateral e texto de 12 px.
+// espaço do ícone. A versão completa (a partir de 480 px) ganha folga lateral
+// e texto de 12 px.
 const CAIXA_DA_CONTA =
-  'font-poppins inline-flex h-10 min-w-10 shrink-0 items-center justify-center rounded-full px-1 text-[11px] font-medium whitespace-nowrap text-emerald-dark xs:max-lg:px-3 xs:max-lg:text-xs xl:px-3 xl:text-xs'
+  'font-poppins inline-flex h-10 min-w-10 shrink-0 items-center justify-center rounded-full px-1 text-[11px] font-medium whitespace-nowrap text-emerald-dark xs:px-3 xs:text-xs'
 
 function AccountLink({ visible }: { visible: boolean }) {
   const { carregando, logado, destino, curto, completo } = useContaNoHeader()
@@ -90,7 +90,7 @@ function AccountLink({ visible }: { visible: boolean }) {
   if (carregando) {
     return (
       <span aria-hidden="true" className={CAIXA_DA_CONTA}>
-        <span className="h-3 w-7 animate-pulse rounded-full bg-emerald-dark/10 xs:max-lg:w-16 xl:w-16" />
+        <span className="h-3 w-7 animate-pulse rounded-full bg-emerald-dark/10 xs:w-16" />
       </span>
     )
   }
@@ -102,26 +102,27 @@ function AccountLink({ visible }: { visible: boolean }) {
       tabIndex={visible ? undefined : -1}
       className={`${CAIXA_DA_CONTA} transition-colors hover:bg-emerald-dark/8`}
     >
-      {/* A versão curta aparece abaixo de 480 px e de 1024 a 1279 px; a
-          completa, de 480 a 1023 px e a partir de 1280 px. Cada uma é
-          escondida com display:none, então só uma entra no nome acessível.
-          O nome é cortado em 96 px (cabe "Olá, Alexandra!"): um primeiro
-          nome muito longo apertaria a marca em 480 px e a cortaria em 1280 px. */}
-      <span className="xs:max-lg:hidden xl:hidden">{curto}</span>
-      <span className="hidden max-w-24 truncate xs:max-lg:inline-block xl:inline-block">
+      {/* A versão curta aparece só abaixo de 480 px; a completa, de 480 px
+          em diante. Cada uma é escondida com display:none, então só uma
+          entra no nome acessível. O nome é cortado em 96 px (cabe "Olá,
+          Alexandra!"): um primeiro nome muito longo apertaria a marca em
+          480 px e a cortaria em 1280 px. */}
+      <span className="xs:hidden">{curto}</span>
+      <span className="hidden max-w-24 truncate xs:inline-block">
         {completo}
       </span>
     </Link>
   )
 }
 
-// Primeiro item do menu do celular (abaixo de 480 px), em destaque: ali o
-// Header só tem espaço para o texto curto, então o completo vem aqui.
+// Primeiro item do menu hambúrguer (até 1279 px), em destaque. Abaixo de
+// 480 px o Header só tem o texto curto, então o completo vem aqui; de 480 px em
+// diante ele repete o do Header, para o menu ser o mesmo em todas as larguras.
 function AccountMenuItem({ onNavigate }: { onNavigate: () => void }) {
   const { carregando, destino, completo } = useContaNoHeader()
   if (carregando) return null
   return (
-    <div className="px-4 pt-3 xs:hidden md:px-6">
+    <div className="px-4 pt-3 md:px-6">
       <Link
         to={destino}
         onClick={onNavigate}
@@ -215,10 +216,11 @@ function Header() {
           </span>
         </Link>
 
-        {/* Menu de navegação — só a partir de telas grandes; em telas
-            menores vira um menu suspenso (ver botão hambúrguer abaixo). */}
+        {/* Menu de navegação — só a partir de 1280 px: em 1024 a 1279 px ele
+            deixaria o nome do instituto cortado. Abaixo disso vira um menu
+            suspenso (ver botão hambúrguer abaixo). */}
         <NavLinks
-          className="hidden items-center gap-5 lg:flex xl:gap-7"
+          className="hidden items-center gap-7 xl:flex"
           linkClassName={navLinkClass}
         />
 
@@ -232,7 +234,7 @@ function Header() {
             aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
             aria-expanded={mobileOpen}
             tabIndex={visible ? undefined : -1}
-            className="rounded-full p-2 text-emerald-dark transition-colors hover:bg-emerald-dark/8 lg:hidden"
+            className="rounded-full p-2 text-emerald-dark transition-colors hover:bg-emerald-dark/8 xl:hidden"
           >
             {mobileOpen ? (
               <CloseIcon className="h-6 w-6" />
@@ -252,7 +254,7 @@ function Header() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className="overflow-hidden border-t border-emerald-dark/10 bg-offwhite lg:hidden"
+            className="overflow-hidden border-t border-emerald-dark/10 bg-offwhite xl:hidden"
           >
             <AccountMenuItem onNavigate={() => setMobileOpen(false)} />
             <NavLinks

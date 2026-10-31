@@ -768,18 +768,18 @@ Os originais ficam para a página de detalhe.
 - [x] O ícone de pessoa do Header saiu (a Juliana não entendeu o que era) e foi
   trocado por texto, sem pontinho dourado em nenhuma faixa:
   - abaixo de 480 px: "Entrar" (deslogado, para `/cadastro`) ou "Olá!"
-    (logado, para `/minha-conta`), no espaço exato do ícone antigo (40 px), e o
-    texto completo ("Cadastre-se" / "Olá, Nome!") como primeiro item do menu
-    hambúrguer, em destaque (fundo verde);
-  - de 480 a 1023 px: texto completo no Header;
-  - de 1024 a 1279 px: o texto curto de novo;
-  - a partir de 1280 px: texto completo.
+    (logado, para `/minha-conta`), no espaço exato do ícone antigo (40 px);
+  - a partir de 480 px: o texto completo ("Cadastre-se" / "Olá, Nome!");
+  - o menu hambúrguer vale até 1279 px (antes era até 1023 px) e o menu
+    completo só a partir de 1280 px, porque em 1024 a ~1140 px o nome do
+    instituto ficava cortado. O primeiro item do menu hambúrguer é sempre o
+    texto completo da conta, em destaque (fundo verde).
+  Conferido em 1024, 1100, 1180, 1279, 1280, 1366 e 1440 px, deslogado e logado
+  (inclusive com um primeiro nome de 23 letras): o nome do instituto aparece
+  inteiro, em 1 linha de 295 px.
   O primeiro nome (`primeiroNome`, `lib/conta.ts`) é cortado em 96 px com
   reticências, para um nome longo não apertar a marca. Enquanto a sessão carrega
   aparece uma pílula cinza no lugar, para não piscar "Entrar" e trocar.
-- [ ] Em aberto, já existia antes desta mudança: de 1024 a ~1140 px o nome do
-  instituto no Header aparece cortado com reticências ("INSTITUTO DE SAÚ…" em
-  1024 px), porque o menu completo ocupa o espaço. Em 320 px a marca também já
-  quebra em 3 linhas. Opções, se a Juliana quiser corrigir: mostrar o menu
-  hambúrguer até 1279 px (em vez de 1023 px) ou diminuir o espaço entre os
-  links do menu em 1024 a 1279 px.
+- [x] Resolvido em 31/10/2026: o corte do nome do instituto de 1024 a ~1140 px
+  (que já existia) sumiu ao usar o menu hambúrguer até 1279 px. Continua em
+  aberto só a marca em 320 px, que já quebrava em 3 linhas antes e segue igual.
