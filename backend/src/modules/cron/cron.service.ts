@@ -1,18 +1,32 @@
 import {
-  perfisRepository,
-  type PerfisRepository,
-} from '../../repositories/perfis.repository.js'
+  batimentosRepository,
+  type BatimentosRepository,
+} from '../../repositories/batimentos.repository.js'
 
 interface Dependencias {
-  perfis: Pick<PerfisRepository, 'verificarConexao'>
+  batimentos: BatimentosRepository
+  /** relógio injetável, para o teste não depender da hora real */
+  agora?: () => Date
 }
 
-export function criarCronService({ perfis }: Dependencias) {
+export function criarCronService({
+  batimentos,
+  agora = () => new Date(),
+}: Dependencias) {
   return {
-    // Só LÊ o banco. É o que basta para o Supabase gratuito contar atividade e
-    // não pausar o projeto por inatividade.
+    // Grava a data de agora numa linha única e depois a lê de volta. O
+    // Supabase gratuito pausa o projeto por pouca atividade, e uma leitura por
+    // dia não bastou (incidente de 31/10/2026, ver o plano). Gravar e ler
+    // exercita o banco de verdade e prova que ele responde.
     async manterAtivo() {
-      await perfis.verificarConexao()
+      const instante = agora()
+      await batimentos.registrar(instante)
+      const lido = await batimentos.ler()
+      // `>=` e não `===`: se outro disparo gravar logo depois, a data lida é
+      // mais nova, e isso também prova que a gravação funcionou
+      if (!lido || lido.getTime() < instante.getTime()) {
+        throw new Error('O batimento gravado não foi encontrado na leitura')
+      }
       return { ok: true }
     },
   }
@@ -20,4 +34,6 @@ export function criarCronService({ perfis }: Dependencias) {
 
 export type CronService = ReturnType<typeof criarCronService>
 
-export const cronService = criarCronService({ perfis: perfisRepository })
+export const cronService = criarCronService({
+  batimentos: batimentosRepository,
+})

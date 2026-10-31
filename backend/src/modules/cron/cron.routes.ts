@@ -4,5 +4,5 @@ import { manterAtivo } from './cron.controller.js'
 
 export const cronRoutes = Router()
 
-// Chamada pelo Cron da Vercel (backend/vercel.json), uma vez por dia
+// Chamada pelo Cron da Vercel (backend/vercel.json), a cada 6 horas
 cronRoutes.get('/manter-ativo', autenticarCron, manterAtivo)

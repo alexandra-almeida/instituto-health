@@ -4,15 +4,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { criarAutenticarCron } from '../src/middlewares/autenticarCron.js'
 import { tratarErros } from '../src/middlewares/tratarErros.js'
 
-// Repository simulado: nenhuma chamada chega ao Supabase. O que importa aqui
-// é que o cron só LÊ (verificarConexao) e nunca grava.
-const perfisFalso = vi.hoisted(() => ({
-  criar: vi.fn(),
-  buscarPorId: vi.fn(),
-  verificarConexao: vi.fn(),
+// Repository simulado: nenhuma chamada chega ao Supabase. O cron grava a data
+// do batimento (registrar) e depois a lê de volta (ler); o perfil não é tocado.
+const batimentosFalso = vi.hoisted(() => ({
+  registrar: vi.fn(),
+  ler: vi.fn(),
 }))
-vi.mock('../src/repositories/perfis.repository.js', () => ({
-  perfisRepository: perfisFalso,
+vi.mock('../src/repositories/batimentos.repository.js', () => ({
+  batimentosRepository: batimentosFalso,
 }))
 
 const { default: app } = await import('../src/app.js')
@@ -27,8 +26,9 @@ beforeEach(() => {
 })
 
 describe('GET /api/cron/manter-ativo', () => {
-  it('com o cabeçalho certo: lê o banco e responde { ok: true }', async () => {
-    perfisFalso.verificarConexao.mockResolvedValue(undefined)
+  it('com o cabeçalho certo: grava o batimento, lê de volta e responde { ok: true }', async () => {
+    batimentosFalso.registrar.mockResolvedValue(undefined)
+    batimentosFalso.ler.mockResolvedValue(new Date(Date.now() + 1000))
 
     const resposta = await request(app)
       .get('/api/cron/manter-ativo')
@@ -36,17 +36,52 @@ describe('GET /api/cron/manter-ativo', () => {
 
     expect(resposta.status).toBe(200)
     expect(resposta.body).toEqual({ ok: true })
-    expect(perfisFalso.verificarConexao).toHaveBeenCalledTimes(1)
+    expect(batimentosFalso.registrar).toHaveBeenCalledTimes(1)
+    expect(batimentosFalso.registrar.mock.calls[0]?.[0]).toBeInstanceOf(Date)
+    expect(batimentosFalso.ler).toHaveBeenCalledTimes(1)
   })
 
-  it('não grava nada no banco', async () => {
-    perfisFalso.verificarConexao.mockResolvedValue(undefined)
+  it('grava ANTES de ler', async () => {
+    batimentosFalso.registrar.mockResolvedValue(undefined)
+    batimentosFalso.ler.mockResolvedValue(new Date(Date.now() + 1000))
 
     await request(app)
       .get('/api/cron/manter-ativo')
       .set('Authorization', `Bearer ${SEGREDO}`)
 
-    expect(perfisFalso.criar).not.toHaveBeenCalled()
+    expect(batimentosFalso.registrar.mock.invocationCallOrder[0]).toBeLessThan(
+      batimentosFalso.ler.mock.invocationCallOrder[0] ?? 0,
+    )
+  })
+
+  it('falha ao gravar: 500 genérico e nem tenta ler', async () => {
+    batimentosFalso.registrar.mockRejectedValue(
+      new Error('Falha ao registrar batimento (42P01)'),
+    )
+
+    const resposta = await request(app)
+      .get('/api/cron/manter-ativo')
+      .set('Authorization', `Bearer ${SEGREDO}`)
+
+    expect(resposta.status).toBe(500)
+    expect(resposta.body.erro.codigo).toBe('erro_interno')
+    expect(JSON.stringify(resposta.body)).not.toContain('42P01')
+    expect(batimentosFalso.ler).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['a linha não existe', null],
+    ['a data lida é mais antiga que a gravada', new Date(0)],
+  ])('%s: 500, porque a gravação não foi confirmada', async (_nome, lido) => {
+    batimentosFalso.registrar.mockResolvedValue(undefined)
+    batimentosFalso.ler.mockResolvedValue(lido)
+
+    const resposta = await request(app)
+      .get('/api/cron/manter-ativo')
+      .set('Authorization', `Bearer ${SEGREDO}`)
+
+    expect(resposta.status).toBe(500)
+    expect(resposta.body.erro.codigo).toBe('erro_interno')
   })
 
   it('sem o cabeçalho: 401 no JSON padrão, sem tocar no banco', async () => {
@@ -56,7 +91,8 @@ describe('GET /api/cron/manter-ativo', () => {
     expect(resposta.body).toEqual({
       erro: { codigo: 'nao_autorizado', mensagem: 'Acesso negado.' },
     })
-    expect(perfisFalso.verificarConexao).not.toHaveBeenCalled()
+    expect(batimentosFalso.registrar).not.toHaveBeenCalled()
+    expect(batimentosFalso.ler).not.toHaveBeenCalled()
   })
 
   it.each([
@@ -75,7 +111,7 @@ describe('GET /api/cron/manter-ativo', () => {
       .set('Authorization', cabecalho)
 
     expect(resposta.status).toBe(401)
-    expect(perfisFalso.verificarConexao).not.toHaveBeenCalled()
+    expect(batimentosFalso.registrar).not.toHaveBeenCalled()
   })
 
   it('a resposta nunca repete o segredo', async () => {
@@ -88,8 +124,8 @@ describe('GET /api/cron/manter-ativo', () => {
   })
 
   it('banco fora do ar: 500 genérico, sem detalhe do erro', async () => {
-    perfisFalso.verificarConexao.mockRejectedValue(
-      new Error('Falha ao consultar perfis (PGRST205)'),
+    batimentosFalso.registrar.mockRejectedValue(
+      new Error('Falha ao registrar batimento (PGRST205)'),
     )
 
     const resposta = await request(app)
