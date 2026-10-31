@@ -6,6 +6,7 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
+import BackToTop from './components/BackToTop'
 import FloatingWhatsapp from './components/FloatingWhatsapp'
 import Footer from './components/Footer'
 import FooterSimple from './components/FooterSimple'
@@ -129,6 +130,7 @@ function App() {
                   {isHome ? <Footer /> : <FooterSimple />}
                 </ScrollReveal>
                 <FloatingWhatsapp />
+                <BackToTop />
               </div>
             </LayoutGroup>
           </CartProvider>

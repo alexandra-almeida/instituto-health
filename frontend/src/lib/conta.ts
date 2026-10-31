@@ -15,6 +15,12 @@ export function rotuloDoPerfil(perfil: Pick<PerfilDaConta, 'tipo' | 'status'>) {
   }
 }
 
+// Primeiro nome para a saudação do Header ("Olá, Maria!"). Vazio se o nome vier
+// em branco; quem chama decide o texto nesse caso.
+export function primeiroNome(nome: string) {
+  return nome.trim().split(/\s+/)[0] ?? ''
+}
+
 // Só profissional que ainda não foi aprovado envia comprovante. É a mesma regra
 // do backend (homecare recebe 403 e aprovado recebe 409); aqui só decide se a
 // tela mostra o envio.

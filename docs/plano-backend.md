@@ -758,3 +758,28 @@ Os originais ficam para a página de detalhe.
   - D: a Alexandra vai procurar os e-mails do Supabase (aviso e confirmação da
     pausa) e passar as datas, para separar "o cron não bastou" de "o aviso já
     tinha sido emitido antes de o cron funcionar".
+
+## Frontend: Header e botão Voltar ao topo (31/10/2026)
+
+- [x] Botão "Voltar ao topo" (`components/BackToTop.tsx`, montado no App): fixo
+  no canto inferior esquerdo (o WhatsApp fica no direito), aparece depois de
+  400 px de rolagem, sobe suave e sem animação se o sistema pedir "reduzir
+  movimento". Verde com seta dourada, `aria-label="Voltar ao topo"`.
+- [x] O ícone de pessoa do Header saiu (a Juliana não entendeu o que era) e foi
+  trocado por texto, sem pontinho dourado em nenhuma faixa:
+  - abaixo de 480 px: "Entrar" (deslogado, para `/cadastro`) ou "Olá!"
+    (logado, para `/minha-conta`), no espaço exato do ícone antigo (40 px), e o
+    texto completo ("Cadastre-se" / "Olá, Nome!") como primeiro item do menu
+    hambúrguer, em destaque (fundo verde);
+  - de 480 a 1023 px: texto completo no Header;
+  - de 1024 a 1279 px: o texto curto de novo;
+  - a partir de 1280 px: texto completo.
+  O primeiro nome (`primeiroNome`, `lib/conta.ts`) é cortado em 96 px com
+  reticências, para um nome longo não apertar a marca. Enquanto a sessão carrega
+  aparece uma pílula cinza no lugar, para não piscar "Entrar" e trocar.
+- [ ] Em aberto, já existia antes desta mudança: de 1024 a ~1140 px o nome do
+  instituto no Header aparece cortado com reticências ("INSTITUTO DE SAÚ…" em
+  1024 px), porque o menu completo ocupa o espaço. Em 320 px a marca também já
+  quebra em 3 linhas. Opções, se a Juliana quiser corrigir: mostrar o menu
+  hambúrguer até 1279 px (em vez de 1023 px) ou diminuir o espaço entre os
+  links do menu em 1024 a 1279 px.

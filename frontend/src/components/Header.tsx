@@ -6,7 +6,8 @@ import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import { useNav } from '../context/useNav'
 import BrandIcon from './BrandIcon'
-import { CartIcon, CloseIcon, MenuIcon, UserIcon } from './icons'
+import { primeiroNome } from '../lib/conta'
+import { CartIcon, CloseIcon, MenuIcon } from './icons'
 
 // Mesma duração/easing da transição final da home (ver TRANSITION_DURATION
 // em Home.tsx) — a entrada do header (fade) precisa bater com o "voo" do
@@ -56,26 +57,79 @@ function NavLinks({
   )
 }
 
-// Deslogado continua levando ao cadastro; logado leva a Minha Conta e ganha um
-// pontinho dourado (o mesmo tom do badge do carrinho) para mostrar que há sessão.
-function AccountLink({ visible }: { visible: boolean }) {
-  const { status } = useAuth()
+// Textos da conta, no lugar do antigo ícone de pessoa (ninguém entendia o que
+// ele era). Deslogado leva ao cadastro; logado leva a Minha Conta. O texto
+// completo ("Cadastre-se" / "Olá, Maria!") só aparece onde há espaço; nos
+// demais lugares vai a versão curta ("Entrar" / "Olá!"), que cabe no mesmo
+// espaço do ícone de antes e por isso não aperta a marca.
+function useContaNoHeader() {
+  const { status, perfil } = useAuth()
   const logado = status === 'logado'
+  const nome = logado ? primeiroNome(perfil?.nome ?? '') : ''
+  return {
+    carregando: status === 'carregando',
+    logado,
+    destino: logado ? '/minha-conta' : '/cadastro',
+    curto: logado ? 'Olá!' : 'Entrar',
+    completo: logado ? (nome ? `Olá, ${nome}!` : 'Olá!') : 'Cadastre-se',
+  }
+}
+
+// Mesma altura e largura mínima do botão do carrinho (40 px) e, na versão
+// curta, texto de 11 px sem folga lateral: "Entrar" ocupa 39,8 px, ou seja, o
+// espaço do ícone. A versão completa (de 480 a 1023 px e a partir de 1280 px)
+// ganha folga lateral e texto de 12 px.
+const CAIXA_DA_CONTA =
+  'font-poppins inline-flex h-10 min-w-10 shrink-0 items-center justify-center rounded-full px-1 text-[11px] font-medium whitespace-nowrap text-emerald-dark xs:max-lg:px-3 xs:max-lg:text-xs xl:px-3 xl:text-xs'
+
+function AccountLink({ visible }: { visible: boolean }) {
+  const { carregando, logado, destino, curto, completo } = useContaNoHeader()
+
+  // Enquanto GET /api/auth/eu não responde, reserva o lugar com uma pílula
+  // discreta, em vez de mostrar "Entrar" e trocar para "Olá!" logo depois
+  if (carregando) {
+    return (
+      <span aria-hidden="true" className={CAIXA_DA_CONTA}>
+        <span className="h-3 w-7 animate-pulse rounded-full bg-emerald-dark/10 xs:max-lg:w-16 xl:w-16" />
+      </span>
+    )
+  }
+
   return (
     <Link
-      to={logado ? '/minha-conta' : '/cadastro'}
-      aria-label={logado ? 'Minha conta' : 'Cadastro'}
+      to={destino}
+      title={logado ? completo : undefined}
       tabIndex={visible ? undefined : -1}
-      className="relative rounded-full p-2 text-emerald-dark transition-colors hover:bg-emerald-dark/8"
+      className={`${CAIXA_DA_CONTA} transition-colors hover:bg-emerald-dark/8`}
     >
-      <UserIcon className="h-6 w-6" />
-      {logado && (
-        <span
-          aria-hidden="true"
-          className="absolute top-1.5 right-1.5 h-2.5 w-2.5 rounded-full bg-gold ring-2 ring-offwhite"
-        />
-      )}
+      {/* A versão curta aparece abaixo de 480 px e de 1024 a 1279 px; a
+          completa, de 480 a 1023 px e a partir de 1280 px. Cada uma é
+          escondida com display:none, então só uma entra no nome acessível.
+          O nome é cortado em 96 px (cabe "Olá, Alexandra!"): um primeiro
+          nome muito longo apertaria a marca em 480 px e a cortaria em 1280 px. */}
+      <span className="xs:max-lg:hidden xl:hidden">{curto}</span>
+      <span className="hidden max-w-24 truncate xs:max-lg:inline-block xl:inline-block">
+        {completo}
+      </span>
     </Link>
+  )
+}
+
+// Primeiro item do menu do celular (abaixo de 480 px), em destaque: ali o
+// Header só tem espaço para o texto curto, então o completo vem aqui.
+function AccountMenuItem({ onNavigate }: { onNavigate: () => void }) {
+  const { carregando, destino, completo } = useContaNoHeader()
+  if (carregando) return null
+  return (
+    <div className="px-4 pt-3 xs:hidden md:px-6">
+      <Link
+        to={destino}
+        onClick={onNavigate}
+        className="font-poppins block truncate rounded-lg bg-emerald-dark px-3 py-2.5 text-center text-sm font-medium text-offwhite transition-colors hover:bg-emerald-dark/90"
+      >
+        {completo}
+      </Link>
+    </div>
   )
 }
 
@@ -200,6 +254,7 @@ function Header() {
             transition={{ duration: 0.2, ease: 'easeOut' }}
             className="overflow-hidden border-t border-emerald-dark/10 bg-offwhite lg:hidden"
           >
+            <AccountMenuItem onNavigate={() => setMobileOpen(false)} />
             <NavLinks
               className="flex flex-col gap-1 px-4 py-3 md:px-6"
               linkClassName={`${navLinkClass} rounded-lg px-2 py-2.5 hover:bg-emerald-dark/5`}

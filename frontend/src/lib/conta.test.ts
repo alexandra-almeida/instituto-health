@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   formatarData,
   podeEnviarComprovante,
+  primeiroNome,
   resumoDosEnviados,
   rotuloDoPerfil,
 } from './conta'
@@ -19,6 +20,19 @@ describe('rotuloDoPerfil', () => {
     [{ tipo: 'homecare', status: 'pendente' }, 'Home Care'],
   ] as const)('%j vira "%s"', (perfil, esperado) => {
     expect(rotuloDoPerfil(perfil)).toBe(esperado)
+  })
+})
+
+describe('primeiroNome', () => {
+  it.each([
+    ['Maria da Silva', 'Maria'],
+    ['  Ana   Paula ', 'Ana'],
+    ['Juliana', 'Juliana'],
+    ['José\tCarlos', 'José'],
+    ['', ''],
+    ['   ', ''],
+  ])('"%s" vira "%s"', (nome, esperado) => {
+    expect(primeiroNome(nome)).toBe(esperado)
   })
 })
 
