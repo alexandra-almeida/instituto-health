@@ -10,6 +10,13 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 - Backend (Fase 2, em andamento: auth e despertador do banco prontos; pedidos e pagamento ainda não, ver "Progresso" no plano): Node + Express + TypeScript em `backend/`, em camadas (routes, controller, service, repository), publicado como segundo projeto na Vercel. Supabase (Postgres, Storage, Auth) acessado só pelo backend. Pagamento via Rede (e.Rede, Itaú), com crédito, débito e Pix (trocado do PagBank em 26/10/2026; ver "Progresso" no plano).
 - ANTES de qualquer tarefa de backend, leia `docs/plano-backend.md` inteiro. Ele é a fonte da verdade; não dependa da memória da conversa.
 
+## Domínio
+
+- Domínio próprio ativo desde 31/10/2026: https://healthinstituto.com.br (o `www` redireciona para ele com 308, e `instituto-health.vercel.app` continua funcionando)
+- DNS no Registro.br: registro A `@` apontando para a Vercel e CNAME `www`
+- `ORIGEM_FRONTEND` (backend, na Vercel) tem os 3 endereços do site; o Site URL do Supabase é https://healthinstituto.com.br
+- `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; o site não tem `sitemap.xml` nem `robots.txt` ainda
+
 ## Estrutura do repositório
 
 - `frontend/` — site (React/Vite); todos os comandos abaixo rodam dentro dele
@@ -60,7 +67,6 @@ Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de s
 ## Pendências (aguardando a Juliana)
 
 - Transportadora (Manda Bem ou Melhor Envio). O gateway já foi decidido: Rede (e.Rede, desde 26/10/2026; antes era o PagBank). Aguardando também a habilitação de vendas online e o token com o gerente da Rede.
-- Transferência do projeto para a conta Vercel dela e domínio próprio (ao trocar, atualizar `canonical`, `og:url` e também `og:image`/`twitter:image` no `frontend/index.html`)
 - Conteúdo: "Jato de Plasma" incompleto (`completo: false`), fotos, valor e duração dos procedimentos, detalhamento dos cursos
 
 ## Fases

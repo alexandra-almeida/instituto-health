@@ -783,3 +783,21 @@ Os originais ficam para a página de detalhe.
 - [x] Resolvido em 31/10/2026: o corte do nome do instituto de 1024 a ~1140 px
   (que já existia) sumiu ao usar o menu hambúrguer até 1279 px. Continua em
   aberto só a marca em 320 px, que já quebrava em 3 linhas antes e segue igual.
+
+## Domínio próprio (31/10/2026)
+
+- O site está em https://healthinstituto.com.br desde 31/10/2026. O `www`
+  redireciona para ele com 308, e `instituto-health.vercel.app` continua
+  funcionando.
+- DNS no Registro.br: registro A `@` apontando para a Vercel e CNAME `www`.
+- `ORIGEM_FRONTEND` (projeto `healthinstituto-api` na Vercel) agora tem os 3
+  endereços do site (o da Vercel, o domínio novo e o `www`), conforme
+  informado pela Alexandra; o texto da seção 9 que diz "hoje
+  `instituto-health.vercel.app`" fica como histórico.
+- Site URL do Supabase trocado para https://healthinstituto.com.br (feito pela
+  Alexandra no painel). O link do e-mail de confirmação e de recuperação usa
+  esse endereço; o fluxo atual é por código de 6 dígitos, então nada depende
+  dele ainda.
+- `frontend/index.html`: `canonical`, `og:url`, `og:image` e `twitter:image`
+  trocados para o domínio novo (mesmos caminhos). Falta decidir `sitemap.xml` e
+  `robots.txt` (não existem).
