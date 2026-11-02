@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import robotsFonte from '../../public/robots.txt?raw'
 import appFonte from '../App.tsx?raw'
 import { PROCEDIMENTOS, findProcedimentoBySlug } from '../data/procedimentos'
 import { ALL_PRODUCTS, findProductById } from '../data/tulipiaProducts'
@@ -85,6 +86,40 @@ describe('caminhosPublicos', () => {
     }
     expect(appFonte).toContain('path="/procedimentos/:slug"')
     expect(appFonte).toContain('path="/tulipia/produto/:slug"')
+  })
+})
+
+describe('robots.txt', () => {
+  const linhas = robotsFonte
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+
+  it('bloqueia exatamente as páginas de conta e de compra que ficam fora do sitemap, mais a API', () => {
+    const bloqueados = linhas
+      .filter((l) => l.startsWith('Disallow:'))
+      .map((l) => l.slice('Disallow:'.length).trim())
+      .sort()
+
+    expect(bloqueados).toEqual(
+      [...PAGINAS_PRIVADAS.map((p) => p), '/api/'].sort(),
+    )
+  })
+
+  it('libera o resto e aponta para o sitemap do domínio novo', () => {
+    expect(linhas).toContain('User-agent: *')
+    expect(linhas).toContain('Allow: /')
+    expect(linhas).toContain(`Sitemap: ${SITE_URL}/sitemap.xml`)
+  })
+
+  it('nenhuma página do sitemap está bloqueada', () => {
+    const bloqueados = linhas
+      .filter((l) => l.startsWith('Disallow:'))
+      .map((l) => l.slice('Disallow:'.length).trim())
+
+    for (const caminho of caminhos) {
+      expect(bloqueados.some((b) => caminho.startsWith(b))).toBe(false)
+    }
   })
 })
 

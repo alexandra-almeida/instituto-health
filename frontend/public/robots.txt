@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /carrinho
+Disallow: /checkout
+Disallow: /pedido-confirmado
+Disallow: /cadastro
+Disallow: /login
+Disallow: /minha-conta
+Disallow: /redefinir-senha
+Disallow: /api/
 
 Sitemap: https://healthinstituto.com.br/sitemap.xml

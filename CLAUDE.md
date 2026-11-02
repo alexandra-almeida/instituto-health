@@ -15,7 +15,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 - Domínio próprio ativo desde 31/10/2026: https://healthinstituto.com.br (o `www` redireciona para ele com 308, e `instituto-health.vercel.app` continua funcionando)
 - DNS no Registro.br: registro A `@` apontando para a Vercel e CNAME `www`
 - `ORIGEM_FRONTEND` (backend, na Vercel) tem os 3 endereços do site; o Site URL do Supabase é https://healthinstituto.com.br
-- `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; `public/robots.txt` libera tudo e aponta para o sitemap, e o `sitemap.xml` (páginas públicas, procedimentos e produtos Tulípia, sem conta nem compra) é gerado no build por `frontend/scripts/gerar-sitemap.mjs` com os mesmos slugs das rotas
+- `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; `public/robots.txt` libera o site, bloqueia as páginas de conta e de compra e `/api/`, e aponta para o sitemap, e o `sitemap.xml` (páginas públicas, procedimentos e produtos Tulípia, sem conta nem compra) é gerado no build por `frontend/scripts/gerar-sitemap.mjs` com os mesmos slugs das rotas
 
 ## Estrutura do repositório
 

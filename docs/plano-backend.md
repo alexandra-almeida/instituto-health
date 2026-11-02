@@ -800,8 +800,10 @@ Os originais ficam para a página de detalhe.
   dele ainda.
 - `frontend/index.html`: `canonical`, `og:url`, `og:image` e `twitter:image`
   trocados para o domínio novo (mesmos caminhos).
-- `robots.txt` (libera tudo e aponta para o sitemap) e `sitemap.xml` criados em
-  02/11/2026. O sitemap é gerado a cada `npm run build` (script `prebuild`) por
+- `robots.txt` (libera o site, com `Disallow` para `/carrinho`, `/checkout`,
+  `/pedido-confirmado`, `/cadastro`, `/login`, `/minha-conta`,
+  `/redefinir-senha` e `/api/`, e aponta para o sitemap) e `sitemap.xml`
+  criados em 02/11/2026. O sitemap é gerado a cada `npm run build` (script `prebuild`) por
   `frontend/scripts/gerar-sitemap.mjs`, que lê os dados reais pelo Vite, então
   usa os mesmos slugs das rotas: 194 páginas (8 fixas, 37 procedimentos e 149
   produtos Tulípia, inclusive os exclusivos de profissional, que são públicos
