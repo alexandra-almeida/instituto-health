@@ -77,10 +77,12 @@ function CartRow({
           <h3 className="font-flatline truncate text-sm text-[#04452E] sm:text-base">
             {item.displayName}
           </h3>
-          <p className="text-xs text-[#04452E]/60">
-            {item.tamanho}
-            {item.variant ? ` · ${item.variant}` : ''}
-          </p>
+          {/* Descartáveis sem embalagem confirmada chegam com `tamanho` vazio */}
+          {(item.tamanho || item.variant) && (
+            <p className="text-xs text-[#04452E]/60">
+              {[item.tamanho, item.variant].filter(Boolean).join(' · ')}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-2">

@@ -23,7 +23,7 @@ export interface ResultadoDaLeitura {
 }
 
 // nome-tamanho-N, em minúsculas e sem acentos (CLAUDE.md)
-const PADRAO_DE_SKU = /^[a-z0-9]+(?:-[a-z0-9]+)*-\d+$/
+export const PADRAO_DE_SKU = /^[a-z0-9]+(?:-[a-z0-9]+)*-\d+$/
 
 const emDuasCasas = (valor: number) =>
   Math.round((valor + Number.EPSILON) * 100) / 100

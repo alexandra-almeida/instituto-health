@@ -1,0 +1,53 @@
+nome;variacao;categoria;marca;embalagem;preco;observacao
+Luva de Vinil Sem Pó;P;Luvas;Vabene;A CONFIRMAR (caixa com 100?);19,00;
+Luva de Vinil Sem Pó;M;Luvas;Vabene;A CONFIRMAR (caixa com 100?);19,00;
+Luva de Vinil Sem Pó;G;Luvas;Vabene;A CONFIRMAR (caixa com 100?);19,00;
+Luva Vinilflex Sem Pó;P;Luvas;Vabene;A CONFIRMAR (caixa com 100?);13,90;
+Luva Vinilflex Sem Pó;M;Luvas;Vabene;A CONFIRMAR (caixa com 100?);13,90;
+Luva Vinilflex Sem Pó;G;Luvas;Vabene;A CONFIRMAR (caixa com 100?);13,90;
+Luva Nitrílica Rosa;PP;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);28,00;sem tamanho G na lista
+Luva Nitrílica Rosa;P;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);28,00;
+Luva Nitrílica Rosa;M;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);28,00;
+Luva de Látex com Pó;PP;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);26,00;
+Luva de Látex com Pó;P;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);26,00;
+Luva de Látex com Pó;M;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);26,00;
+Luva de Látex com Pó;G;Luvas;A CONFIRMAR;A CONFIRMAR (caixa com 100?);26,00;
+Abaixador de Língua;;Atendimento;A CONFIRMAR;Pacote com 100;11,00;
+Máscara de TNT Tripla Branca com Elástico;;Atendimento;A CONFIRMAR;Pacote com 50;8,00;
+Touca de TNT Branca Sanfonada;;Atendimento;A CONFIRMAR;Pacote com 100;10,60;
+Lençol de Maca com Elástico;;Atendimento;A CONFIRMAR;Pacote com 10;19,90;
+Lençol Hospitalar 50x50;;Atendimento;Classpel;A CONFIRMAR (rolo?);12,00;
+Lençol Hospitalar 70x50;;Atendimento;Classpel;A CONFIRMAR (rolo?);16,00;
+Papel Toalha Interfolha 2 Dobras 100% 20x21;;Papéis;A CONFIRMAR;Pacote com 1000 folhas;18,00;
+Papel Toalha Interfolha 2 Dobras Extra Luxo 20x21;;Papéis;Grampel;Pacote com 1000 folhas;18,00;
+Papel Higiênico Folha Dupla Premium 30 m;;Papéis;BOB;Pacote com 16 rolos;19,90;
+Papel Higiênico Folha Dupla 30 m;;Papéis;Qualite;Pacote com 16 rolos;19,90;
+Papel Higiênico Folha Dupla 30 m;;Papéis;Personal Vip;Pacote com 16 rolos;24,90;
+Copo Descartável 50 ml Branco;;Copa;Faça Fácil;Pacote com 100;3,50;
+Copo Descartável 180 ml Branco;;Copa;Faça Fácil;Pacote com 100;4,95;na lista estava "$ 4,95" (sem o R)
+Filtro de Café de Papel 103;;Copa;A CONFIRMAR;Pacote com 30;6,56;
+Filtro de Café de Papel 102;;Copa;A CONFIRMAR;Pacote com 30;5,76;
+Sabonete Líquido 5 L;Erva Doce;Higiene e limpeza;Harmoniex;Galão 5 L;26,90;
+Sabonete Líquido 5 L;Frutas Vermelhas;Higiene e limpeza;Harmoniex;Galão 5 L;26,90;
+Sabonete Líquido 5 L;Pistache;Higiene e limpeza;Harmoniex;Galão 5 L;26,90;
+Sabonete Líquido 500 ml com Pump Ameixa Dourada;;Higiene e limpeza;Coala;Frasco 500 ml;18,99;
+Cloro Gel 5 L;;Higiene e limpeza;Harmoniex;Galão 5 L;36,79;
+Desinfetante 2 L;;Higiene e limpeza;Candura;Frasco 2 L;8,20;
+Desinfetante 5 L Algas;;Higiene e limpeza;Harcclin;Galão 5 L;14,30;
+Limpador Perfumado 120 ml;;Higiene e limpeza;Coala;Frasco 120 ml;15,90;
+Sabão em Pó Multiação 800 g;;Higiene e limpeza;Triex;Sachê 800 g;6,47;
+Sabão em Pó Primavera 800 g;;Higiene e limpeza;Tixan;Caixa 800 g;15,58;
+Água Sanitária 5 L;;Higiene e limpeza;Gopabo;Galão 5 L;14,50;
+Água Sanitária 5 L;;Higiene e limpeza;Harcclin;Galão 5 L;15,30;
+Água Sanitária 5 L;;Higiene e limpeza;Triex;Galão 5 L;14,27;
+Água Sanitária 2 L;;Higiene e limpeza;Triex;Frasco 2 L;6,34;
+Água Sanitária 1 L;;Higiene e limpeza;Candura;Frasco 1 L;4,38;
+Saco Plástico Virgem 35x45 Espessura 0,6;;Sacos e embalagens;Araplast;Pacote 1 kg;38,92;confirmar espessura (0,6 ou 0,06?)
+Saco Plástico Virgem 40x60 Espessura 0,12;;Sacos e embalagens;Araplast;Pacote 1 kg;39,90;
+Bobina Picotada Reforçada 20x30;;Sacos e embalagens;Lider;Bobina aprox. 1,3 kg;42,74;
+Bobina Picotada Reforçada 25x35;;Sacos e embalagens;Lider;Bobina aprox. 2,2 kg;69,19;
+Bobina Picotada Reforçada 30x40;;Sacos e embalagens;Lider;Bobina aprox. 2,5 kg;81,92;
+Saco de Lixo 20 L 40x59 Preto;;Sacos e embalagens;A CONFIRMAR;Pacote com 100;18,81;
+Saco de Lixo 30 L Espessura 0,04;;Sacos e embalagens;A CONFIRMAR;A CONFIRMAR ("5x20" = 5 pacotes com 20?);81,89;preço alto comparado ao de 20 L: confirmar
+Saco de Lixo 50 L Espessura 0,04;;Sacos e embalagens;A CONFIRMAR;A CONFIRMAR ("5x20" = 5 pacotes com 20?);86,90;
+Saco de Lixo 100 L 75x90;;Sacos e embalagens;A CONFIRMAR;Pacote com 100;62,69;

@@ -30,6 +30,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 - `npm run build` — gera o `public/sitemap.xml` (script `prebuild`), checa os tipos e faz o build (rode antes de commitar)
 - `npm run test` — testes (vitest) da lógica em `src/lib` (cliente da API, destino seguro do login, sitemap)
 - `npm run sitemap` — gera só o `public/sitemap.xml` (ele não vai para o git)
+- `npm run descartaveis` — regenera `src/data/descartaveis.json` a partir de `docs/descartaveis-lista-juliana.csv` (mantém os sku existentes, novos entram no fim)
 - `npm run lint` / `npm run format`
 
 ## Padrões
@@ -48,6 +49,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 - `frontend/src/context/` — carrinho (salvo em localStorage), navegação e sessão (`AuthContext`/`useAuth`, que pergunta `GET /api/auth/eu` ao backend; nada de sessão em localStorage)
 - `frontend/src/lib/` — `api.ts` (único ponto de chamada HTTP ao backend, sempre caminhos `/api/...`), `destino.ts` (destino seguro depois do login, só caminhos internos), `codigo.ts` (código de 6 dígitos e intervalo de reenvio) `comprovante.ts` (tipos e tamanho aceitos no comprovante) e `conta.ts` (rótulos e datas de Minha Conta)
 - `frontend/src/data/tulipia-produtos.json` — catálogo Tulípia (147 produtos), tipado em `tulipiaProducts.ts`
+- `frontend/src/data/descartaveis.json` — descartáveis para clínicas (rota `/produtos-hospitalares`): 41 produtos e 52 variações, separados do catálogo Tulípia, tipados em `descartaveis.ts`; "A CONFIRMAR" nunca entra
 - `frontend/src/data/procedimentos.ts` — 28 procedimentos (texto clínico da Juliana; não reescrever)
 - `frontend/src/data/contact.ts` — WhatsApp e Instagram oficiais
 
@@ -63,12 +65,15 @@ Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de s
 - Produtos com `exclusivoProfissional` ficam com preço oculto e compra desabilitada no modo Home Care.
 - Dados de cartão nunca passam pelo nosso servidor (tokenização no gateway).
 - SKU: todo produto de `frontend/src/data/tulipia-produtos.json` tem um campo `sku` fixo e único, que é o `id` do produto (URL `/tulipia/produto/:slug`, chave do carrinho, favoritos salvos no navegador e, no futuro, o banco). Produto novo entra com sku próprio, adicionado no FINAL da lista, e o sku de um produto existente NUNCA é alterado, mesmo que o nome, o tamanho ou a posição mudem. Sku novo segue o padrão `nome-tamanho-N` em minúsculas e sem acentos, com N = número do próximo índice livre, e não pode repetir nenhum existente.
-- Catálogo no banco (passo 10): o JSON do site continua sendo a fonte do catálogo e do preço público; o servidor calcula os pedidos com a cópia na tabela `produtos`. Depois de adicionar produto ou mudar nome, tamanho, preço público ou `exclusivoProfissional` no JSON, rode em `backend/`: `npm run seed:produtos` (simulação) e, com o resumo conferido, `npm run seed:produtos -- --aplicar`. Sem isso o servidor recusa o item. A carga nunca apaga produto nem mexe em `ativo`. O preço de profissional só existe no banco (nunca no JSON nem no código do site): entra por `npm run seed:precos-profissionais`, a partir de uma planilha em `database/seeds/dados/`, que fica fora do git e NUNCA é commitada.
+- Descartáveis para clínicas: cada VARIAÇÃO tem sku próprio `desc-nome-da-variação-N` (prefixo `desc-` para nunca colidir com a Tulípia), congelado como os demais: nunca muda e novos entram no FIM de `descartaveis.json` (o script `npm run descartaveis` já faz isso). Preço único, sem preço de profissional. Marca e embalagem "A CONFIRMAR" ficam nulas, nunca aparecem no site. No carrinho, `productId` é o sku da variação.
+- Regra de preço do profissional, decidida com a Juliana em 26/10/2026 e ainda NÃO implementada: profissional aprovado tem 30% de desconto sobre o TOTAL da compra (conta aprovada obrigatória); cliente comum compra sem cadastro e sem desconto. Há perguntas em aberto (frete, promoções, descartáveis, preço cheio dos 82 exclusivos) e a pergunta se essa regra substitui a tabela `precos_profissionais`: ver `docs/plano-backend.md`. Não construir o módulo `pedidos` antes da resposta.
+- Catálogo no banco (passo 10): o JSON do site continua sendo a fonte do catálogo e do preço público; o servidor calcula os pedidos com a cópia na tabela `produtos`. Depois de adicionar produto ou mudar nome, tamanho, preço público ou `exclusivoProfissional` no JSON (da Tulípia ou dos descartáveis; o seed lê os dois), rode em `backend/`: `npm run seed:produtos` (simulação) e, com o resumo conferido, `npm run seed:produtos -- --aplicar`. Sem isso o servidor recusa o item. A carga nunca apaga produto nem mexe em `ativo`. O preço de profissional só existe no banco (nunca no JSON nem no código do site): entra por `npm run seed:precos-profissionais`, a partir de uma planilha em `database/seeds/dados/`, que fica fora do git e NUNCA é commitada.
 
 ## Pendências (aguardando a Juliana)
 
 - Transportadora (Manda Bem ou Melhor Envio). O gateway já foi decidido: Rede (e.Rede, desde 26/10/2026; antes era o PagBank). Aguardando também a habilitação de vendas online e o token com o gerente da Rede.
 - Conteúdo: "Jato de Plasma" incompleto (`completo: false`), fotos, valor e duração dos procedimentos, detalhamento dos cursos
+- Descartáveis: confirmar marca e embalagem dos itens "A CONFIRMAR" (as 8 embalagens são OBRIGATÓRIAS antes do lançamento), fotos e revisão dos textos do bloco de atacado e licitações (lista completa no plano)
 
 ## Fases
 

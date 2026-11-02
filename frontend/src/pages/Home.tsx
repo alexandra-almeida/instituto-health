@@ -25,6 +25,7 @@ import {
 import PriceTag from '../components/PriceTag'
 import ScrollReveal from '../components/ScrollReveal'
 import { WHATSAPP_NUMBER } from '../data/contact'
+import { CATEGORIAS_DESCARTAVEIS, DESCARTAVEIS } from '../data/descartaveis'
 import { PROCEDIMENTOS } from '../data/procedimentos'
 import { QUERIDINHOS } from '../data/tulipiaProducts'
 import { useNav } from '../context/useNav'
@@ -714,17 +715,21 @@ function CursosShowcaseSection() {
 }
 
 // ---------------------------------------------------------------------
-// 07. Produtos Hospitalares — tom técnico/objetivo: categorias + alguns
-// produtos de exemplo (a página /produtos-hospitalares ainda não tem
-// catálogo próprio implementado, então isso é só uma prévia).
+// 07. Descartáveis para clínicas — tom técnico/objetivo: as categorias e três
+// produtos reais da lista da Juliana (data/descartaveis.json). O catálogo
+// completo, com carrinho e filtros, fica na página /produtos-hospitalares.
 // ---------------------------------------------------------------------
-const HOSPITALARES_CATEGORIAS = ['Mobilidade', 'Higiene e Cuidado', 'Equipamentos']
+const HOSPITALARES_CATEGORIAS = CATEGORIAS_DESCARTAVEIS
 
+// Pelo nome, para o preço vir sempre da lista (e nunca ficar desatualizado aqui)
 const HOSPITALARES_DESTAQUE = [
-  { name: 'Cadeira de Rodas Dobrável', price: 850 },
-  { name: 'Kit Curativo Avançado', price: 79.9 },
-  { name: 'Colchão Pneumático Anti-escaras', price: 620 },
-]
+  'Luva de Vinil Sem Pó',
+  'Sabonete Líquido 5 L',
+  'Máscara de TNT Tripla Branca com Elástico',
+].flatMap((nome) => {
+  const produto = DESCARTAVEIS.find((p) => p.nome === nome)
+  return produto ? [{ name: produto.nome, price: produto.preco }] : []
+})
 
 function ProdutosHospitalaresSection() {
   return (

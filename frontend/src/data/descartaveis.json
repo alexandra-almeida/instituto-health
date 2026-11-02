@@ -1,0 +1,634 @@
+{
+  "fonte": "docs/descartaveis-lista-juliana.csv (lista da Juliana). Gerado por frontend/scripts/importar-descartaveis.mjs. Os sku nunca mudam; novos entram no fim.",
+  "produtos": [
+    {
+      "nome": "Luva de Vinil Sem Pó",
+      "categoria": "Luvas",
+      "marca": "Vabene",
+      "embalagem": null,
+      "rotuloDaVariacao": "Tamanho",
+      "variacoes": [
+        {
+          "sku": "desc-luva-de-vinil-sem-po-p-0",
+          "rotulo": "P",
+          "preco": 19
+        },
+        {
+          "sku": "desc-luva-de-vinil-sem-po-m-1",
+          "rotulo": "M",
+          "preco": 19
+        },
+        {
+          "sku": "desc-luva-de-vinil-sem-po-g-2",
+          "rotulo": "G",
+          "preco": 19
+        }
+      ]
+    },
+    {
+      "nome": "Luva Vinilflex Sem Pó",
+      "categoria": "Luvas",
+      "marca": "Vabene",
+      "embalagem": null,
+      "rotuloDaVariacao": "Tamanho",
+      "variacoes": [
+        {
+          "sku": "desc-luva-vinilflex-sem-po-p-3",
+          "rotulo": "P",
+          "preco": 13.9
+        },
+        {
+          "sku": "desc-luva-vinilflex-sem-po-m-4",
+          "rotulo": "M",
+          "preco": 13.9
+        },
+        {
+          "sku": "desc-luva-vinilflex-sem-po-g-5",
+          "rotulo": "G",
+          "preco": 13.9
+        }
+      ]
+    },
+    {
+      "nome": "Luva Nitrílica Rosa",
+      "categoria": "Luvas",
+      "marca": null,
+      "embalagem": null,
+      "rotuloDaVariacao": "Tamanho",
+      "variacoes": [
+        {
+          "sku": "desc-luva-nitrilica-rosa-pp-6",
+          "rotulo": "PP",
+          "preco": 28
+        },
+        {
+          "sku": "desc-luva-nitrilica-rosa-p-7",
+          "rotulo": "P",
+          "preco": 28
+        },
+        {
+          "sku": "desc-luva-nitrilica-rosa-m-8",
+          "rotulo": "M",
+          "preco": 28
+        }
+      ]
+    },
+    {
+      "nome": "Luva de Látex com Pó",
+      "categoria": "Luvas",
+      "marca": null,
+      "embalagem": null,
+      "rotuloDaVariacao": "Tamanho",
+      "variacoes": [
+        {
+          "sku": "desc-luva-de-latex-com-po-pp-9",
+          "rotulo": "PP",
+          "preco": 26
+        },
+        {
+          "sku": "desc-luva-de-latex-com-po-p-10",
+          "rotulo": "P",
+          "preco": 26
+        },
+        {
+          "sku": "desc-luva-de-latex-com-po-m-11",
+          "rotulo": "M",
+          "preco": 26
+        },
+        {
+          "sku": "desc-luva-de-latex-com-po-g-12",
+          "rotulo": "G",
+          "preco": 26
+        }
+      ]
+    },
+    {
+      "nome": "Abaixador de Língua",
+      "categoria": "Atendimento",
+      "marca": null,
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-abaixador-de-lingua-13",
+          "rotulo": null,
+          "preco": 11
+        }
+      ]
+    },
+    {
+      "nome": "Máscara de TNT Tripla Branca com Elástico",
+      "categoria": "Atendimento",
+      "marca": null,
+      "embalagem": "Pacote com 50",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-mascara-de-tnt-tripla-branca-com-elastico-14",
+          "rotulo": null,
+          "preco": 8
+        }
+      ]
+    },
+    {
+      "nome": "Touca de TNT Branca Sanfonada",
+      "categoria": "Atendimento",
+      "marca": null,
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-touca-de-tnt-branca-sanfonada-15",
+          "rotulo": null,
+          "preco": 10.6
+        }
+      ]
+    },
+    {
+      "nome": "Lençol de Maca com Elástico",
+      "categoria": "Atendimento",
+      "marca": null,
+      "embalagem": "Pacote com 10",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-lencol-de-maca-com-elastico-16",
+          "rotulo": null,
+          "preco": 19.9
+        }
+      ]
+    },
+    {
+      "nome": "Lençol Hospitalar 50x50",
+      "categoria": "Atendimento",
+      "marca": "Classpel",
+      "embalagem": null,
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-lencol-hospitalar-50x50-17",
+          "rotulo": null,
+          "preco": 12
+        }
+      ]
+    },
+    {
+      "nome": "Lençol Hospitalar 70x50",
+      "categoria": "Atendimento",
+      "marca": "Classpel",
+      "embalagem": null,
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-lencol-hospitalar-70x50-18",
+          "rotulo": null,
+          "preco": 16
+        }
+      ]
+    },
+    {
+      "nome": "Papel Toalha Interfolha 2 Dobras 100% 20x21",
+      "categoria": "Papéis",
+      "marca": null,
+      "embalagem": "Pacote com 1000 folhas",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-papel-toalha-interfolha-2-dobras-100-20x21-19",
+          "rotulo": null,
+          "preco": 18
+        }
+      ]
+    },
+    {
+      "nome": "Papel Toalha Interfolha 2 Dobras Extra Luxo 20x21",
+      "categoria": "Papéis",
+      "marca": "Grampel",
+      "embalagem": "Pacote com 1000 folhas",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-papel-toalha-interfolha-2-dobras-extra-luxo-20x21-20",
+          "rotulo": null,
+          "preco": 18
+        }
+      ]
+    },
+    {
+      "nome": "Papel Higiênico Folha Dupla Premium 30 m",
+      "categoria": "Papéis",
+      "marca": "BOB",
+      "embalagem": "Pacote com 16 rolos",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-papel-higienico-folha-dupla-premium-30-m-21",
+          "rotulo": null,
+          "preco": 19.9
+        }
+      ]
+    },
+    {
+      "nome": "Papel Higiênico Folha Dupla 30 m",
+      "categoria": "Papéis",
+      "marca": "Qualite",
+      "embalagem": "Pacote com 16 rolos",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-papel-higienico-folha-dupla-30-m-qualite-22",
+          "rotulo": null,
+          "preco": 19.9
+        }
+      ]
+    },
+    {
+      "nome": "Papel Higiênico Folha Dupla 30 m",
+      "categoria": "Papéis",
+      "marca": "Personal Vip",
+      "embalagem": "Pacote com 16 rolos",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-papel-higienico-folha-dupla-30-m-personal-vip-23",
+          "rotulo": null,
+          "preco": 24.9
+        }
+      ]
+    },
+    {
+      "nome": "Copo Descartável 50 ml Branco",
+      "categoria": "Copa",
+      "marca": "Faça Fácil",
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-copo-descartavel-50-ml-branco-24",
+          "rotulo": null,
+          "preco": 3.5
+        }
+      ]
+    },
+    {
+      "nome": "Copo Descartável 180 ml Branco",
+      "categoria": "Copa",
+      "marca": "Faça Fácil",
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-copo-descartavel-180-ml-branco-25",
+          "rotulo": null,
+          "preco": 4.95
+        }
+      ]
+    },
+    {
+      "nome": "Filtro de Café de Papel 103",
+      "categoria": "Copa",
+      "marca": null,
+      "embalagem": "Pacote com 30",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-filtro-de-cafe-de-papel-103-26",
+          "rotulo": null,
+          "preco": 6.56
+        }
+      ]
+    },
+    {
+      "nome": "Filtro de Café de Papel 102",
+      "categoria": "Copa",
+      "marca": null,
+      "embalagem": "Pacote com 30",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-filtro-de-cafe-de-papel-102-27",
+          "rotulo": null,
+          "preco": 5.76
+        }
+      ]
+    },
+    {
+      "nome": "Sabonete Líquido 5 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Harmoniex",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": "Fragrância",
+      "variacoes": [
+        {
+          "sku": "desc-sabonete-liquido-5-l-erva-doce-28",
+          "rotulo": "Erva Doce",
+          "preco": 26.9
+        },
+        {
+          "sku": "desc-sabonete-liquido-5-l-frutas-vermelhas-29",
+          "rotulo": "Frutas Vermelhas",
+          "preco": 26.9
+        },
+        {
+          "sku": "desc-sabonete-liquido-5-l-pistache-30",
+          "rotulo": "Pistache",
+          "preco": 26.9
+        }
+      ]
+    },
+    {
+      "nome": "Sabonete Líquido 500 ml com Pump Ameixa Dourada",
+      "categoria": "Higiene e limpeza",
+      "marca": "Coala",
+      "embalagem": "Frasco 500 ml",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31",
+          "rotulo": null,
+          "preco": 18.99
+        }
+      ]
+    },
+    {
+      "nome": "Cloro Gel 5 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Harmoniex",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-cloro-gel-5-l-32",
+          "rotulo": null,
+          "preco": 36.79
+        }
+      ]
+    },
+    {
+      "nome": "Desinfetante 2 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Candura",
+      "embalagem": "Frasco 2 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-desinfetante-2-l-33",
+          "rotulo": null,
+          "preco": 8.2
+        }
+      ]
+    },
+    {
+      "nome": "Desinfetante 5 L Algas",
+      "categoria": "Higiene e limpeza",
+      "marca": "Harcclin",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-desinfetante-5-l-algas-34",
+          "rotulo": null,
+          "preco": 14.3
+        }
+      ]
+    },
+    {
+      "nome": "Limpador Perfumado 120 ml",
+      "categoria": "Higiene e limpeza",
+      "marca": "Coala",
+      "embalagem": "Frasco 120 ml",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-limpador-perfumado-120-ml-35",
+          "rotulo": null,
+          "preco": 15.9
+        }
+      ]
+    },
+    {
+      "nome": "Sabão em Pó Multiação 800 g",
+      "categoria": "Higiene e limpeza",
+      "marca": "Triex",
+      "embalagem": "Sachê 800 g",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-sabao-em-po-multiacao-800-g-36",
+          "rotulo": null,
+          "preco": 6.47
+        }
+      ]
+    },
+    {
+      "nome": "Sabão em Pó Primavera 800 g",
+      "categoria": "Higiene e limpeza",
+      "marca": "Tixan",
+      "embalagem": "Caixa 800 g",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-sabao-em-po-primavera-800-g-37",
+          "rotulo": null,
+          "preco": 15.58
+        }
+      ]
+    },
+    {
+      "nome": "Água Sanitária 5 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Gopabo",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-agua-sanitaria-5-l-gopabo-38",
+          "rotulo": null,
+          "preco": 14.5
+        }
+      ]
+    },
+    {
+      "nome": "Água Sanitária 5 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Harcclin",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-agua-sanitaria-5-l-harcclin-39",
+          "rotulo": null,
+          "preco": 15.3
+        }
+      ]
+    },
+    {
+      "nome": "Água Sanitária 5 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Triex",
+      "embalagem": "Galão 5 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-agua-sanitaria-5-l-triex-40",
+          "rotulo": null,
+          "preco": 14.27
+        }
+      ]
+    },
+    {
+      "nome": "Água Sanitária 2 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Triex",
+      "embalagem": "Frasco 2 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-agua-sanitaria-2-l-41",
+          "rotulo": null,
+          "preco": 6.34
+        }
+      ]
+    },
+    {
+      "nome": "Água Sanitária 1 L",
+      "categoria": "Higiene e limpeza",
+      "marca": "Candura",
+      "embalagem": "Frasco 1 L",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-agua-sanitaria-1-l-42",
+          "rotulo": null,
+          "preco": 4.38
+        }
+      ]
+    },
+    {
+      "nome": "Saco Plástico Virgem 35x45 Espessura 0,6",
+      "categoria": "Sacos e embalagens",
+      "marca": "Araplast",
+      "embalagem": "Pacote 1 kg",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-plastico-virgem-35x45-espessura-0-6-43",
+          "rotulo": null,
+          "preco": 38.92
+        }
+      ]
+    },
+    {
+      "nome": "Saco Plástico Virgem 40x60 Espessura 0,12",
+      "categoria": "Sacos e embalagens",
+      "marca": "Araplast",
+      "embalagem": "Pacote 1 kg",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-plastico-virgem-40x60-espessura-0-12-44",
+          "rotulo": null,
+          "preco": 39.9
+        }
+      ]
+    },
+    {
+      "nome": "Bobina Picotada Reforçada 20x30",
+      "categoria": "Sacos e embalagens",
+      "marca": "Lider",
+      "embalagem": "Bobina aprox. 1,3 kg",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-bobina-picotada-reforcada-20x30-45",
+          "rotulo": null,
+          "preco": 42.74
+        }
+      ]
+    },
+    {
+      "nome": "Bobina Picotada Reforçada 25x35",
+      "categoria": "Sacos e embalagens",
+      "marca": "Lider",
+      "embalagem": "Bobina aprox. 2,2 kg",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-bobina-picotada-reforcada-25x35-46",
+          "rotulo": null,
+          "preco": 69.19
+        }
+      ]
+    },
+    {
+      "nome": "Bobina Picotada Reforçada 30x40",
+      "categoria": "Sacos e embalagens",
+      "marca": "Lider",
+      "embalagem": "Bobina aprox. 2,5 kg",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-bobina-picotada-reforcada-30x40-47",
+          "rotulo": null,
+          "preco": 81.92
+        }
+      ]
+    },
+    {
+      "nome": "Saco de Lixo 20 L 40x59 Preto",
+      "categoria": "Sacos e embalagens",
+      "marca": null,
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-de-lixo-20-l-40x59-preto-48",
+          "rotulo": null,
+          "preco": 18.81
+        }
+      ]
+    },
+    {
+      "nome": "Saco de Lixo 30 L Espessura 0,04",
+      "categoria": "Sacos e embalagens",
+      "marca": null,
+      "embalagem": null,
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-de-lixo-30-l-espessura-0-04-49",
+          "rotulo": null,
+          "preco": 81.89
+        }
+      ]
+    },
+    {
+      "nome": "Saco de Lixo 50 L Espessura 0,04",
+      "categoria": "Sacos e embalagens",
+      "marca": null,
+      "embalagem": null,
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-de-lixo-50-l-espessura-0-04-50",
+          "rotulo": null,
+          "preco": 86.9
+        }
+      ]
+    },
+    {
+      "nome": "Saco de Lixo 100 L 75x90",
+      "categoria": "Sacos e embalagens",
+      "marca": null,
+      "embalagem": "Pacote com 100",
+      "rotuloDaVariacao": null,
+      "variacoes": [
+        {
+          "sku": "desc-saco-de-lixo-100-l-75x90-51",
+          "rotulo": null,
+          "preco": 62.69
+        }
+      ]
+    }
+  ]
+}

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "sitemap": "node scripts/gerar-sitemap.mjs",
+    "descartaveis": "node scripts/importar-descartaveis.mjs",
     "prebuild": "npm run sitemap",
     "build": "tsc -b && vite build",
     "lint": "eslint .",

@@ -1,5 +1,7 @@
-// Carga do catálogo no banco (passo 10 do plano), a partir de
-// frontend/src/data/tulipia-produtos.json.
+// Carga do catálogo no banco (passo 10 do plano), a partir de DUAS listas:
+// frontend/src/data/tulipia-produtos.json (Tulípia) e
+// frontend/src/data/descartaveis.json (descartáveis para clínicas, uma linha por
+// variação, com sku `desc-...-N` que nunca colide com os da Tulípia).
 //
 // Uso, dentro de backend/:
 //   npm run seed:produtos                    simulação: só mostra o que faria
@@ -18,6 +20,11 @@ import {
   lerCatalogo,
   type ProdutoNoBanco,
 } from './lib/catalogo.js'
+import {
+  PREFIXO_DOS_DESCARTAVEIS,
+  lerDescartaveis,
+  verificarColisaoDeSku,
+} from './lib/descartaveis.js'
 
 const aplicar = process.argv.includes('--aplicar')
 const desativarAusentes = process.argv.includes('--desativar-ausentes')
@@ -63,9 +70,24 @@ async function executar(): Promise<number> {
     '../../frontend/src/data/tulipia-produtos.json',
     import.meta.url,
   )
-  const { produtos, problemas, arredondados } = lerCatalogo(
-    JSON.parse(readFileSync(caminhoDoJson, 'utf8')),
+  const caminhoDosDescartaveis = new URL(
+    '../../frontend/src/data/descartaveis.json',
+    import.meta.url,
   )
+  const tulipia = lerCatalogo(JSON.parse(readFileSync(caminhoDoJson, 'utf8')))
+  const descartaveis = lerDescartaveis(
+    JSON.parse(readFileSync(caminhoDosDescartaveis, 'utf8')),
+  )
+  const problemas = [
+    ...tulipia.problemas.map((p) => `Tulípia: ${p}`),
+    ...descartaveis.problemas.map((p) => `Descartáveis: ${p}`),
+    ...verificarColisaoDeSku([
+      { origem: 'Tulípia', produtos: tulipia.produtos },
+      { origem: 'Descartáveis', produtos: descartaveis.produtos },
+    ]),
+  ]
+  const produtos = [...tulipia.produtos, ...descartaveis.produtos]
+  const arredondados = [...tulipia.arredondados, ...descartaveis.arredondados]
 
   if (problemas.length > 0) {
     mostrar('O catálogo tem problemas e NADA foi gravado:')
@@ -76,10 +98,16 @@ async function executar(): Promise<number> {
   const noBanco = await lerProdutosDoBanco()
   const comparacao = compararCatalogo(produtos, noBanco)
 
-  mostrar(`Catálogo do JSON: ${produtos.length} produtos`)
+  const dosDescartaveis = (sku: string) =>
+    sku.startsWith(PREFIXO_DOS_DESCARTAVEIS)
+  mostrar(
+    `Catálogo dos JSON: ${produtos.length} produtos (Tulípia: ${tulipia.produtos.length}, descartáveis: ${descartaveis.produtos.length} variações)`,
+  )
   mostrar(`No banco agora:   ${noBanco.length} produtos`)
   mostrar('')
-  mostrar(`  novos:                         ${comparacao.novos.length}`)
+  mostrar(
+    `  novos:                         ${comparacao.novos.length} (Tulípia: ${comparacao.novos.filter((p) => !dosDescartaveis(p.sku)).length}, descartáveis: ${comparacao.novos.filter((p) => dosDescartaveis(p.sku)).length})`,
+  )
   mostrar(`  alterados:                     ${comparacao.alterados.length}`)
   mostrar(`  iguais:                        ${comparacao.iguais}`)
   mostrar(`  no banco e fora do JSON:       ${comparacao.ausentes.length}`)

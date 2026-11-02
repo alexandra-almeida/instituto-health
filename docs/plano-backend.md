@@ -810,3 +810,96 @@ Os originais ficam para a página de detalhe.
   sem preço). Não entram carrinho, checkout, pedido confirmado, cadastro, login,
   Minha Conta nem redefinir senha. O arquivo gerado não vai para o git. A página
   de contato não existe (os contatos são o WhatsApp e o Instagram).
+
+## Descartáveis para clínicas (02/11/2026)
+
+Página `/produtos-hospitalares` com a lista real da Juliana (arquivo
+`docs/descartaveis-lista-juliana.csv`, 52 linhas), separada do catálogo da
+Tulípia.
+
+- [x] Dados em `frontend/src/data/descartaveis.json`, gerado do CSV por
+  `npm run descartaveis` (`frontend/scripts/importar-descartaveis.mjs`, roda à
+  mão, fora do build). Linhas com o mesmo nome e a mesma marca viram um produto
+  só: **41 produtos e 52 variações** (tamanhos das luvas, fragrâncias do
+  sabonete). Nome igual com marca diferente (água sanitária 5 L, papel
+  higiênico 30 m) continua em produtos separados.
+- [x] sku de cada VARIAÇÃO: `desc-nome-da-variação-N` (N de 0 a 51). O prefixo
+  `desc-` impede colisão com a Tulípia. Congelado como na Tulípia: nunca muda,
+  novos entram no fim; o script mantém os sku existentes ao rodar de novo e um
+  teste (`frontend/src/lib/descartaveis.test.ts`) guarda a lista dos 52.
+- [x] Preço único, sem preço de profissional por produto. Todos os 52 têm preço
+  e vão para o carrinho (o mesmo da Tulípia; `productId` é o sku da variação).
+- [x] Página: bloco "Compras em atacado e licitações" no topo (texto RASCUNHO
+  para a Juliana revisar, botão do WhatsApp com "Olá! Gostaria de um orçamento
+  para compra em atacado/licitação."), busca por nome, filtro por categoria e
+  por marca, e em cada card a escolha da variação (sem pré-seleção), a
+  quantidade (vale para o carrinho e para o WhatsApp), "Adicionar ao carrinho"
+  e o botão "Atacado ou licitação? Fale com a gente" (WhatsApp com produto,
+  variação e quantidade). Sem foto, cada categoria usa um ícone neutro.
+- [x] A prévia da Home ("Descartáveis Para Clínicas") passou a usar as
+  categorias e três produtos reais; antes tinha itens inventados.
+- [x] Marca e embalagem "A CONFIRMAR" não aparecem no site nem no JSON (campo
+  nulo): o site mostra só o que está confirmado.
+- [x] Seed: `npm run seed:produtos` agora lê a Tulípia E os descartáveis (uma
+  linha em `produtos` por variação: `nome` = nome + marca, `tamanho` = variação
+  + embalagem confirmada, `preco` = preço único, `exclusivo_profissional` =
+  falso) e recusa a carga se um sku se repetir entre as duas listas.
+  SIMULAÇÃO de 02/11/2026: 201 produtos nos JSON, 149 no banco; 52 novos (todos
+  descartáveis), 0 alterados, 149 iguais (a Tulípia não muda), 0 ausentes.
+  **AINDA NÃO APLICADO no banco**: falta a aprovação da Alexandra
+  (`npm run seed:produtos -- --aplicar`).
+
+### OBRIGATÓRIO antes do lançamento
+
+- Confirmar com a Juliana as **embalagens dos 8 produtos** que hoje ficam à
+  venda sem dizer o que vem na caixa (decisão de 02/11/2026: ficam à venda por
+  enquanto porque o checkout ainda não está ligado). Sem isso o cliente vê "R$
+  19,00" sem saber a quantidade: Luva de Vinil Sem Pó, Luva Vinilflex Sem Pó,
+  Luva Nitrílica Rosa, Luva de Látex com Pó (CSV: "caixa com 100?"), Lençol
+  Hospitalar 50x50 e 70x50 ("rolo?"), Saco de Lixo 30 L e 50 L ("5x20" quer
+  dizer 5 pacotes com 20?).
+
+### Pendências do CSV para a Juliana
+
+- **Marca a confirmar (13 produtos):** Luva Nitrílica Rosa, Luva de Látex com
+  Pó, Abaixador de Língua, Máscara de TNT Tripla Branca com Elástico, Touca de
+  TNT Branca Sanfonada, Lençol de Maca com Elástico, Papel Toalha Interfolha 2
+  Dobras 100% 20x21, Filtro de Café de Papel 103 e 102, Saco de Lixo 20 L, 30 L,
+  50 L e 100 L.
+- **Embalagem a confirmar (8 produtos):** a lista acima do OBRIGATÓRIO.
+- **Dúvidas do CSV:** a Luva Nitrílica Rosa não tem o tamanho G na lista; o
+  Copo Descartável de 180 ml estava com "$ 4,95" (sem o R); a espessura do Saco
+  Plástico Virgem 35x45 é 0,6 ou 0,06?; o Saco de Lixo 30 L (R$ 81,89) está caro
+  perto do de 20 L (R$ 18,81).
+- **Fotos:** nenhum descartável tem foto. Quando houver, vai no campo `imagem`
+  do produto em `descartaveis.json` (o script preserva esse campo).
+- **Texto do bloco de atacado e licitações e a frase de apresentação da
+  página:** rascunhos, para a Juliana revisar.
+
+## Regra de preço do profissional (decidida com a Juliana em 26/10/2026)
+
+Registrada em 02/11/2026; ainda não estava escrita.
+
+- O profissional **aprovado** tem **30% de desconto sobre o TOTAL da compra**.
+  Exige conta aprovada. O cliente comum (Home Care) compra sem cadastro e sem
+  desconto.
+- **Perguntas em aberto para a Juliana:**
+  1. O desconto inclui o frete?
+  2. Soma com promoções (como a de 15% do Mês dos Lançamentos)?
+  3. Vale também para os descartáveis?
+  4. Qual é o preço cheio dos **82 produtos exclusivos de profissional**, que
+     hoje não têm preço público (ficam com preço nulo no banco e no site)?
+- **Pergunta explícita (muda o passo 12 e a tabela `precos_profissionais`):** essa
+  regra SUBSTITUI a ideia de uma lista de preços de profissional por produto?
+  Se sim, a tabela `precos_profissionais` e o script
+  `seed:precos-profissionais` perdem a função: o servidor aplicaria 30% sobre
+  o total do pedido a partir dos preços cheios, e o que falta é o preço cheio
+  dos 82 exclusivos (pergunta 4), não uma lista de preços de profissional. Se
+  não (a lista continua), o desconto de 30% convive com ela e é preciso decidir
+  qual vale. **Não construir o módulo `pedidos` (passo 12) antes desta resposta.**
+- Efeito nos descartáveis: eles não têm preço de profissional por produto; com
+  a pergunta 3 respondida "sim", o desconto vem do total, e com "não" o item é
+  vendido sempre ao preço único. Até lá, o service de pedidos do passo 12 NÃO
+  pode recusar um descartável só por não ter linha em `precos_profissionais`.
+- Hoje não existe nada disso no código: o site, o carrinho e o banco ainda não
+  aplicam o desconto.
