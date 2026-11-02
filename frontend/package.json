@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "sitemap": "node scripts/gerar-sitemap.mjs",
+    "prebuild": "npm run sitemap",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",

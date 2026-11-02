@@ -1,7 +1,7 @@
 # Instituto Health
 
 Site institucional e e-commerce do Instituto Health (fisioterapia e estética, Juliana Gonella).
-Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-health.vercel.app
+Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinstituto.com.br
 
 ## Stack
 
@@ -15,7 +15,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 - Domínio próprio ativo desde 31/10/2026: https://healthinstituto.com.br (o `www` redireciona para ele com 308, e `instituto-health.vercel.app` continua funcionando)
 - DNS no Registro.br: registro A `@` apontando para a Vercel e CNAME `www`
 - `ORIGEM_FRONTEND` (backend, na Vercel) tem os 3 endereços do site; o Site URL do Supabase é https://healthinstituto.com.br
-- `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; o site não tem `sitemap.xml` nem `robots.txt` ainda
+- `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; `public/robots.txt` libera tudo e aponta para o sitemap, e o `sitemap.xml` (páginas públicas, procedimentos e produtos Tulípia, sem conta nem compra) é gerado no build por `frontend/scripts/gerar-sitemap.mjs` com os mesmos slugs das rotas
 
 ## Estrutura do repositório
 
@@ -27,8 +27,9 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://instituto-h
 ## Comandos (em `frontend/`)
 
 - `npm run dev` — desenvolvimento (localhost:5173)
-- `npm run build` — checagem de tipos + build (rode antes de commitar)
-- `npm run test` — testes (vitest) da lógica em `src/lib` (cliente da API e destino seguro do login)
+- `npm run build` — gera o `public/sitemap.xml` (script `prebuild`), checa os tipos e faz o build (rode antes de commitar)
+- `npm run test` — testes (vitest) da lógica em `src/lib` (cliente da API, destino seguro do login, sitemap)
+- `npm run sitemap` — gera só o `public/sitemap.xml` (ele não vai para o git)
 - `npm run lint` / `npm run format`
 
 ## Padrões

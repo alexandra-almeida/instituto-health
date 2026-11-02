@@ -799,5 +799,12 @@ Os originais ficam para a página de detalhe.
   esse endereço; o fluxo atual é por código de 6 dígitos, então nada depende
   dele ainda.
 - `frontend/index.html`: `canonical`, `og:url`, `og:image` e `twitter:image`
-  trocados para o domínio novo (mesmos caminhos). Falta decidir `sitemap.xml` e
-  `robots.txt` (não existem).
+  trocados para o domínio novo (mesmos caminhos).
+- `robots.txt` (libera tudo e aponta para o sitemap) e `sitemap.xml` criados em
+  02/11/2026. O sitemap é gerado a cada `npm run build` (script `prebuild`) por
+  `frontend/scripts/gerar-sitemap.mjs`, que lê os dados reais pelo Vite, então
+  usa os mesmos slugs das rotas: 194 páginas (8 fixas, 37 procedimentos e 149
+  produtos Tulípia, inclusive os exclusivos de profissional, que são públicos
+  sem preço). Não entram carrinho, checkout, pedido confirmado, cadastro, login,
+  Minha Conta nem redefinir senha. O arquivo gerado não vai para o git. A página
+  de contato não existe (os contatos são o WhatsApp e o Instagram).
