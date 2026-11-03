@@ -846,8 +846,12 @@ Tulípia.
   falso) e recusa a carga se um sku se repetir entre as duas listas.
   SIMULAÇÃO de 02/11/2026: 201 produtos nos JSON, 149 no banco; 52 novos (todos
   descartáveis), 0 alterados, 149 iguais (a Tulípia não muda), 0 ausentes.
-  **AINDA NÃO APLICADO no banco**: falta a aprovação da Alexandra
-  (`npm run seed:produtos -- --aplicar`).
+  **APLICADO em 03/11/2026** (`npm run seed:produtos -- --aplicar`: 52 novos,
+  0 atualizados) e conferido lendo o banco de volta: 201 produtos no total, 52
+  com sku `desc-`, 149 da Tulípia intactos (82 exclusivos, 67 com preço
+  público), os 52 descartáveis todos com preço (de 3,50 a 86,90),
+  `exclusivo_profissional` falso e `ativo` verdadeiro, nenhum sku repetido. Uma
+  nova simulação deu 0 novos, 0 alterados e 201 iguais.
 
 ### OBRIGATÓRIO antes do lançamento
 
