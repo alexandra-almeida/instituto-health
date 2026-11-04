@@ -38,7 +38,7 @@ interface DescartavelCardProps {
   onAdicionar: (variacaoSku: string, quantidade: number) => void
 }
 
-// Card de um descartável: foto ou ícone da categoria, marca, nome, embalagem
+// Card de um descartável: foto inteira ou ícone da categoria, marca, nome, embalagem
 // (só se confirmada), preço, escolha da variação (sem pré-seleção), quantidade,
 // "Adicionar ao carrinho" e o botão secundário de atacado/licitação. A
 // quantidade vale para o carrinho e para a mensagem do WhatsApp.
@@ -96,7 +96,17 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
 
   return (
     <div className="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-[0_2px_10px_-2px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]">
-      <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-t-2xl bg-linear-to-br from-[#04452E]/8 to-[#CAA02D]/15">
+      {/* Área da foto SEMPRE quadrada, para a grade ficar alinhada com frascos em
+          pé e caixas deitadas. A foto aparece inteira (object-contain), sobre
+          fundo branco e com respiro; sem foto, o ícone da categoria sobre o
+          gradiente de sempre. */}
+      <div
+        className={`relative flex aspect-square items-center justify-center overflow-hidden rounded-t-2xl ${
+          mostrarImagem
+            ? 'bg-white'
+            : 'bg-linear-to-br from-[#04452E]/8 to-[#CAA02D]/15'
+        }`}
+      >
         {mostrarImagem ? (
           <img
             src={foto}
@@ -108,7 +118,7 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
             loading="lazy"
             decoding="async"
             onError={() => setFotosComErro((atuais) => [...atuais, foto ?? ''])}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain p-3 xs:p-4"
           />
         ) : (
           <Icone
