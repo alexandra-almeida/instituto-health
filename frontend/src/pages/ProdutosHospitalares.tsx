@@ -139,7 +139,7 @@ function ProdutosHospitalares() {
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-4 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 3xl:gap-6">
+      <div className="mt-6 grid grid-cols-2 gap-2 xs:gap-4 md:grid-cols-3 lg:grid-cols-4 lg:gap-5 3xl:gap-6">
         {produtos.map((produto, index) => (
           <ScrollReveal key={produto.id} delay={(index % 4) * 0.06}>
             <DescartavelCard

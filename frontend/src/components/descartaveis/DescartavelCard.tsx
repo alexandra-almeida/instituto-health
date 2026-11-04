@@ -118,7 +118,7 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
             loading="lazy"
             decoding="async"
             onError={() => setFotosComErro((atuais) => [...atuais, foto ?? ''])}
-            className="h-full w-full object-contain p-3 xs:p-4"
+            className="h-full w-full object-contain p-1.5 xs:p-4"
           />
         ) : (
           <Icone
@@ -129,30 +129,35 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
         )}
       </div>
 
-      <div className="font-inter flex flex-1 flex-col items-center gap-1 p-3 text-center xs:p-4">
+      <div className="font-inter flex min-w-0 flex-1 flex-col items-center gap-1 p-2 text-center xs:p-4">
         {produto.marca && (
-          <span className="text-[10px] leading-none tracking-wide text-dourado-health uppercase">
+          <span className="max-w-full truncate text-[9px] leading-none tracking-wide text-dourado-health uppercase xs:text-[10px]">
             {produto.marca}
           </span>
         )}
-        <h3 className="line-clamp-3 text-sm leading-snug font-normal text-verde-health">
+        <h3
+          title={produto.nome}
+          className="line-clamp-3 text-[13px] leading-snug font-normal wrap-anywhere text-verde-health xs:text-sm"
+        >
           {produto.nome}
         </h3>
         {produto.embalagem && (
-          <p className="text-xs text-verde-health/60">{produto.embalagem}</p>
+          <p className="line-clamp-2 text-[11px] leading-tight text-verde-health/60 xs:text-xs">
+            {produto.embalagem}
+          </p>
         )}
         <PriceTag
           value={variacaoEscolhida?.preco ?? produto.preco}
           className="mt-1 leading-none text-verde-health"
-          mainClassName="text-lg font-semibold"
+          mainClassName="text-base font-semibold xs:text-lg"
         />
 
         {temVariacao && (
-          <fieldset className="mt-2 w-full">
-            <legend className="mb-1.5 w-full text-[11px] text-verde-health/60">
+          <fieldset className="mt-1 w-full min-w-0 xs:mt-2">
+            <legend className="mb-1 w-full text-center text-[11px] text-verde-health/60 xs:mb-1.5">
               {rotuloDaVariacao}
             </legend>
-            <div className="flex flex-wrap justify-center gap-1.5">
+            <div className="flex flex-wrap justify-center gap-1 xs:gap-1.5">
               {produto.variacoes.map((v) => {
                 const selecionada = v.sku === skuEscolhido
                 return (
@@ -161,7 +166,7 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
                     type="button"
                     onClick={() => setSkuEscolhido(v.sku)}
                     aria-pressed={selecionada}
-                    className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                    className={`min-h-10 flex-auto rounded-full border px-3 text-[11px] leading-tight font-medium wrap-break-word transition-colors xs:min-h-0 xs:flex-none xs:px-3 xs:py-1 xs:text-xs ${
                       selecionada
                         ? 'border-dourado-health bg-dourado-health text-verde-profundo'
                         : 'border-verde-health/20 text-verde-health hover:border-dourado-health/60'
@@ -175,14 +180,14 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
           </fieldset>
         )}
 
-        <div className="mt-3 flex w-full flex-col items-center gap-2">
-          <div className="inline-flex items-center rounded-full border border-verde-health/15">
+        <div className="mt-2 flex w-full flex-col items-center gap-1.5 xs:mt-3 xs:gap-2">
+          <div className="flex w-full items-center rounded-full border border-verde-health/15 xs:inline-flex xs:w-auto">
             <button
               type="button"
               onClick={() => mudarQuantidade(quantidade - 1)}
               disabled={quantidade <= 1}
               aria-label="Diminuir quantidade"
-              className="h-8 w-8 text-base text-verde-health transition-colors hover:text-dourado-health disabled:cursor-not-allowed disabled:opacity-35"
+              className="h-10 w-10 shrink-0 text-base text-verde-health xs:h-8 xs:w-8 transition-colors hover:text-dourado-health disabled:cursor-not-allowed disabled:opacity-35"
             >
               −
             </button>
@@ -193,14 +198,14 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
               onChange={(e) => aoDigitarQuantidade(e.target.value)}
               onBlur={aoSairDaQuantidade}
               aria-label={`Quantidade de ${produto.nome}`}
-              className="h-8 w-12 bg-transparent text-center text-sm text-verde-health focus:outline-none"
+              className="h-10 min-w-0 flex-1 bg-transparent text-center text-sm text-verde-health focus:outline-none xs:h-8 xs:w-12 xs:flex-none"
             />
             <button
               type="button"
               onClick={() => mudarQuantidade(quantidade + 1)}
               disabled={quantidade >= QUANTIDADE_MAXIMA}
               aria-label="Aumentar quantidade"
-              className="h-8 w-8 text-base text-verde-health transition-colors hover:text-dourado-health disabled:cursor-not-allowed disabled:opacity-35"
+              className="h-10 w-10 shrink-0 text-base text-verde-health xs:h-8 xs:w-8 transition-colors hover:text-dourado-health disabled:cursor-not-allowed disabled:opacity-35"
             >
               +
             </button>
@@ -211,23 +216,31 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
             onClick={adicionar}
             disabled={faltaEscolher}
             aria-disabled={faltaEscolher}
-            className="inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] bg-dourado-health px-3 py-2 text-xs font-medium text-verde-profundo transition-colors hover:bg-dourado-claro disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-dourado-health"
+            className="inline-flex min-h-10 w-full items-center justify-center gap-1.5 rounded-[10px] bg-dourado-health px-2 py-2 text-center text-xs leading-tight xs:min-h-0 xs:px-3 font-medium text-verde-profundo transition-colors hover:bg-dourado-claro disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-dourado-health"
           >
-            <CartPlusIcon className="h-4 w-4" />
-            {adicionado
-              ? 'Adicionado ✓'
-              : faltaEscolher
-                ? `Escolha ${produto.rotuloDaVariacao === 'Tamanho' ? 'o' : 'a'} ${rotuloDaVariacao.toLowerCase()}`
-                : 'Adicionar ao carrinho'}
+            <CartPlusIcon className="h-4 w-4 shrink-0" />
+            {adicionado ? (
+              'Adicionado ✓'
+            ) : faltaEscolher ? (
+              `Escolha ${produto.rotuloDaVariacao === 'Tamanho' ? 'o' : 'a'} ${rotuloDaVariacao.toLowerCase()}`
+            ) : (
+              <>
+                <span className="xs:hidden">Adicionar</span>
+                <span className="hidden xs:inline">Adicionar ao carrinho</span>
+              </>
+            )}
           </button>
 
           <a
             href={linkAtacado}
             target="_blank"
             rel="noreferrer"
-            className="w-full rounded-[10px] border border-verde-health/25 px-3 py-2 text-[11px] leading-tight text-verde-health transition-colors hover:border-dourado-health hover:text-dourado-health"
+            className="flex min-h-10 w-full items-center justify-center text-[11px] leading-tight text-verde-health underline underline-offset-2 transition-colors hover:text-dourado-health xs:min-h-0 xs:rounded-[10px] xs:border xs:border-verde-health/25 xs:px-3 xs:py-2 xs:no-underline xs:hover:border-dourado-health"
           >
-            Atacado ou licitação? Fale com a gente
+            <span className="xs:hidden">Atacado ou licitação?</span>
+            <span className="hidden xs:inline">
+              Atacado ou licitação? Fale com a gente
+            </span>
           </a>
         </div>
       </div>
