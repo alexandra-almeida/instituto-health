@@ -1001,8 +1001,11 @@ Registrada em 02/11/2026; ainda não estava escrita.
   A embalagem passou a "Caixa com 100".
 - **Banco:** a marca e a embalagem das 4 luvas e o nome da Viniflex alteram
   13 linhas de `produtos` (campos `nome` e `tamanho`; os sku não mudam).
-  **Ainda NÃO aplicado**: a simulação do seed mostra os alterados e falta a
-  aprovação da Alexandra para `npm run seed:produtos -- --aplicar`.
+  **APLICADO em 04/11/2026** (`npm run seed:produtos -- --aplicar`: 0 novos, 13
+  atualizados) e conferido lendo o banco de volta: 201 produtos, 52 com sku
+  `desc-`, nenhum "Vinilflex" nem "A CONFIRMAR" em nome ou tamanho, preços e
+  `exclusivo_profissional` intactos. Nova simulação: 0 novos, 0 alterados e 201
+  iguais.
 - **Foto em reserva:** `_reservas/luva-nitrilica-rosa-vabene-g.webp` (a caixa G
   da Luva Nitrílica Rosa). Não aparece no site porque a lista de preços não tem
   a variação G; ver a PERGUNTA para a Juliana acima. Se ela vender em G, criar a
