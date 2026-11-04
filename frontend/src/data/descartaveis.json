@@ -314,6 +314,7 @@
       "marca": null,
       "embalagem": "Pacote com 30",
       "rotuloDaVariacao": null,
+      "imagem": "filtro-de-cafe-de-papel-103.webp",
       "variacoes": [
         {
           "sku": "desc-filtro-de-cafe-de-papel-103-26",
@@ -328,6 +329,7 @@
       "marca": null,
       "embalagem": "Pacote com 30",
       "rotuloDaVariacao": null,
+      "imagem": "filtro-de-cafe-de-papel-102.webp",
       "variacoes": [
         {
           "sku": "desc-filtro-de-cafe-de-papel-102-27",
@@ -352,11 +354,13 @@
         {
           "sku": "desc-sabonete-liquido-5-l-frutas-vermelhas-29",
           "rotulo": "Frutas Vermelhas",
+          "imagem": "sabonete-liquido-5-l-harmoniex-frutas-vermelhas.webp",
           "preco": 26.9
         },
         {
           "sku": "desc-sabonete-liquido-5-l-pistache-30",
           "rotulo": "Pistache",
+          "imagem": "sabonete-liquido-5-l-harmoniex-pistache.webp",
           "preco": 26.9
         }
       ]
@@ -367,6 +371,7 @@
       "marca": "Coala",
       "embalagem": "Frasco 500 ml",
       "rotuloDaVariacao": null,
+      "imagem": "sabonete-liquido-500-ml-com-pump-ameixa-dourada-coala.webp",
       "variacoes": [
         {
           "sku": "desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31",
@@ -381,6 +386,7 @@
       "marca": "Harmoniex",
       "embalagem": "Galão 5 L",
       "rotuloDaVariacao": null,
+      "imagem": "cloro-gel-5-l-harmoniex.webp",
       "variacoes": [
         {
           "sku": "desc-cloro-gel-5-l-32",
@@ -395,6 +401,7 @@
       "marca": "Candura",
       "embalagem": "Frasco 2 L",
       "rotuloDaVariacao": null,
+      "imagem": "desinfetante-2-l-candura.webp",
       "variacoes": [
         {
           "sku": "desc-desinfetante-2-l-33",
@@ -409,6 +416,7 @@
       "marca": "Harcclin",
       "embalagem": "Galão 5 L",
       "rotuloDaVariacao": null,
+      "imagem": "desinfetante-5-l-algas-harcclin.webp",
       "variacoes": [
         {
           "sku": "desc-desinfetante-5-l-algas-34",
@@ -423,6 +431,7 @@
       "marca": "Coala",
       "embalagem": "Frasco 120 ml",
       "rotuloDaVariacao": null,
+      "imagem": "limpador-perfumado-120-ml-coala.webp",
       "variacoes": [
         {
           "sku": "desc-limpador-perfumado-120-ml-35",
@@ -437,6 +446,7 @@
       "marca": "Triex",
       "embalagem": "Sachê 800 g",
       "rotuloDaVariacao": null,
+      "imagem": "sabao-em-po-multiacao-800-g-triex.webp",
       "variacoes": [
         {
           "sku": "desc-sabao-em-po-multiacao-800-g-36",
@@ -451,6 +461,7 @@
       "marca": "Tixan",
       "embalagem": "Caixa 800 g",
       "rotuloDaVariacao": null,
+      "imagem": "sabao-em-po-primavera-800-g-tixan.webp",
       "variacoes": [
         {
           "sku": "desc-sabao-em-po-primavera-800-g-37",
@@ -465,6 +476,7 @@
       "marca": "Gopabo",
       "embalagem": "Galão 5 L",
       "rotuloDaVariacao": null,
+      "imagem": "agua-sanitaria-5-l-gopabo.webp",
       "variacoes": [
         {
           "sku": "desc-agua-sanitaria-5-l-gopabo-38",
@@ -493,6 +505,7 @@
       "marca": "Triex",
       "embalagem": "Galão 5 L",
       "rotuloDaVariacao": null,
+      "imagem": "agua-sanitaria-5-l-triex.webp",
       "variacoes": [
         {
           "sku": "desc-agua-sanitaria-5-l-triex-40",
@@ -507,6 +520,7 @@
       "marca": "Triex",
       "embalagem": "Frasco 2 L",
       "rotuloDaVariacao": null,
+      "imagem": "agua-sanitaria-2-l-triex.webp",
       "variacoes": [
         {
           "sku": "desc-agua-sanitaria-2-l-41",
@@ -535,6 +549,7 @@
       "marca": "Araplast",
       "embalagem": "Pacote 1 kg",
       "rotuloDaVariacao": null,
+      "imagem": "saco-plastico-virgem.webp",
       "variacoes": [
         {
           "sku": "desc-saco-plastico-virgem-35x45-espessura-0-6-43",
@@ -549,6 +564,7 @@
       "marca": "Araplast",
       "embalagem": "Pacote 1 kg",
       "rotuloDaVariacao": null,
+      "imagem": "saco-plastico-virgem.webp",
       "variacoes": [
         {
           "sku": "desc-saco-plastico-virgem-40x60-espessura-0-12-44",

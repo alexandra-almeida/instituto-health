@@ -886,13 +886,26 @@ Tulípia.
   2. **A foto do papel higiênico BOB Premium mostra o pacote de 4 rolos** (30 m
      x 10 cm cada); a lista é de **16 rolos**. A foto vale para a embalagem
      de 16, ou é preciso uma foto do pacote com 16?
-  3. **Faltam as fotos das fragrâncias Frutas Vermelhas e Pistache** do
-     Sabonete Líquido 5 L (Harmoniex). Enquanto não há, as duas mostram a da
-     Erva Doce. Nota: arquivos com essas fotos apareceram na pasta de fotos
-     depois deste pedido e ainda NÃO foram ligados.
-- **Fotos:** 18 produtos têm foto: as 4 luvas Vabene (uma por tamanho), o
-  Sabonete Líquido 5 L (Harmoniex), só a Erva Doce, e 13 produtos com uma foto
-  só. Os outros 23 usam o ícone da categoria. Veja a seção seguinte.
+  3. (Resolvida em 03/11/2026) As fotos das fragrâncias Frutas Vermelhas e
+     Pistache do Sabonete Líquido 5 L (Harmoniex) chegaram e foram ligadas:
+     hoje as três fragrâncias têm foto própria.
+  4. **A foto do Cloro Gel 5 L (Harmoniex) parece gerada por IA**: o texto do
+     rótulo está embaralhado. Trocar pela foto oficial.
+  5. **Limpador Perfumado 120 ml (Coala): quais fragrâncias ela vende?** A
+     foto mostra 8 (Lavanda, Citronela, Chá Branco, The Queen, Sol do Brasil,
+     Eucalipto Citriodora, Orquídea Negra e Bambu) e o produto está como um só,
+     sem variação. Se vender mais de uma, vira variação (cada uma com sku).
+  6. **O Desinfetante Candura 2 L da foto é Pinho.** É essa a fragrância que
+     ela vende?
+  7. **A foto do Sabão em Pó Multiação 800 g (Triex) mostra 3 pacotes**, e o
+     produto é 1 pacote. Trocar por uma foto de um pacote só.
+  8. **Faltam fotos de 9 produtos:** Água Sanitária 5 L (Harcclin), Água
+     Sanitária 1 L (Candura), as 3 Bobinas Picotadas Reforçadas (20x30, 25x35 e
+     30x40, Lider) e os 4 Sacos de Lixo (20 L, 30 L, 50 L e 100 L).
+- **Fotos:** 32 produtos têm foto: as 4 luvas Vabene (uma por tamanho), o
+  Sabonete Líquido 5 L (Harmoniex), uma por fragrância, e 27 produtos com uma
+  foto só. Os outros 9 (lista na pergunta 8) usam o ícone da categoria. Veja a
+  seção seguinte.
 - **Texto do bloco de atacado e licitações e a frase de apresentação da
   página:** rascunhos, para a Juliana revisar.
 
@@ -968,6 +981,17 @@ Registrada em 02/11/2026; ainda não estava escrita.
   - à mão, uma foto para dois produtos: `mascara-e-touca-tnt.webp` (Máscara de
     TNT Tripla Branca com Elástico e Touca de TNT Branca Sanfonada) e
     `lencol-hospitalar-rolo.webp` (Lençol Hospitalar 50x50 e 70x50, Classpel).
+- **Ligadas em 03/11/2026, segunda leva (15 fotos, as oficiais dos
+  fabricantes):**
+  - pelo nome do arquivo (renomeadas para o slug): Sabão em Pó Primavera 800 g
+    (Tixan), Sabão em Pó Multiação 800 g (Triex), Limpador Perfumado 120 ml
+    (Coala), Desinfetante 5 L Algas (Harcclin), Desinfetante 2 L (Candura),
+    Cloro Gel 5 L (Harmoniex), Sabonete Líquido 500 ml com Pump Ameixa Dourada
+    (Coala), Sabonete Líquido 5 L (Harmoniex) nas variações Pistache e Frutas
+    Vermelhas, Água Sanitária 2 L (Triex), Água Sanitária 5 L (Triex) e (Gopabo),
+    Filtro de Café de Papel 102 e 103;
+  - à mão, uma foto para dois produtos: `saco-plastico-virgem.webp` (Saco
+    Plástico Virgem 35x45 Espessura 0,6 e 40x60 Espessura 0,12, Araplast).
 - **Testes de foto:** o Vitest tem o cache de módulos em disco desligado
   (`fsModuleCache: false` em `frontend/vitest.config.ts`), porque com ele ligado
   uma foto nova na pasta não aparecia na lista dos testes.

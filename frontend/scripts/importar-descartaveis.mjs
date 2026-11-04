@@ -211,6 +211,10 @@ const FOTOS_COMPARTILHADAS = {
     'Lençol Hospitalar 50x50',
     'Lençol Hospitalar 70x50',
   ],
+  'saco-plastico-virgem.webp': [
+    'Saco Plástico Virgem 35x45 Espessura 0,6',
+    'Saco Plástico Virgem 40x60 Espessura 0,12',
+  ],
 }
 const PASTA_DAS_FOTOS = resolve(raiz, 'src', 'assets', 'descartaveis')
 const EXTENSAO_DE_FOTO = /\.(webp|jpe?g|png)$/i

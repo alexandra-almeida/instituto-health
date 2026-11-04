@@ -190,11 +190,27 @@ const PRODUTOS_COM_UMA_FOTO = [
   'Papel Higiênico Folha Dupla 30 m',
   'Copo Descartável 50 ml Branco',
   'Copo Descartável 180 ml Branco',
+  'Sabonete Líquido 500 ml com Pump Ameixa Dourada',
+  'Cloro Gel 5 L',
+  'Desinfetante 2 L',
+  'Desinfetante 5 L Algas',
+  'Limpador Perfumado 120 ml',
+  'Sabão em Pó Multiação 800 g',
+  'Sabão em Pó Primavera 800 g',
+  'Saco Plástico Virgem 35x45 Espessura 0,6',
+  'Saco Plástico Virgem 40x60 Espessura 0,12',
+  'Filtro de Café de Papel 102',
+  'Filtro de Café de Papel 103',
+  'Água Sanitária 2 L',
+  // dois produtos com este nome (Triex e Gopabo; a Harcclin ainda não tem foto)
+  'Água Sanitária 5 L',
+  'Água Sanitária 5 L',
 ]
-// Os mesmos 2 arquivos que o importador liga à mão (FOTOS_COMPARTILHADAS)
+// Os mesmos 3 arquivos que o importador liga à mão (FOTOS_COMPARTILHADAS)
 const ARQUIVOS_COMPARTILHADOS = [
   'mascara-e-touca-tnt.webp',
   'lencol-hospitalar-rolo.webp',
+  'saco-plastico-virgem.webp',
 ]
 
 describe('marca e embalagem confirmadas das luvas', () => {
@@ -278,7 +294,7 @@ describe('fotos dos descartáveis', () => {
     }
   })
 
-  it('as 4 luvas, os 13 produtos de uma foto só e o sabonete (foto por fragrância) são os únicos com foto', () => {
+  it('as 4 luvas, os 27 produtos de uma foto só e o sabonete 5 L (foto por fragrância) são os únicos com foto', () => {
     expect(
       DESCARTAVEIS.filter(comFoto)
         .map((p) => p.nome)
@@ -290,13 +306,17 @@ describe('fotos dos descartáveis', () => {
         'Sabonete Líquido 5 L',
       ].sort(),
     )
-    expect(DESCARTAVEIS.filter(comFoto)).toHaveLength(18)
+    expect(DESCARTAVEIS.filter(comFoto)).toHaveLength(32)
   })
 
   it.each(PRODUTOS_COM_UMA_FOTO)(
     '%s tem uma foto do produto inteiro, a mesma em qualquer variação',
     (nome) => {
-      for (const produto of DESCARTAVEIS.filter((p) => p.nome === nome)) {
+      // Nome repetido (águas sanitárias de 5 L): confere os que têm foto; os
+      // que ainda não têm entram no teste da lista dos produtos sem foto
+      const comImagem = DESCARTAVEIS.filter((p) => p.nome === nome && p.imagem)
+      expect(comImagem.length).toBeGreaterThan(0)
+      for (const produto of comImagem) {
         expect(produto.imagem).toEqual(expect.any(String))
         expect(fotoDoDescartavel(produto, produto.variacoes[0])).toBe(
           produto.imagem,
@@ -323,18 +343,49 @@ describe('fotos dos descartáveis', () => {
     )
   })
 
-  it('as três fragrâncias do sabonete mostram a foto da Erva Doce, antes e depois de escolher', () => {
+  it('cada fragrância do sabonete 5 L tem a sua foto, e antes de escolher aparece a da Erva Doce', () => {
     const sabonete = DESCARTAVEIS.find(
       (p) => p.nome === 'Sabonete Líquido 5 L',
     )!
     const [ervaDoce, frutasVermelhas, pistache] = sabonete.variacoes
     expect(ervaDoce.imagem).toContain('erva-doce')
-    expect(frutasVermelhas.imagem).toBeUndefined()
-    expect(pistache.imagem).toBeUndefined()
+    expect(frutasVermelhas.imagem).toContain('frutas-vermelhas')
+    expect(pistache.imagem).toContain('pistache')
+    expect(new Set(sabonete.variacoes.map((v) => v.imagem)).size).toBe(3)
     expect(fotoDoDescartavel(sabonete, null)).toBe(ervaDoce.imagem)
-    expect(fotoDoDescartavel(sabonete, ervaDoce)).toBe(ervaDoce.imagem)
-    expect(fotoDoDescartavel(sabonete, frutasVermelhas)).toBe(ervaDoce.imagem)
-    expect(fotoDoDescartavel(sabonete, pistache)).toBe(ervaDoce.imagem)
+    expect(fotoDoDescartavel(sabonete, frutasVermelhas)).toBe(
+      frutasVermelhas.imagem,
+    )
+    expect(fotoDoDescartavel(sabonete, pistache)).toBe(pistache.imagem)
+  })
+
+  it('os 9 produtos que ainda não têm foto são os esperados (para a Juliana ou o fabricante)', () => {
+    expect(
+      DESCARTAVEIS.filter((p) => !comFoto(p)).map(
+        (p) => `${p.nome}${p.marca ? ` (${p.marca})` : ''}`,
+      ),
+    ).toEqual([
+      'Água Sanitária 5 L (Harcclin)',
+      'Água Sanitária 1 L (Candura)',
+      'Bobina Picotada Reforçada 20x30 (Lider)',
+      'Bobina Picotada Reforçada 25x35 (Lider)',
+      'Bobina Picotada Reforçada 30x40 (Lider)',
+      'Saco de Lixo 20 L 40x59 Preto',
+      'Saco de Lixo 30 L Espessura 0,04',
+      'Saco de Lixo 50 L Espessura 0,04',
+      'Saco de Lixo 100 L 75x90',
+    ])
+  })
+
+  it('os dois sacos plásticos virgens (Araplast) dividem a mesma foto', () => {
+    const imagem = (nome: string) =>
+      DESCARTAVEIS.find((p) => p.nome === nome)?.imagem
+    expect(imagem('Saco Plástico Virgem 35x45 Espessura 0,6')).toBe(
+      imagem('Saco Plástico Virgem 40x60 Espessura 0,12'),
+    )
+    expect(imagem('Saco Plástico Virgem 35x45 Espessura 0,6')).toContain(
+      'saco-plastico-virgem',
+    )
   })
 
   it('no card, o PP das luvas sem foto de PP mostra a foto do P', () => {
@@ -432,6 +483,20 @@ describe('fotoDoDescartavel', () => {
       variacoes: [luva('M', 'm.webp'), luva('G', 'g.webp'), luva('GG')],
     }
     expect(fotoDoDescartavel(semGG, semGG.variacoes[2])).toBe('g.webp')
+  })
+
+  it('fragrância sem foto própria mostra a da primeira que tem', () => {
+    const sabonete = {
+      variacoes: [
+        luva('Erva Doce', 'erva-doce.webp'),
+        luva('Frutas Vermelhas'),
+        luva('Pistache'),
+      ],
+    }
+    expect(fotoDoDescartavel(sabonete, null)).toBe('erva-doce.webp')
+    expect(fotoDoDescartavel(sabonete, sabonete.variacoes[2])).toBe(
+      'erva-doce.webp',
+    )
   })
 
   it('variação escolhida sem foto própria cai na foto padrão (M)', () => {
