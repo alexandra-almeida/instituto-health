@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { TulipiaProduct } from '../../data/tulipiaProducts'
 import { formatPrice, generateDescription } from '../../data/tulipiaProducts'
-import bannerQueridinhosFloraty from '../../assets/tulipia-banners/banner-queridinhos-floraty-desktop.webp'
 import ScrollReveal from '../ScrollReveal'
-import BannerImagem from './BannerImagem'
-
-// Produto para onde o banner dos Queridinhos leva (sku = id do produto)
-const SKU_BANNER_QUERIDINHOS = 'floraty-creme-emoliente-para-cravos-200g-1'
 
 interface QueridinhosDestaqueProps {
   produtos: TulipiaProduct[]
@@ -20,23 +15,10 @@ function QueridinhosDestaque({ produtos }: QueridinhosDestaqueProps) {
 
   return (
     <div className="mt-12">
-      {/* Quando chegar a arte mobile, troque `mobile` (ver BannerImagem) */}
-      <Link
-        to={`/tulipia/produto/${SKU_BANNER_QUERIDINHOS}`}
-        className="mb-8 block w-full overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]"
-      >
-        <BannerImagem
-          desktop={bannerQueridinhosFloraty}
-          mobile={bannerQueridinhosFloraty}
-          alt="Os queridinhos das esteticistas: Floraty Creme Emoliente para Cravos"
-          proporcao="aspect-[1920/802]"
-        />
-      </Link>
-
       <div className="mb-6 flex flex-col items-center gap-1 text-center">
         <div className="h-1 w-12 rounded-full bg-dourado-health" />
         <h2 className="font-flatline text-xl leading-tight text-[#04452E] sm:text-2xl">
-          Os queridinhos das esteticistas
+          Queridinhos
         </h2>
         <p className="text-sm text-[#04452E]/70">
           Os favoritos da clientela Tulípia

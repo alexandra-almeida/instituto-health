@@ -1,12 +1,11 @@
 import { motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
-import bannerLancamentoHidrasolFluidDesktop from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-desktop.webp'
-import bannerLancamentoHidrasolFluidMobile from '../assets/tulipia-banners/banner-lancamento-hidrasol-fluid-mobile.webp'
+import bannerQueridinhosFloraty from '../assets/tulipia-banners/banner-queridinhos-floraty-desktop.webp'
 import tulipiaRepresentante from '../assets/tulipia-brand/tulipia-representante.png'
 import type { IconBadgeItem } from '../components/tulipia/IconBadgeCarousel'
+import BannerProduto from '../components/tulipia/BannerProduto'
 import IconBadgeCarousel from '../components/tulipia/IconBadgeCarousel'
 import LinhaDropdown from '../components/tulipia/LinhaDropdown'
-import LaunchBanner from '../components/tulipia/LaunchBanner'
 import LineBanner from '../components/tulipia/LineBanner'
 import ProductCard from '../components/tulipia/ProductCard'
 import PromoHero from '../components/tulipia/PromoHero'
@@ -54,6 +53,9 @@ const AUDIENCE_LABELS: Record<Audience, string> = {
 // restante (se houver) volta pro fluxo normal do grid, junto do catálogo,
 // pra não sumir da página.
 const EDITORIAL_QUERIDINHOS_COUNT = 3
+
+// Produto para onde o banner dos queridinhos das esteticistas leva (sku = id)
+const SKU_BANNER_QUERIDINHOS = 'floraty-creme-emoliente-para-cravos-200g-1'
 
 // Filtro "livre" — ativado pela fileira de coleções (Mais Vendidos, Alta
 // Tecnologia...), pelos cards de tipo de pele ou pelos banners de linha no
@@ -145,25 +147,41 @@ function Tulipia() {
 
   // Aciona o filtro livre (coleção, tipo de pele ou banner de linha) e rola
   // até o topo da listagem.
-  function applyCustomFilter(filter: CustomFilter) {
-    setCustomFilter(filter)
+  function rolarAteListagem() {
     document
       .getElementById('tulipia-listagem')
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function applyCustomFilter(filter: CustomFilter) {
+    setCustomFilter(filter)
+    rolarAteListagem()
   }
 
   // Faixa e banner da promoção: mostram os produtos dela. Parte deles é
   // exclusiva a profissionais, que o modo Home Care (padrão) esconde, então o
   // clique também troca para o modo Profissional, senão a lista ficaria
   // incompleta.
+  //
+  // Antes de ligar o filtro, limpa a busca: com um termo digitado a página
+  // mostra os resultados da busca e a grade filtrada nem existe. A grade só
+  // aparece depois dessa atualização, por isso a rolagem espera um instante.
+  // Se o filtro da promoção já está ligado, o clique só rola até a grade, sem
+  // desligá-lo nem mexer no modo (Home Care ou Profissional) escolhido.
   function handlePromoClick() {
-    setAudience('profissional')
-    applyCustomFilter({
-      key: CHAVE_FILTRO_PROMOCAO,
-      label: PROMOCAO_ATUAL.rotuloFiltro,
-      match: (p) => PROMOCAO_ATUAL.skus.includes(p.id),
-      ordem: PROMOCAO_ATUAL.skus,
-    })
+    const estavaBuscando = search.trim().length > 0
+    if (estavaBuscando) setSearch('')
+    if (customFilter?.key !== CHAVE_FILTRO_PROMOCAO) {
+      setAudience('profissional')
+      setCustomFilter({
+        key: CHAVE_FILTRO_PROMOCAO,
+        label: PROMOCAO_ATUAL.rotuloFiltro,
+        match: (p) => PROMOCAO_ATUAL.skus.includes(p.id),
+        ordem: PROMOCAO_ATUAL.skus,
+      })
+    }
+    if (estavaBuscando) window.setTimeout(rolarAteListagem, 100)
+    else rolarAteListagem()
   }
 
   function clearCustomFilter() {
@@ -294,9 +312,6 @@ function Tulipia() {
     (b) => b.key === 'dermo-estetic',
   )
   const ampolasBanner = TULIPIA_LINE_BANNERS.find((b) => b.key === 'ampolas')
-  const hidrasolFluid = ALL_PRODUCTS.find(
-    (p) => p.nome === 'Hidrasol - Protetor Solar Fluid FPS 60',
-  )
 
   return (
     <motion.section
@@ -318,29 +333,28 @@ function Tulipia() {
         </p>
       </div>
 
-      {/* 1. Faixa promocional (mesma posição do antigo hero); dados em
-          src/data/promocoes.ts. */}
-      <PromoStrip onClick={handlePromoClick} />
+      {/* 1. Banner principal da promoção (a faixa fina fica no fim da
+          página); dados em src/data/promocoes.ts. */}
       <PromoHero onClick={handlePromoClick} />
 
-      {/* Últimos lançamentos — banner do Hidrasol Fluid, inteiro clicável,
-          leva direto à página do produto lançado. */}
-      {hidrasolFluid && (
-        <div className="mt-10">
-          <div className="mb-5 flex flex-col items-center gap-1 text-center">
-            <div className="h-1 w-12 rounded-full bg-[#CAA02D]" />
-            <h2 className="font-flatline text-xl leading-tight text-[#04452E] sm:text-2xl">
-              Últimos Lançamentos
-            </h2>
-          </div>
-          <LaunchBanner
-            mobileImage={bannerLancamentoHidrasolFluidMobile}
-            desktopImage={bannerLancamentoHidrasolFluidDesktop}
-            alt="Lançamento Hidrasol Protetor Solar Fluid FPS 60"
-            to={`/tulipia/produto/${hidrasolFluid.id}`}
-          />
+      {/* Os queridinhos das esteticistas — banner do Floraty com um card que
+          leva ao produto (dados do catálogo pelo sku). Quando chegar a arte
+          mobile, troque `mobile` (ver BannerImagem). */}
+      <div className="mt-10">
+        <div className="mb-5 flex flex-col items-center gap-1 text-center">
+          <div className="h-1 w-12 rounded-full bg-[#CAA02D]" />
+          <h2 className="font-flatline text-xl leading-tight text-[#04452E] sm:text-2xl">
+            Os queridinhos das esteticistas
+          </h2>
         </div>
-      )}
+        <BannerProduto
+          sku={SKU_BANNER_QUERIDINHOS}
+          desktop={bannerQueridinhosFloraty}
+          mobile={bannerQueridinhosFloraty}
+          alt="Floraty Creme Emoliente para Cravos 200g"
+          proporcao="aspect-[1920/802]"
+        />
+      </div>
 
       {/* ProSkin / Dermo Estetic / Ampolas — mesmo arranjo assimétrico do
           site oficial: ProSkin (retrato) alto à esquerda, Dermo Estetic e
@@ -584,6 +598,10 @@ function Tulipia() {
           </div>
         </>
       )}
+
+      {/* Faixa fina da promoção, no fim da página (aparece sempre; escondida
+          abaixo de 640px). Mesmo filtro do banner do topo. */}
+      <PromoStrip onClick={handlePromoClick} />
     </motion.section>
   )
 }
