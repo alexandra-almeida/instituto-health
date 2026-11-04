@@ -930,9 +930,9 @@ Registrada em 02/11/2026; ainda não estava escrita.
     está.
   - O importador avisa na tela de qualquer arquivo da pasta que não casou com
     nenhum produto, e um teste falha se sobrar foto sem ligação.
-- **Ligadas hoje:** Luva de Vinil Sem Pó (Vabene), três fotos (P, M e G, mais
-  uma cópia da P como foto do produto), e Luva Viniflex Sem Pó (Vabene), três
-  fotos (P, M e G).
+- **Ligadas hoje:** Luva de Vinil Sem Pó (Vabene) e Luva Viniflex Sem Pó
+  (Vabene), cada uma com três fotos por tamanho (P, M e G). A foto única da
+  Vinil, que era cópia exata da P, foi apagada em 03/11/2026.
 - **Luva Viniflex Sem Pó:** o nome foi corrigido de "Vinilflex" para "Viniflex"
   (grafia da marca). Os sku **não mudaram** (continuam `desc-luva-vinilflex-sem-po-N`):
   o importador tem uma lista de renomeados para ligar o nome novo ao sku antigo.
