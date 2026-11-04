@@ -879,8 +879,20 @@ Tulípia.
 - **Outras dúvidas do CSV:** o Copo Descartável de 180 ml estava com "$ 4,95"
   (sem o R); a espessura do Saco Plástico Virgem 35x45 é 0,6 ou 0,06?; o Saco de
   Lixo 30 L (R$ 81,89) está caro perto do de 20 L (R$ 18,81).
-- **Fotos:** só as 4 luvas Vabene têm foto, uma por tamanho. Os outros 37
-  produtos usam o ícone da categoria. Veja a seção seguinte.
+- **PERGUNTAS para a Juliana sobre as fotos (03/11/2026):**
+  1. **A máscara da foto é Prevemax.** Essa é a marca da Máscara de TNT Tripla
+     Branca com Elástico e da Touca de TNT Branca Sanfonada? (A marca dos dois
+     produtos está "A CONFIRMAR" e a mesma foto foi usada nos dois.)
+  2. **A foto do papel higiênico BOB Premium mostra o pacote de 4 rolos** (30 m
+     x 10 cm cada); a lista é de **16 rolos**. A foto vale para a embalagem
+     de 16, ou é preciso uma foto do pacote com 16?
+  3. **Faltam as fotos das fragrâncias Frutas Vermelhas e Pistache** do
+     Sabonete Líquido 5 L (Harmoniex). Enquanto não há, as duas mostram a da
+     Erva Doce. Nota: arquivos com essas fotos apareceram na pasta de fotos
+     depois deste pedido e ainda NÃO foram ligados.
+- **Fotos:** 18 produtos têm foto: as 4 luvas Vabene (uma por tamanho), o
+  Sabonete Líquido 5 L (Harmoniex), só a Erva Doce, e 13 produtos com uma foto
+  só. Os outros 23 usam o ícone da categoria. Veja a seção seguinte.
 - **Texto do bloco de atacado e licitações e a frase de apresentação da
   página:** rascunhos, para a Juliana revisar.
 
@@ -931,14 +943,31 @@ Registrada em 02/11/2026; ainda não estava escrita.
     produto + `-` + a variação, como `luva-viniflex-sem-po-vabene-m.webp`. O
     card troca a foto conforme o tamanho escolhido; antes de escolher mostra a
     do M, ou a primeira que existir. Tamanho sem foto própria mostra a do
-    tamanho mais próximo que tem (o PP sem foto mostra a do P). Produto com uma
-    foto só continua como está.
+    tamanho mais próximo que tem (o PP sem foto mostra a do P). Variação que
+    não é tamanho (fragrância) sem foto mostra a da primeira variação que tem
+    (o Sabonete Líquido 5 L: Frutas Vermelhas e Pistache mostram a da Erva
+    Doce). Produto com uma foto só continua como está.
+  - **Foto que serve a mais de um produto** (a máscara e a touca, os dois
+    lençóis hospitalares): um arquivo só tem um nome, então a ligação é feita à
+    mão na lista `FOTOS_COMPARTILHADAS` do importador
+    (`frontend/scripts/importar-descartaveis.mjs`): arquivo -> nomes dos
+    produtos. O importador avisa se o arquivo ou o produto não existir.
   - O importador avisa na tela de qualquer arquivo da pasta que não casou com
     nenhum produto, e um teste falha se sobrar foto sem ligação.
 - **Ligadas hoje:** as 4 luvas Vabene, uma foto por tamanho: Luva de Vinil
   Sem Pó e Luva Viniflex Sem Pó (P, M e G), Luva Nitrílica Rosa (P e M; o PP
   mostra a do P) e Luva de Látex com Pó (P, M e G; o PP mostra a do P). A foto
   única da Vinil, que era cópia exata da P, foi apagada em 03/11/2026.
+- **Ligadas em 03/11/2026 (12 fotos, as oficiais dos fabricantes):**
+  - pelo nome do arquivo (renomeadas para o slug): Abaixador de Língua, Lençol
+    de Maca com Elástico, Papel Toalha Interfolha 2 Dobras 100% 20x21 e Extra
+    Luxo 20x21 (Grampel), Papel Higiênico Folha Dupla Premium 30 m (BOB), Folha
+    Dupla 30 m (Qualite) e (Personal Vip), Copo Descartável 50 ml e 180 ml
+    Branco (Faça Fácil) e, por variação, o Sabonete Líquido 5 L (Harmoniex)
+    Erva Doce;
+  - à mão, uma foto para dois produtos: `mascara-e-touca-tnt.webp` (Máscara de
+    TNT Tripla Branca com Elástico e Touca de TNT Branca Sanfonada) e
+    `lencol-hospitalar-rolo.webp` (Lençol Hospitalar 50x50 e 70x50, Classpel).
 - **Testes de foto:** o Vitest tem o cache de módulos em disco desligado
   (`fsModuleCache: false` em `frontend/vitest.config.ts`), porque com ele ligado
   uma foto nova na pasta não aparecia na lista dos testes.

@@ -119,6 +119,7 @@
       "marca": null,
       "embalagem": "Pacote com 100",
       "rotuloDaVariacao": null,
+      "imagem": "abaixador-de-lingua.webp",
       "variacoes": [
         {
           "sku": "desc-abaixador-de-lingua-13",
@@ -133,6 +134,7 @@
       "marca": null,
       "embalagem": "Pacote com 50",
       "rotuloDaVariacao": null,
+      "imagem": "mascara-e-touca-tnt.webp",
       "variacoes": [
         {
           "sku": "desc-mascara-de-tnt-tripla-branca-com-elastico-14",
@@ -147,6 +149,7 @@
       "marca": null,
       "embalagem": "Pacote com 100",
       "rotuloDaVariacao": null,
+      "imagem": "mascara-e-touca-tnt.webp",
       "variacoes": [
         {
           "sku": "desc-touca-de-tnt-branca-sanfonada-15",
@@ -161,6 +164,7 @@
       "marca": null,
       "embalagem": "Pacote com 10",
       "rotuloDaVariacao": null,
+      "imagem": "lencol-de-maca-com-elastico.webp",
       "variacoes": [
         {
           "sku": "desc-lencol-de-maca-com-elastico-16",
@@ -175,6 +179,7 @@
       "marca": "Classpel",
       "embalagem": null,
       "rotuloDaVariacao": null,
+      "imagem": "lencol-hospitalar-rolo.webp",
       "variacoes": [
         {
           "sku": "desc-lencol-hospitalar-50x50-17",
@@ -189,6 +194,7 @@
       "marca": "Classpel",
       "embalagem": null,
       "rotuloDaVariacao": null,
+      "imagem": "lencol-hospitalar-rolo.webp",
       "variacoes": [
         {
           "sku": "desc-lencol-hospitalar-70x50-18",
@@ -203,6 +209,7 @@
       "marca": null,
       "embalagem": "Pacote com 1000 folhas",
       "rotuloDaVariacao": null,
+      "imagem": "papel-toalha-interfolha-2-dobras-100-20x21.webp",
       "variacoes": [
         {
           "sku": "desc-papel-toalha-interfolha-2-dobras-100-20x21-19",
@@ -217,6 +224,7 @@
       "marca": "Grampel",
       "embalagem": "Pacote com 1000 folhas",
       "rotuloDaVariacao": null,
+      "imagem": "papel-toalha-interfolha-2-dobras-extra-luxo-20x21-grampel.webp",
       "variacoes": [
         {
           "sku": "desc-papel-toalha-interfolha-2-dobras-extra-luxo-20x21-20",
@@ -231,6 +239,7 @@
       "marca": "BOB",
       "embalagem": "Pacote com 16 rolos",
       "rotuloDaVariacao": null,
+      "imagem": "papel-higienico-folha-dupla-premium-30-m-bob.webp",
       "variacoes": [
         {
           "sku": "desc-papel-higienico-folha-dupla-premium-30-m-21",
@@ -245,6 +254,7 @@
       "marca": "Qualite",
       "embalagem": "Pacote com 16 rolos",
       "rotuloDaVariacao": null,
+      "imagem": "papel-higienico-folha-dupla-30-m-qualite.webp",
       "variacoes": [
         {
           "sku": "desc-papel-higienico-folha-dupla-30-m-qualite-22",
@@ -259,6 +269,7 @@
       "marca": "Personal Vip",
       "embalagem": "Pacote com 16 rolos",
       "rotuloDaVariacao": null,
+      "imagem": "papel-higienico-folha-dupla-30-m-personal-vip.webp",
       "variacoes": [
         {
           "sku": "desc-papel-higienico-folha-dupla-30-m-personal-vip-23",
@@ -273,6 +284,7 @@
       "marca": "Faça Fácil",
       "embalagem": "Pacote com 100",
       "rotuloDaVariacao": null,
+      "imagem": "copo-descartavel-50-ml-branco-faca-facil.webp",
       "variacoes": [
         {
           "sku": "desc-copo-descartavel-50-ml-branco-24",
@@ -287,6 +299,7 @@
       "marca": "Faça Fácil",
       "embalagem": "Pacote com 100",
       "rotuloDaVariacao": null,
+      "imagem": "copo-descartavel-180-ml-branco-faca-facil.webp",
       "variacoes": [
         {
           "sku": "desc-copo-descartavel-180-ml-branco-25",
@@ -333,6 +346,7 @@
         {
           "sku": "desc-sabonete-liquido-5-l-erva-doce-28",
           "rotulo": "Erva Doce",
+          "imagem": "sabonete-liquido-5-l-harmoniex-erva-doce.webp",
           "preco": 26.9
         },
         {

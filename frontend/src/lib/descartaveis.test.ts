@@ -174,6 +174,29 @@ const LUVAS_VABENE = [
   'Luva de Látex com Pó',
 ]
 
+// Produtos com UMA foto para o produto inteiro (as luvas têm uma por tamanho)
+const PRODUTOS_COM_UMA_FOTO = [
+  'Abaixador de Língua',
+  'Máscara de TNT Tripla Branca com Elástico',
+  'Touca de TNT Branca Sanfonada',
+  'Lençol de Maca com Elástico',
+  'Lençol Hospitalar 50x50',
+  'Lençol Hospitalar 70x50',
+  'Papel Toalha Interfolha 2 Dobras 100% 20x21',
+  'Papel Toalha Interfolha 2 Dobras Extra Luxo 20x21',
+  'Papel Higiênico Folha Dupla Premium 30 m',
+  // dois produtos com este nome (Qualite e Personal Vip)
+  'Papel Higiênico Folha Dupla 30 m',
+  'Papel Higiênico Folha Dupla 30 m',
+  'Copo Descartável 50 ml Branco',
+  'Copo Descartável 180 ml Branco',
+]
+// Os mesmos 2 arquivos que o importador liga à mão (FOTOS_COMPARTILHADAS)
+const ARQUIVOS_COMPARTILHADOS = [
+  'mascara-e-touca-tnt.webp',
+  'lencol-hospitalar-rolo.webp',
+]
+
 describe('marca e embalagem confirmadas das luvas', () => {
   it.each(LUVAS_VABENE)(
     '%s é Vabene e vem em "Caixa com 100", confirmado pela caixa',
@@ -239,7 +262,7 @@ describe('fotos dos descartáveis', () => {
     variacoes: Array<{ imagem?: string }>
   }) => Boolean(p.imagem) || p.variacoes.some((v) => v.imagem)
 
-  it('as 4 luvas Vabene têm uma foto por tamanho; só elas têm foto', () => {
+  it('as 4 luvas Vabene têm uma foto por tamanho', () => {
     const fotos = (nome: string) =>
       DESCARTAVEIS.find((p) => p.nome === nome)?.variacoes.map((v) =>
         Boolean(v.imagem),
@@ -249,9 +272,69 @@ describe('fotos dos descartáveis', () => {
     // PP sem foto própria: usa a do P (ver fotoDoDescartavel)
     expect(fotos('Luva Nitrílica Rosa')).toEqual([false, true, true])
     expect(fotos('Luva de Látex com Pó')).toEqual([false, true, true, true])
-    expect(DESCARTAVEIS.filter(comFoto).map((p) => p.nome)).toEqual(
-      LUVAS_VABENE,
+    for (const nome of LUVAS_VABENE) {
+      const luva = DESCARTAVEIS.find((p) => p.nome === nome)!
+      expect(luva.imagem).toBeUndefined()
+    }
+  })
+
+  it('as 4 luvas, os 13 produtos de uma foto só e o sabonete (foto por fragrância) são os únicos com foto', () => {
+    expect(
+      DESCARTAVEIS.filter(comFoto)
+        .map((p) => p.nome)
+        .sort(),
+    ).toEqual(
+      [
+        ...LUVAS_VABENE,
+        ...PRODUTOS_COM_UMA_FOTO,
+        'Sabonete Líquido 5 L',
+      ].sort(),
     )
+    expect(DESCARTAVEIS.filter(comFoto)).toHaveLength(18)
+  })
+
+  it.each(PRODUTOS_COM_UMA_FOTO)(
+    '%s tem uma foto do produto inteiro, a mesma em qualquer variação',
+    (nome) => {
+      for (const produto of DESCARTAVEIS.filter((p) => p.nome === nome)) {
+        expect(produto.imagem).toEqual(expect.any(String))
+        expect(fotoDoDescartavel(produto, produto.variacoes[0])).toBe(
+          produto.imagem,
+        )
+        expect(fotoDoDescartavel(produto, null)).toBe(produto.imagem)
+      }
+    },
+  )
+
+  it('a foto da máscara e da touca é a mesma, e a dos dois lençóis também', () => {
+    const imagem = (nome: string) =>
+      DESCARTAVEIS.find((p) => p.nome === nome)?.imagem
+    expect(imagem('Máscara de TNT Tripla Branca com Elástico')).toBe(
+      imagem('Touca de TNT Branca Sanfonada'),
+    )
+    expect(imagem('Lençol Hospitalar 50x50')).toBe(
+      imagem('Lençol Hospitalar 70x50'),
+    )
+    expect(imagem('Lençol Hospitalar 50x50')).toContain(
+      'lencol-hospitalar-rolo',
+    )
+    expect(imagem('Lençol Hospitalar 50x50')).not.toBe(
+      imagem('Lençol de Maca com Elástico'),
+    )
+  })
+
+  it('as três fragrâncias do sabonete mostram a foto da Erva Doce, antes e depois de escolher', () => {
+    const sabonete = DESCARTAVEIS.find(
+      (p) => p.nome === 'Sabonete Líquido 5 L',
+    )!
+    const [ervaDoce, frutasVermelhas, pistache] = sabonete.variacoes
+    expect(ervaDoce.imagem).toContain('erva-doce')
+    expect(frutasVermelhas.imagem).toBeUndefined()
+    expect(pistache.imagem).toBeUndefined()
+    expect(fotoDoDescartavel(sabonete, null)).toBe(ervaDoce.imagem)
+    expect(fotoDoDescartavel(sabonete, ervaDoce)).toBe(ervaDoce.imagem)
+    expect(fotoDoDescartavel(sabonete, frutasVermelhas)).toBe(ervaDoce.imagem)
+    expect(fotoDoDescartavel(sabonete, pistache)).toBe(ervaDoce.imagem)
   })
 
   it('no card, o PP das luvas sem foto de PP mostra a foto do P', () => {
@@ -299,10 +382,13 @@ describe('fotos dos descartáveis', () => {
         slugDoProduto(p.nome, p.marca),
         slugDoProduto(p.nome, null),
       ]
-      if (p.imagem) expect(bases).toContain(semExtensao(p.imagem))
+      // Fotos compartilhadas por mais de um produto são ligadas à mão no importador
+      if (p.imagem && !ARQUIVOS_COMPARTILHADOS.includes(p.imagem)) {
+        expect(bases).toContain(semExtensao(p.imagem))
+      }
       for (const v of p.variacoes) {
         if (!v.imagem) continue
-        const sufixo = '-' + normalizarBusca(v.rotulo ?? '')
+        const sufixo = '-' + slugDoProduto(v.rotulo ?? '', null)
         expect(bases.map((b) => b + sufixo)).toContain(semExtensao(v.imagem))
       }
     }

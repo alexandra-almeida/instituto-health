@@ -199,6 +199,19 @@ for (const linhas of grupos.values()) {
 //   slug-do-produto.webp             uma foto para o produto inteiro
 //   slug-do-produto-<variação>.webp  uma foto por variação (ex: ...-vabene-m.webp)
 // Um produto pode ter os dois. O site troca a foto conforme a variação escolhida.
+// Exceção: uma foto que serve a mais de um produto (um arquivo só tem um nome,
+// então a regra do slug não dá conta). A ligação é feita à mão aqui: arquivo ->
+// nomes dos produtos. O importador avisa se o arquivo ou o produto não existir.
+const FOTOS_COMPARTILHADAS = {
+  'mascara-e-touca-tnt.webp': [
+    'Máscara de TNT Tripla Branca com Elástico',
+    'Touca de TNT Branca Sanfonada',
+  ],
+  'lencol-hospitalar-rolo.webp': [
+    'Lençol Hospitalar 50x50',
+    'Lençol Hospitalar 70x50',
+  ],
+}
 const PASTA_DAS_FOTOS = resolve(raiz, 'src', 'assets', 'descartaveis')
 const EXTENSAO_DE_FOTO = /\.(webp|jpe?g|png)$/i
 const arquivosDeFoto = existsSync(PASTA_DAS_FOTOS)
@@ -220,6 +233,21 @@ const produtosPorNome = new Map()
 for (const p of produtos) {
   produtosPorNome.set(p.nome, (produtosPorNome.get(p.nome) ?? 0) + 1)
 }
+for (const [arquivo, nomes] of Object.entries(FOTOS_COMPARTILHADAS)) {
+  if (!arquivosDeFoto.includes(arquivo)) {
+    avisosDeFoto.push(`${arquivo}: foto compartilhada que não está na pasta`)
+  }
+  for (const nome of nomes) {
+    if (!produtosPorNome.has(nome)) {
+      avisosDeFoto.push(`${arquivo}: o produto "${nome}" não existe na lista`)
+    }
+  }
+}
+const fotoCompartilhadaDe = (nome) =>
+  Object.entries(FOTOS_COMPARTILHADAS).find(
+    ([arquivo, nomes]) =>
+      nomes.includes(nome) && arquivosDeFoto.includes(arquivo),
+  )?.[0] ?? null
 const arquivosLigados = new Set()
 const comFoto = produtos.map((p) => {
   const bases = [
@@ -233,7 +261,7 @@ const comFoto = produtos.map((p) => {
     }
     return null
   }
-  const fotoDoProduto = arquivoDe(null)
+  const fotoDoProduto = arquivoDe(null) ?? fotoCompartilhadaDe(p.nome)
   if (fotoDoProduto) arquivosLigados.add(fotoDoProduto)
   const variacoes = p.variacoes.map((v) => {
     const foto = v.rotulo ? arquivoDe(v.rotulo) : null
