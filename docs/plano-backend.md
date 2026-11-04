@@ -855,30 +855,32 @@ Tulípia.
 
 ### OBRIGATÓRIO antes do lançamento
 
-- Confirmar com a Juliana as **embalagens dos 6 produtos** que hoje ficam à
+- Confirmar com a Juliana as **embalagens dos 4 produtos** que hoje ficam à
   venda sem dizer o que vem na caixa (decisão de 02/11/2026: ficam à venda por
   enquanto porque o checkout ainda não está ligado). Sem isso o cliente vê o
-  preço sem saber a quantidade: Luva Nitrílica Rosa e Luva de Látex com Pó
-  (CSV: "caixa com 100?"), Lençol Hospitalar 50x50 e 70x50 ("rolo?"), Saco de
-  Lixo 30 L e 50 L ("5x20" quer dizer 5 pacotes com 20?).
-  Já confirmadas pela caixa do fabricante em 03/11/2026 (saíram da lista):
-  Luva de Vinil Sem Pó e Luva Viniflex Sem Pó, as duas "Caixa com 100".
+  preço sem saber a quantidade: Lençol Hospitalar 50x50 e 70x50 ("rolo?") e
+  Saco de Lixo 30 L e 50 L ("5x20" quer dizer 5 pacotes com 20?).
+  Já confirmadas pela caixa do fabricante em 03/11/2026 (saíram das listas de
+  marca e de embalagem a confirmar): as 4 luvas, Luva de Vinil Sem Pó, Luva
+  Viniflex Sem Pó, Luva Nitrílica Rosa e Luva de Látex com Pó, todas
+  **Vabene** e "**Caixa com 100**".
 
 ### Pendências do CSV para a Juliana
 
-- **Marca a confirmar (13 produtos):** Luva Nitrílica Rosa, Luva de Látex com
-  Pó, Abaixador de Língua, Máscara de TNT Tripla Branca com Elástico, Touca de
-  TNT Branca Sanfonada, Lençol de Maca com Elástico, Papel Toalha Interfolha 2
-  Dobras 100% 20x21, Filtro de Café de Papel 103 e 102, Saco de Lixo 20 L, 30 L,
-  50 L e 100 L.
-- **Embalagem a confirmar (6 produtos):** a lista acima do OBRIGATÓRIO.
-- **Dúvidas do CSV:** a Luva Nitrílica Rosa não tem o tamanho G na lista; o
-  Copo Descartável de 180 ml estava com "$ 4,95" (sem o R); a espessura do Saco
-  Plástico Virgem 35x45 é 0,6 ou 0,06?; o Saco de Lixo 30 L (R$ 81,89) está caro
-  perto do de 20 L (R$ 18,81).
-- **Fotos:** só as duas luvas Vabene (Luva de Vinil Sem Pó e Luva Viniflex Sem
-  Pó) têm foto, uma por tamanho. Os outros 39 produtos usam o ícone da
-  categoria. Veja a seção seguinte.
+- **Marca a confirmar (11 produtos):** Abaixador de Língua, Máscara de TNT
+  Tripla Branca com Elástico, Touca de TNT Branca Sanfonada, Lençol de Maca com
+  Elástico, Papel Toalha Interfolha 2 Dobras 100% 20x21, Filtro de Café de
+  Papel 103 e 102, Saco de Lixo 20 L, 30 L, 50 L e 100 L.
+- **Embalagem a confirmar (4 produtos):** a lista acima do OBRIGATÓRIO.
+- **PERGUNTA para a Juliana: a Luva Nitrílica Rosa é vendida em tamanho G? Se
+  for, qual o preço?** A lista de preços só tem PP, P e M, então o site NÃO
+  tem a variação G. Existe foto da caixa G, guardada em reserva (ver "Fotos dos
+  descartáveis").
+- **Outras dúvidas do CSV:** o Copo Descartável de 180 ml estava com "$ 4,95"
+  (sem o R); a espessura do Saco Plástico Virgem 35x45 é 0,6 ou 0,06?; o Saco de
+  Lixo 30 L (R$ 81,89) está caro perto do de 20 L (R$ 18,81).
+- **Fotos:** só as 4 luvas Vabene têm foto, uma por tamanho. Os outros 37
+  produtos usam o ícone da categoria. Veja a seção seguinte.
 - **Texto do bloco de atacado e licitações e a frase de apresentação da
   página:** rascunhos, para a Juliana revisar.
 
@@ -917,7 +919,9 @@ Registrada em 02/11/2026; ainda não estava escrita.
 - **Como acrescentar uma foto:** colocar o arquivo (webp, jpg ou png) em
   `frontend/src/assets/descartaveis/`, com o **slug do produto** no nome, e rodar
   `npm run descartaveis` (dentro de `frontend/`). O importador liga a foto
-  sozinho e grava o nome do arquivo no JSON; o site resolve a URL.
+  sozinho e grava o nome do arquivo no JSON; o site resolve a URL. Só vale a
+  pasta em si, não as subpastas: `frontend/src/assets/descartaveis/_reservas/`
+  guarda foto que ainda não deve aparecer.
   - O slug é o nome do produto em minúsculas, sem acento e com hífens, mais a
     marca quando ela está confirmada: `luva-de-vinil-sem-po-vabene`. Se o
     produto não tem marca confirmada, só o nome, e só vale se o nome for único
@@ -926,27 +930,31 @@ Registrada em 02/11/2026; ainda não estava escrita.
   - **Uma foto por variação** (um tamanho de luva, uma fragrância): o slug do
     produto + `-` + a variação, como `luva-viniflex-sem-po-vabene-m.webp`. O
     card troca a foto conforme o tamanho escolhido; antes de escolher mostra a
-    do M, ou a primeira que existir. Produto com uma foto só continua como
-    está.
+    do M, ou a primeira que existir. Tamanho sem foto própria mostra a do
+    tamanho mais próximo que tem (o PP sem foto mostra a do P). Produto com uma
+    foto só continua como está.
   - O importador avisa na tela de qualquer arquivo da pasta que não casou com
     nenhum produto, e um teste falha se sobrar foto sem ligação.
-- **Ligadas hoje:** Luva de Vinil Sem Pó (Vabene) e Luva Viniflex Sem Pó
-  (Vabene), cada uma com três fotos por tamanho (P, M e G). A foto única da
-  Vinil, que era cópia exata da P, foi apagada em 03/11/2026.
+- **Ligadas hoje:** as 4 luvas Vabene, uma foto por tamanho: Luva de Vinil
+  Sem Pó e Luva Viniflex Sem Pó (P, M e G), Luva Nitrílica Rosa (P e M; o PP
+  mostra a do P) e Luva de Látex com Pó (P, M e G; o PP mostra a do P). A foto
+  única da Vinil, que era cópia exata da P, foi apagada em 03/11/2026.
+- **Testes de foto:** o Vitest tem o cache de módulos em disco desligado
+  (`fsModuleCache: false` em `frontend/vitest.config.ts`), porque com ele ligado
+  uma foto nova na pasta não aparecia na lista dos testes.
 - **Luva Viniflex Sem Pó:** o nome foi corrigido de "Vinilflex" para "Viniflex"
   (grafia da marca). Os sku **não mudaram** (continuam `desc-luva-vinilflex-sem-po-N`):
   o importador tem uma lista de renomeados para ligar o nome novo ao sku antigo.
   A embalagem passou a "Caixa com 100".
-- **Banco:** estas mudanças (embalagem das duas luvas e o nome da Viniflex)
-  alteram 6 linhas de `produtos` (campos `nome` e `tamanho`). **Ainda NÃO
-  aplicado**: a simulação do seed mostra os 6 alterados e falta a aprovação da
-  Alexandra para `npm run seed:produtos -- --aplicar`.
-- **Fotos na pasta ainda sem ligação:** `luva-latex-vabene-p/m/g.webp` e
-  `luva-nitrilica-vabene-p/m/g.webp` (6 arquivos). Não foram ligadas porque o
-  CSV não confirma a marca (a lista diz "A CONFIRMAR" para a Luva de Látex com
-  Pó e para a Luva Nitrílica Rosa) e porque a Luva de Látex tem tamanho PP sem
-  foto e a Luva Nitrílica não tem o tamanho G na lista. Decidir com a Juliana
-  antes de ligar.
+- **Banco:** a marca e a embalagem das 4 luvas e o nome da Viniflex alteram
+  13 linhas de `produtos` (campos `nome` e `tamanho`; os sku não mudam).
+  **Ainda NÃO aplicado**: a simulação do seed mostra os alterados e falta a
+  aprovação da Alexandra para `npm run seed:produtos -- --aplicar`.
+- **Foto em reserva:** `_reservas/luva-nitrilica-rosa-vabene-g.webp` (a caixa G
+  da Luva Nitrílica Rosa). Não aparece no site porque a lista de preços não tem
+  a variação G; ver a PERGUNTA para a Juliana acima. Se ela vender em G, criar a
+  variação no CSV (com o preço), mover o arquivo para a pasta de fotos e rodar
+  `npm run descartaveis`.
 - **Detalhe das fotos:** a caixa da Luva de Vinil traz "luvas de vinil
   industrial" e "uso profissional, food"; vale a Juliana conferir se esse texto
   da caixa combina com o uso em clínica.

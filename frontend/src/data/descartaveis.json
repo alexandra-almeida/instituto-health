@@ -58,8 +58,8 @@
     {
       "nome": "Luva Nitrílica Rosa",
       "categoria": "Luvas",
-      "marca": null,
-      "embalagem": null,
+      "marca": "Vabene",
+      "embalagem": "Caixa com 100",
       "rotuloDaVariacao": "Tamanho",
       "variacoes": [
         {
@@ -70,11 +70,13 @@
         {
           "sku": "desc-luva-nitrilica-rosa-p-7",
           "rotulo": "P",
+          "imagem": "luva-nitrilica-rosa-vabene-p.webp",
           "preco": 28
         },
         {
           "sku": "desc-luva-nitrilica-rosa-m-8",
           "rotulo": "M",
+          "imagem": "luva-nitrilica-rosa-vabene-m.webp",
           "preco": 28
         }
       ]
@@ -82,8 +84,8 @@
     {
       "nome": "Luva de Látex com Pó",
       "categoria": "Luvas",
-      "marca": null,
-      "embalagem": null,
+      "marca": "Vabene",
+      "embalagem": "Caixa com 100",
       "rotuloDaVariacao": "Tamanho",
       "variacoes": [
         {
@@ -94,16 +96,19 @@
         {
           "sku": "desc-luva-de-latex-com-po-p-10",
           "rotulo": "P",
+          "imagem": "luva-de-latex-com-po-vabene-p.webp",
           "preco": 26
         },
         {
           "sku": "desc-luva-de-latex-com-po-m-11",
           "rotulo": "M",
+          "imagem": "luva-de-latex-com-po-vabene-m.webp",
           "preco": 26
         },
         {
           "sku": "desc-luva-de-latex-com-po-g-12",
           "rotulo": "G",
+          "imagem": "luva-de-latex-com-po-vabene-g.webp",
           "preco": 26
         }
       ]

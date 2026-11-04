@@ -148,9 +148,9 @@ describe('dados dos descartáveis', () => {
     ])
   })
 
-  it('13 produtos sem marca e 6 sem embalagem confirmadas', () => {
-    expect(DESCARTAVEIS.filter((p) => p.marca === null)).toHaveLength(13)
-    expect(DESCARTAVEIS.filter((p) => p.embalagem === null)).toHaveLength(6)
+  it('11 produtos sem marca e 4 sem embalagem confirmadas', () => {
+    expect(DESCARTAVEIS.filter((p) => p.marca === null)).toHaveLength(11)
+    expect(DESCARTAVEIS.filter((p) => p.embalagem === null)).toHaveLength(4)
   })
 
   it('as listas de categorias e marcas vêm só do que está confirmado', () => {
@@ -167,14 +167,48 @@ describe('dados dos descartáveis', () => {
   })
 })
 
-describe('embalagem confirmada', () => {
-  it.each(['Luva de Vinil Sem Pó', 'Luva Viniflex Sem Pó'])(
-    '%s (Vabene) é "Caixa com 100", confirmada pela caixa',
+const LUVAS_VABENE = [
+  'Luva de Vinil Sem Pó',
+  'Luva Viniflex Sem Pó',
+  'Luva Nitrílica Rosa',
+  'Luva de Látex com Pó',
+]
+
+describe('marca e embalagem confirmadas das luvas', () => {
+  it.each(LUVAS_VABENE)(
+    '%s é Vabene e vem em "Caixa com 100", confirmado pela caixa',
     (nome) => {
       const luva = DESCARTAVEIS.find((p) => p.nome === nome)
+      expect(luva?.marca).toBe('Vabene')
       expect(luva?.embalagem).toBe('Caixa com 100')
     },
   )
+
+  it('só os 4 Lençóis e Sacos de Lixo seguem sem embalagem confirmada', () => {
+    expect(
+      DESCARTAVEIS.filter((p) => p.embalagem === null).map((p) => p.nome),
+    ).toEqual([
+      'Lençol Hospitalar 50x50',
+      'Lençol Hospitalar 70x50',
+      'Saco de Lixo 30 L Espessura 0,04',
+      'Saco de Lixo 50 L Espessura 0,04',
+    ])
+  })
+})
+
+describe('Luva Nitrílica Rosa', () => {
+  it('não tem a variação G (não está na lista de preços)', () => {
+    const luva = DESCARTAVEIS.find((p) => p.nome === 'Luva Nitrílica Rosa')
+    expect(luva?.variacoes.map((v) => v.rotulo)).toEqual(['PP', 'P', 'M'])
+  })
+
+  it('a foto do G não é servida (fica reservada fora da pasta de fotos)', () => {
+    expect(
+      [...FOTOS_DOS_DESCARTAVEIS.keys()].some((a) =>
+        a.startsWith('luva-nitrilica-rosa-vabene-g'),
+      ),
+    ).toBe(false)
+  })
 })
 
 describe('nome da Viniflex', () => {
@@ -205,19 +239,29 @@ describe('fotos dos descartáveis', () => {
     variacoes: Array<{ imagem?: string }>
   }) => Boolean(p.imagem) || p.variacoes.some((v) => v.imagem)
 
-  it('as duas luvas Vabene têm uma foto por tamanho; só elas têm foto', () => {
-    for (const nome of ['Luva de Vinil Sem Pó', 'Luva Viniflex Sem Pó']) {
-      const luva = DESCARTAVEIS.find((p) => p.nome === nome)
-      expect(luva?.variacoes.map((v) => Boolean(v.imagem))).toEqual([
-        true,
-        true,
-        true,
-      ])
+  it('as 4 luvas Vabene têm uma foto por tamanho; só elas têm foto', () => {
+    const fotos = (nome: string) =>
+      DESCARTAVEIS.find((p) => p.nome === nome)?.variacoes.map((v) =>
+        Boolean(v.imagem),
+      )
+    expect(fotos('Luva de Vinil Sem Pó')).toEqual([true, true, true])
+    expect(fotos('Luva Viniflex Sem Pó')).toEqual([true, true, true])
+    // PP sem foto própria: usa a do P (ver fotoDoDescartavel)
+    expect(fotos('Luva Nitrílica Rosa')).toEqual([false, true, true])
+    expect(fotos('Luva de Látex com Pó')).toEqual([false, true, true, true])
+    expect(DESCARTAVEIS.filter(comFoto).map((p) => p.nome)).toEqual(
+      LUVAS_VABENE,
+    )
+  })
+
+  it('no card, o PP das luvas sem foto de PP mostra a foto do P', () => {
+    for (const nome of ['Luva Nitrílica Rosa', 'Luva de Látex com Pó']) {
+      const luva = DESCARTAVEIS.find((p) => p.nome === nome)!
+      const pp = luva.variacoes[0]
+      const p = luva.variacoes[1]
+      expect(pp.imagem).toBeUndefined()
+      expect(fotoDoDescartavel(luva, pp)).toBe(p.imagem)
     }
-    expect(DESCARTAVEIS.filter(comFoto).map((p) => p.nome)).toEqual([
-      'Luva de Vinil Sem Pó',
-      'Luva Viniflex Sem Pó',
-    ])
   })
 
   it('cada tamanho tem uma foto diferente', () => {
@@ -286,6 +330,22 @@ describe('fotoDoDescartavel', () => {
       variacoes: [luva('P'), luva('M'), luva('G', 'g.webp')],
     }
     expect(fotoDoDescartavel(semM, null)).toBe('g.webp')
+  })
+
+  it('tamanho sem foto própria mostra a do tamanho mais próximo (PP usa a do P)', () => {
+    const semPP = {
+      variacoes: [
+        luva('PP'),
+        luva('P', 'p.webp'),
+        luva('M', 'm.webp'),
+        luva('G', 'g.webp'),
+      ],
+    }
+    expect(fotoDoDescartavel(semPP, semPP.variacoes[0])).toBe('p.webp')
+    const semGG = {
+      variacoes: [luva('M', 'm.webp'), luva('G', 'g.webp'), luva('GG')],
+    }
+    expect(fotoDoDescartavel(semGG, semGG.variacoes[2])).toBe('g.webp')
   })
 
   it('variação escolhida sem foto própria cai na foto padrão (M)', () => {

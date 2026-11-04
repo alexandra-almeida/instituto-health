@@ -69,19 +69,46 @@ export function paraCarrinho(
   }
 }
 
+// Tamanhos de luva, do menor para o maior. Um tamanho sem foto própria usa a do
+// vizinho mais próximo que tem (ex: o PP sem foto mostra a do P).
+const ORDEM_DOS_TAMANHOS = ['PP', 'P', 'M', 'G', 'GG', 'XG']
+
+type VariacaoComFoto = { rotulo: string | null; imagem?: string }
+
+function fotoDoTamanhoMaisProximo(
+  variacoes: ReadonlyArray<VariacaoComFoto>,
+  rotulo: string | null | undefined,
+) {
+  const posicao = rotulo ? ORDEM_DOS_TAMANHOS.indexOf(rotulo) : -1
+  if (posicao < 0) return undefined
+  for (let distancia = 1; distancia < ORDEM_DOS_TAMANHOS.length; distancia++) {
+    // O vizinho menor vem primeiro; o PP, que não tem menor, cai no P
+    for (const vizinho of [posicao - distancia, posicao + distancia]) {
+      const foto = variacoes.find(
+        (v) => v.rotulo === ORDEM_DOS_TAMANHOS[vizinho],
+      )?.imagem
+      if (foto) return foto
+    }
+  }
+  return undefined
+}
+
 // Foto mostrada no card. Quando o produto tem uma foto por variação (ex: uma
-// caixa para cada tamanho da luva), vale a da variação escolhida. Antes de
-// escolher, ou se a escolhida não tiver foto, vale a da variação M, ou a
-// primeira variação que tiver foto; por último, a foto do produto inteiro.
-// Sem nenhuma foto devolve undefined e o card usa o ícone da categoria.
+// caixa para cada tamanho da luva), vale a da variação escolhida. Se o tamanho
+// escolhido não tem foto própria, vale a do tamanho mais próximo que tem. Antes
+// de escolher (ou em variação que não é tamanho, como fragrância sem foto) vale
+// a da variação M, ou a primeira que tiver foto; por último, a foto do produto
+// inteiro. Sem nenhuma foto devolve undefined e o card usa o ícone da categoria.
 export function fotoDoDescartavel(
   produto: {
     imagem?: string
-    variacoes: ReadonlyArray<{ rotulo: string | null; imagem?: string }>
+    variacoes: ReadonlyArray<VariacaoComFoto>
   },
-  variacao: { imagem?: string } | null,
+  variacao: { rotulo?: string | null; imagem?: string } | null,
 ) {
   if (variacao?.imagem) return variacao.imagem
+  const vizinha = fotoDoTamanhoMaisProximo(produto.variacoes, variacao?.rotulo)
+  if (vizinha) return vizinha
   const padrao =
     produto.variacoes.find((v) => v.rotulo === 'M' && v.imagem) ??
     produto.variacoes.find((v) => v.imagem)
