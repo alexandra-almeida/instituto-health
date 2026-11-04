@@ -9,6 +9,7 @@ import LinhaDropdown from '../components/tulipia/LinhaDropdown'
 import LaunchBanner from '../components/tulipia/LaunchBanner'
 import LineBanner from '../components/tulipia/LineBanner'
 import ProductCard from '../components/tulipia/ProductCard'
+import PromoHero from '../components/tulipia/PromoHero'
 import PromoStrip from '../components/tulipia/PromoStrip'
 import QueridinhosDestaque from '../components/tulipia/QueridinhosDestaque'
 import SkinTypeGrid from '../components/tulipia/SkinTypeGrid'
@@ -19,7 +20,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
-import { PROMO_LANCAMENTOS_SEMANA_3 } from '../data/promocoes'
+import { PROMO_ESQUENTA_BLACK_SEMANA_1 } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -147,15 +148,16 @@ function Tulipia() {
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  // Faixa promocional: mostra os produtos da promoção. Todos são exclusivos
-  // a profissionais, que o modo Home Care (padrão) esconde, então o clique
-  // também troca para o modo Profissional, senão a lista ficaria vazia.
+  // Faixa e banner da promoção: mostram os produtos dela. Parte deles é
+  // exclusiva a profissionais, que o modo Home Care (padrão) esconde, então o
+  // clique também troca para o modo Profissional, senão a lista ficaria
+  // incompleta.
   function handlePromoClick() {
     setAudience('profissional')
     applyCustomFilter({
-      key: 'promo-lancamentos',
-      label: PROMO_LANCAMENTOS_SEMANA_3.rotuloFiltro,
-      match: (p) => PROMO_LANCAMENTOS_SEMANA_3.skus.includes(p.id),
+      key: 'promo-esquenta-black',
+      label: PROMO_ESQUENTA_BLACK_SEMANA_1.rotuloFiltro,
+      match: (p) => PROMO_ESQUENTA_BLACK_SEMANA_1.skus.includes(p.id),
     })
   }
 
@@ -304,6 +306,7 @@ function Tulipia() {
       {/* 1. Faixa promocional (mesma posição do antigo hero); dados em
           src/data/promocoes.ts. */}
       <PromoStrip onClick={handlePromoClick} />
+      <PromoHero onClick={handlePromoClick} />
 
       {/* Últimos lançamentos — banner do Hidrasol Fluid, inteiro clicável,
           leva direto à página do produto lançado. */}

@@ -1,11 +1,12 @@
-import bannerLancamento from '../../assets/tulipia-banners/banner-lancamento.webp'
-import { PROMO_LANCAMENTOS_SEMANA_3 } from '../../data/promocoes'
+import faixaEsquentaBlack from '../../assets/tulipia-banners/faixa-esquenta-black-semana-1.webp'
+import { PROMO_ESQUENTA_BLACK_SEMANA_1 } from '../../data/promocoes'
 
 interface PromoStripProps {
   onClick: () => void
 }
 
-// Faixa promocional, sempre visível, em todas as larguras de tela. A peça
+// Faixa promocional, visível de 640px para cima: no celular a arte (2720x200)
+// fica ilegível, então ela some e o banner principal (PromoHero) assume. A peça
 // inteira é clicável e mostra os produtos da promoção (o filtro em si é
 // aplicado pela página).
 function PromoStrip({ onClick }: PromoStripProps) {
@@ -13,11 +14,11 @@ function PromoStrip({ onClick }: PromoStripProps) {
     <button
       type="button"
       onClick={onClick}
-      className="mt-8 block w-full overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]"
+      className="mt-8 hidden w-full sm:block overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]"
     >
       <img
-        src={bannerLancamento}
-        alt={PROMO_LANCAMENTOS_SEMANA_3.alt}
+        src={faixaEsquentaBlack}
+        alt={PROMO_ESQUENTA_BLACK_SEMANA_1.alt}
         className="aspect-[2720/200] h-auto w-full"
       />
     </button>
