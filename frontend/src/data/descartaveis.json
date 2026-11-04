@@ -491,6 +491,7 @@
       "marca": "Harcclin",
       "embalagem": "Galão 5 L",
       "rotuloDaVariacao": null,
+      "imagem": "agua-sanitaria-5-l-harcclin.webp",
       "variacoes": [
         {
           "sku": "desc-agua-sanitaria-5-l-harcclin-39",
@@ -535,6 +536,7 @@
       "marca": "Candura",
       "embalagem": "Frasco 1 L",
       "rotuloDaVariacao": null,
+      "imagem": "agua-sanitaria-1-l-candura.webp",
       "variacoes": [
         {
           "sku": "desc-agua-sanitaria-1-l-42",
@@ -607,6 +609,7 @@
       "marca": "Lider",
       "embalagem": "Bobina aprox. 2,5 kg",
       "rotuloDaVariacao": null,
+      "imagem": "bobina-picotada-reforcada-30x40-lider.webp",
       "variacoes": [
         {
           "sku": "desc-bobina-picotada-reforcada-30x40-47",
@@ -621,6 +624,7 @@
       "marca": null,
       "embalagem": "Pacote com 100",
       "rotuloDaVariacao": null,
+      "imagem": "saco-de-lixo-20-l-40x59-preto.webp",
       "variacoes": [
         {
           "sku": "desc-saco-de-lixo-20-l-40x59-preto-48",

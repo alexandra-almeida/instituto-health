@@ -899,12 +899,22 @@ Tulípia.
      ela vende?
   7. **A foto do Sabão em Pó Multiação 800 g (Triex) mostra 3 pacotes**, e o
      produto é 1 pacote. Trocar por uma foto de um pacote só.
-  8. **Faltam fotos de 9 produtos:** Água Sanitária 5 L (Harcclin), Água
-     Sanitária 1 L (Candura), as 3 Bobinas Picotadas Reforçadas (20x30, 25x35 e
-     30x40, Lider) e os 4 Sacos de Lixo (20 L, 30 L, 50 L e 100 L).
-- **Fotos:** 32 produtos têm foto: as 4 luvas Vabene (uma por tamanho), o
-  Sabonete Líquido 5 L (Harmoniex), uma por fragrância, e 27 produtos com uma
-  foto só. Os outros 9 (lista na pergunta 8) usam o ícone da categoria. Veja a
+  8. **Faltam fotos de 5 produtos:** as Bobinas Picotadas Reforçadas 20x30 e
+     25x35 (Lider) e os Sacos de Lixo 30 L, 50 L e 100 L.
+  9. **A foto de 4 produtos difere da lista** (ligadas em 04/11/2026; quando ela
+     responder, corrigir marca ou embalagem no CSV, sem mudar o sku, e rodar o
+     seed, que mostrará os alterados):
+     - **Água Sanitária 1 L:** a foto é **Super Cândida** (4 frascos); a lista
+       diz Candura. Qual é a marca?
+     - **Água Sanitária 5 L (Harcclin):** o rótulo da foto é **Cloro Líquido
+       Harcclin**; a lista diz Água Sanitária. É o mesmo produto?
+     - **Saco de Lixo 20 L:** a foto é **Kit 50 un** (reforçado); a lista é
+       pacote com 100. Qual é a embalagem?
+     - **Bobina Picotada Reforçada 30x40:** a foto é **FlexBag** (500 un); a
+       lista diz Lider. Qual é a marca?
+- **Fotos:** 36 produtos têm foto: as 4 luvas Vabene (uma por tamanho), o
+  Sabonete Líquido 5 L (Harmoniex), uma por fragrância, e 31 produtos com uma
+  foto só. Os outros 5 (lista na pergunta 8) usam o ícone da categoria. Veja a
   seção seguinte.
 - **Texto do bloco de atacado e licitações e a frase de apresentação da
   página:** rascunhos, para a Juliana revisar.
@@ -940,7 +950,8 @@ Registrada em 02/11/2026; ainda não estava escrita.
 ### Fotos dos descartáveis (03/11/2026)
 
 - **Origem:** as fotos dos descartáveis são as **oficiais dos fabricantes**,
-  usadas pelo Instituto como **revendedor autorizado**.
+  usadas pelo Instituto como **representante**, que compra direto do
+  fabricante (esclarecido pela Alexandra em 04/11/2026).
 - **Como acrescentar uma foto:** colocar o arquivo (webp, jpg ou png) em
   `frontend/src/assets/descartaveis/`, com o **slug do produto** no nome, e rodar
   `npm run descartaveis` (dentro de `frontend/`). O importador liga a foto
@@ -992,6 +1003,10 @@ Registrada em 02/11/2026; ainda não estava escrita.
     Filtro de Café de Papel 102 e 103;
   - à mão, uma foto para dois produtos: `saco-plastico-virgem.webp` (Saco
     Plástico Virgem 35x45 Espessura 0,6 e 40x60 Espessura 0,12, Araplast).
+- **Ligadas em 04/11/2026, terceira leva (4 fotos):** Água Sanitária 1 L
+  (Candura), Água Sanitária 5 L (Harcclin), Saco de Lixo 20 L 40x59 Preto e
+  Bobina Picotada Reforçada 30x40 (Lider), todas pelo nome do arquivo
+  (renomeadas para o slug). A foto de cada uma difere da lista (pergunta 9).
 - **Testes de foto:** o Vitest tem o cache de módulos em disco desligado
   (`fsModuleCache: false` em `frontend/vitest.config.ts`), porque com ele ligado
   uma foto nova na pasta não aparecia na lista dos testes.

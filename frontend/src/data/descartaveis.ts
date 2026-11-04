@@ -52,7 +52,8 @@ interface DadosBrutos {
 // Fotos dos descartáveis: o arquivo vai em src/assets/descartaveis/, com o slug
 // do produto no nome, e `npm run descartaveis` grava o nome dele no JSON. Aqui o
 // nome do arquivo vira a URL que o Vite serve. As fotos são as oficiais dos
-// fabricantes, usadas pelo Instituto como revendedor autorizado.
+// fabricantes, usadas pelo Instituto como representante, que compra direto do
+// fabricante.
 const FOTOS = import.meta.glob<string>(
   '../assets/descartaveis/*.{webp,jpg,jpeg,png}',
   { eager: true, query: '?url', import: 'default' },

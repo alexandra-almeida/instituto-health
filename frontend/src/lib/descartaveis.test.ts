@@ -202,9 +202,13 @@ const PRODUTOS_COM_UMA_FOTO = [
   'Filtro de Café de Papel 102',
   'Filtro de Café de Papel 103',
   'Água Sanitária 2 L',
-  // dois produtos com este nome (Triex e Gopabo; a Harcclin ainda não tem foto)
+  // três produtos com este nome (Triex, Gopabo e Harcclin)
   'Água Sanitária 5 L',
   'Água Sanitária 5 L',
+  'Água Sanitária 5 L',
+  'Água Sanitária 1 L',
+  'Bobina Picotada Reforçada 30x40',
+  'Saco de Lixo 20 L 40x59 Preto',
 ]
 // Os mesmos 3 arquivos que o importador liga à mão (FOTOS_COMPARTILHADAS)
 const ARQUIVOS_COMPARTILHADOS = [
@@ -294,7 +298,7 @@ describe('fotos dos descartáveis', () => {
     }
   })
 
-  it('as 4 luvas, os 27 produtos de uma foto só e o sabonete 5 L (foto por fragrância) são os únicos com foto', () => {
+  it('as 4 luvas, os 31 produtos de uma foto só e o sabonete 5 L (foto por fragrância) são os únicos com foto', () => {
     expect(
       DESCARTAVEIS.filter(comFoto)
         .map((p) => p.nome)
@@ -306,7 +310,7 @@ describe('fotos dos descartáveis', () => {
         'Sabonete Líquido 5 L',
       ].sort(),
     )
-    expect(DESCARTAVEIS.filter(comFoto)).toHaveLength(32)
+    expect(DESCARTAVEIS.filter(comFoto)).toHaveLength(36)
   })
 
   it.each(PRODUTOS_COM_UMA_FOTO)(
@@ -359,18 +363,14 @@ describe('fotos dos descartáveis', () => {
     expect(fotoDoDescartavel(sabonete, pistache)).toBe(pistache.imagem)
   })
 
-  it('os 9 produtos que ainda não têm foto são os esperados (para a Juliana ou o fabricante)', () => {
+  it('os 5 produtos que ainda não têm foto são os esperados (para a Juliana ou o fabricante)', () => {
     expect(
       DESCARTAVEIS.filter((p) => !comFoto(p)).map(
         (p) => `${p.nome}${p.marca ? ` (${p.marca})` : ''}`,
       ),
     ).toEqual([
-      'Água Sanitária 5 L (Harcclin)',
-      'Água Sanitária 1 L (Candura)',
       'Bobina Picotada Reforçada 20x30 (Lider)',
       'Bobina Picotada Reforçada 25x35 (Lider)',
-      'Bobina Picotada Reforçada 30x40 (Lider)',
-      'Saco de Lixo 20 L 40x59 Preto',
       'Saco de Lixo 30 L Espessura 0,04',
       'Saco de Lixo 50 L Espessura 0,04',
       'Saco de Lixo 100 L 75x90',
