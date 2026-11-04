@@ -1,7 +1,14 @@
-// Promoções da Tulípia exibidas na página /tulipia (faixa e banner principal).
-// Sem remoção automática por data; para tirá-las do ar, remova o <PromoStrip />
-// e o <PromoHero /> de src/pages/Tulipia.tsx. Para uma nova promoção, copie o
-// objeto abaixo, troque os dados e a imagem e aponte os componentes para ele.
+import bannerEsquentaBlackSabonetes from '../assets/tulipia-banners/banner-esquenta-black-sabonetes-desktop.webp'
+import faixaEsquentaBlackSemana1 from '../assets/tulipia-banners/faixa-esquenta-black-semana-1.webp'
+
+// Promoções da Tulípia exibidas na página /tulipia (faixa, banner principal e
+// ícone "Ofertas do mês"). Sem remoção automática por data; para tirá-las do
+// ar, remova o <PromoStrip /> e o <PromoHero /> de src/pages/Tulipia.tsx e o
+// item "ofertas-do-mes" de tulipiaVitrine.ts.
+//
+// PARA TROCAR DE PROMOÇÃO (ex.: semana 2): copie o objeto abaixo, troque os
+// dados e as imagens e aponte PROMOCAO_ATUAL para o novo. Faixa, banner, filtro
+// e ícone leem tudo de PROMOCAO_ATUAL.
 export interface Promocao {
   /** texto mostrado em "Mostrando: ..." quando a faixa é clicada */
   rotuloFiltro: string
@@ -9,6 +16,10 @@ export interface Promocao {
   skus: string[]
   /** texto alternativo da imagem da faixa e do banner */
   alt: string
+  /** faixa fina (2720x200), mostrada de 640px para cima */
+  faixa: string
+  /** banner principal (1920x837) */
+  hero: string
 }
 
 // Esquenta Black 2026, semana 1: sabonetes com até 30% OFF, de 01 a 08 de
@@ -37,4 +48,10 @@ export const PROMO_ESQUENTA_BLACK_SEMANA_1: Promocao = {
     'combo-hialux-serum-e-sabonete-kit-82',
   ],
   alt: 'Esquenta Black 2026: sabonetes com até 30% OFF, de 01 a 08 de novembro',
+  faixa: faixaEsquentaBlackSemana1,
+  hero: bannerEsquentaBlackSabonetes,
 }
+
+// A promoção que está no ar agora. Trocar esta linha troca a faixa, o banner, o
+// filtro e o ícone "Ofertas do mês" de uma vez.
+export const PROMOCAO_ATUAL: Promocao = PROMO_ESQUENTA_BLACK_SEMANA_1

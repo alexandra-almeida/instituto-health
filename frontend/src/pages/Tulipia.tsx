@@ -20,7 +20,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
-import { PROMO_ESQUENTA_BLACK_SEMANA_1 } from '../data/promocoes'
+import { PROMOCAO_ATUAL } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -33,6 +33,7 @@ import {
 } from '../data/tulipiaProducts'
 import type { TulipiaProduct } from '../data/tulipiaProducts'
 import { TULIPIA_VITRINE } from '../data/tulipiaVitrine'
+import { CHAVE_FILTRO_PROMOCAO, ordenarPelosSkus } from '../lib/promocao'
 
 type ViewMode = 'todos' | 'categoria' | 'linha' | 'cuidado'
 type Audience = 'homecare' | 'profissional'
@@ -61,6 +62,9 @@ interface CustomFilter {
   key: string
   label: string
   match: (product: TulipiaProduct) => boolean
+  /** quando existe, a grade mostra os produtos nesta ordem de sku (a da
+   * promoção) em vez da ordem do catálogo */
+  ordem?: string[]
 }
 
 // "Você também pode gostar" — preenche a página quando um filtro deixa
@@ -155,9 +159,10 @@ function Tulipia() {
   function handlePromoClick() {
     setAudience('profissional')
     applyCustomFilter({
-      key: 'promo-esquenta-black',
-      label: PROMO_ESQUENTA_BLACK_SEMANA_1.rotuloFiltro,
-      match: (p) => PROMO_ESQUENTA_BLACK_SEMANA_1.skus.includes(p.id),
+      key: CHAVE_FILTRO_PROMOCAO,
+      label: PROMOCAO_ATUAL.rotuloFiltro,
+      match: (p) => PROMOCAO_ATUAL.skus.includes(p.id),
+      ordem: PROMOCAO_ATUAL.skus,
     })
   }
 
@@ -166,6 +171,11 @@ function Tulipia() {
   }
 
   function handleSelectVitrine(key: string) {
+    // "Ofertas do mês" é o mesmo filtro da faixa e do banner
+    if (key === CHAVE_FILTRO_PROMOCAO) {
+      handlePromoClick()
+      return
+    }
     const item = TULIPIA_VITRINE.find((v) => v.key === key)
     if (item) applyCustomFilter(item)
   }
@@ -218,7 +228,12 @@ function Tulipia() {
   }, [search, searching, matchesAudience])
 
   const browsedProducts = useMemo(() => {
-    if (customFilter) return gridPool.filter(customFilter.match)
+    if (customFilter) {
+      const filtrados = gridPool.filter(customFilter.match)
+      return customFilter.ordem
+        ? ordenarPelosSkus(filtrados, customFilter.ordem)
+        : filtrados
+    }
     if (viewMode === 'todos') return gridPool
     if (viewMode === 'categoria') {
       return gridPool.filter((p) => p.categoria === selectedCategoria)

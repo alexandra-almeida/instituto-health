@@ -1,5 +1,4 @@
-import bannerEsquentaBlack from '../../assets/tulipia-banners/banner-esquenta-black-sabonetes-desktop.webp'
-import { PROMO_ESQUENTA_BLACK_SEMANA_1 } from '../../data/promocoes'
+import { PROMOCAO_ATUAL } from '../../data/promocoes'
 import BannerImagem from './BannerImagem'
 
 interface PromoHeroProps {
@@ -18,9 +17,9 @@ function PromoHero({ onClick }: PromoHeroProps) {
       className="mt-8 block w-full overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)] sm:mt-4"
     >
       <BannerImagem
-        desktop={bannerEsquentaBlack}
-        mobile={bannerEsquentaBlack}
-        alt={PROMO_ESQUENTA_BLACK_SEMANA_1.alt}
+        desktop={PROMOCAO_ATUAL.hero}
+        mobile={PROMOCAO_ATUAL.hero}
+        alt={PROMOCAO_ATUAL.alt}
         proporcao="aspect-[1920/837]"
         prioridade
       />

@@ -1,5 +1,4 @@
-import faixaEsquentaBlack from '../../assets/tulipia-banners/faixa-esquenta-black-semana-1.webp'
-import { PROMO_ESQUENTA_BLACK_SEMANA_1 } from '../../data/promocoes'
+import { PROMOCAO_ATUAL } from '../../data/promocoes'
 
 interface PromoStripProps {
   onClick: () => void
@@ -17,8 +16,8 @@ function PromoStrip({ onClick }: PromoStripProps) {
       className="mt-8 hidden w-full sm:block overflow-hidden rounded-2xl shadow-[0_2px_14px_-4px_rgba(4,32,18,0.12)] transition-shadow hover:shadow-[0_6px_20px_-4px_rgba(4,32,18,0.18)]"
     >
       <img
-        src={faixaEsquentaBlack}
-        alt={PROMO_ESQUENTA_BLACK_SEMANA_1.alt}
+        src={PROMOCAO_ATUAL.faixa}
+        alt={PROMOCAO_ATUAL.alt}
         className="aspect-[2720/200] h-auto w-full"
       />
     </button>
