@@ -2,16 +2,19 @@ import { describe, expect, it } from 'vitest'
 import {
   CATEGORIAS_DESCARTAVEIS,
   DESCARTAVEIS,
+  FOTOS_DOS_DESCARTAVEIS,
   MARCAS_DESCARTAVEIS,
 } from '../data/descartaveis'
 import raw from '../data/descartaveis.json'
 import {
   MENSAGEM_ATACADO,
   filtrarDescartaveis,
+  fotoDoDescartavel,
   linkDoWhatsapp,
   mensagemDoProduto,
   normalizarBusca,
   paraCarrinho,
+  slugDoProduto,
 } from './descartaveis'
 
 // Os 52 sku de hoje. O sku é FIXO (CLAUDE.md): se este teste falhar porque um
@@ -145,9 +148,9 @@ describe('dados dos descartáveis', () => {
     ])
   })
 
-  it('13 produtos sem marca e 8 sem embalagem confirmadas', () => {
+  it('13 produtos sem marca e 6 sem embalagem confirmadas', () => {
     expect(DESCARTAVEIS.filter((p) => p.marca === null)).toHaveLength(13)
-    expect(DESCARTAVEIS.filter((p) => p.embalagem === null)).toHaveLength(8)
+    expect(DESCARTAVEIS.filter((p) => p.embalagem === null)).toHaveLength(6)
   })
 
   it('as listas de categorias e marcas vêm só do que está confirmado', () => {
@@ -161,6 +164,174 @@ describe('dados dos descartáveis', () => {
     ])
     expect(MARCAS_DESCARTAVEIS).toHaveLength(16)
     expect(MARCAS_DESCARTAVEIS).not.toContain('A CONFIRMAR')
+  })
+})
+
+describe('embalagem confirmada', () => {
+  it.each(['Luva de Vinil Sem Pó', 'Luva Viniflex Sem Pó'])(
+    '%s (Vabene) é "Caixa com 100", confirmada pela caixa',
+    (nome) => {
+      const luva = DESCARTAVEIS.find((p) => p.nome === nome)
+      expect(luva?.embalagem).toBe('Caixa com 100')
+    },
+  )
+})
+
+describe('nome da Viniflex', () => {
+  it('a grafia da marca é "Viniflex", e o sku antigo continua o mesmo', () => {
+    expect(DESCARTAVEIS.some((p) => p.nome === 'Luva Vinilflex Sem Pó')).toBe(
+      false,
+    )
+    const flex = DESCARTAVEIS.find((p) => p.nome === 'Luva Viniflex Sem Pó')
+    expect(flex?.variacoes.map((v) => v.sku)).toEqual([
+      'desc-luva-vinilflex-sem-po-p-3',
+      'desc-luva-vinilflex-sem-po-m-4',
+      'desc-luva-vinilflex-sem-po-g-5',
+    ])
+  })
+})
+
+type Bruto = {
+  nome: string
+  marca: string | null
+  imagem?: string
+  variacoes: Array<{ rotulo: string | null; imagem?: string }>
+}
+
+describe('fotos dos descartáveis', () => {
+  const brutos = (raw as { produtos: Bruto[] }).produtos
+  const comFoto = (p: {
+    imagem?: string
+    variacoes: Array<{ imagem?: string }>
+  }) => Boolean(p.imagem) || p.variacoes.some((v) => v.imagem)
+
+  it('as duas luvas Vabene têm uma foto por tamanho; só elas têm foto', () => {
+    for (const nome of ['Luva de Vinil Sem Pó', 'Luva Viniflex Sem Pó']) {
+      const luva = DESCARTAVEIS.find((p) => p.nome === nome)
+      expect(luva?.variacoes.map((v) => Boolean(v.imagem))).toEqual([
+        true,
+        true,
+        true,
+      ])
+    }
+    expect(DESCARTAVEIS.filter(comFoto).map((p) => p.nome)).toEqual([
+      'Luva de Vinil Sem Pó',
+      'Luva Viniflex Sem Pó',
+    ])
+  })
+
+  it('cada tamanho tem uma foto diferente', () => {
+    const flex = DESCARTAVEIS.find((p) => p.nome === 'Luva Viniflex Sem Pó')!
+    const urls = flex.variacoes.map((v) => v.imagem)
+    expect(new Set(urls).size).toBe(3)
+    expect(urls[1]).toContain('luva-viniflex-sem-po-vabene-m')
+  })
+
+  it('todo arquivo citado no JSON (do produto ou da variação) existe na pasta', () => {
+    for (const p of brutos) {
+      if (p.imagem) expect(FOTOS_DOS_DESCARTAVEIS.has(p.imagem)).toBe(true)
+      for (const v of p.variacoes) {
+        if (v.imagem) expect(FOTOS_DOS_DESCARTAVEIS.has(v.imagem)).toBe(true)
+      }
+    }
+  })
+
+  it('toda foto da pasta está ligada a um produto ou variação (nenhuma esquecida)', () => {
+    const ligadas = new Set(
+      brutos.flatMap((p) => [
+        ...(p.imagem ? [p.imagem] : []),
+        ...p.variacoes.flatMap((v) => (v.imagem ? [v.imagem] : [])),
+      ]),
+    )
+    for (const arquivo of FOTOS_DOS_DESCARTAVEIS.keys()) {
+      expect(ligadas.has(arquivo)).toBe(true)
+    }
+  })
+
+  it('o nome do arquivo segue a regra do slug (importador e site concordam)', () => {
+    const semExtensao = (a: string) => a.replace(/\.(webp|jpe?g|png)$/i, '')
+    for (const p of brutos) {
+      const bases = [
+        slugDoProduto(p.nome, p.marca),
+        slugDoProduto(p.nome, null),
+      ]
+      if (p.imagem) expect(bases).toContain(semExtensao(p.imagem))
+      for (const v of p.variacoes) {
+        if (!v.imagem) continue
+        const sufixo = '-' + normalizarBusca(v.rotulo ?? '')
+        expect(bases.map((b) => b + sufixo)).toContain(semExtensao(v.imagem))
+      }
+    }
+  })
+})
+
+describe('fotoDoDescartavel', () => {
+  const luva = (rotulo: string, imagem?: string) => ({ rotulo, imagem })
+  const trio = {
+    imagem: 'produto.webp',
+    variacoes: [luva('P', 'p.webp'), luva('M', 'm.webp'), luva('G', 'g.webp')],
+  }
+
+  it('com a variação escolhida, mostra a foto dela', () => {
+    expect(fotoDoDescartavel(trio, trio.variacoes[2])).toBe('g.webp')
+    expect(fotoDoDescartavel(trio, trio.variacoes[0])).toBe('p.webp')
+  })
+
+  it('antes de escolher, mostra a do M', () => {
+    expect(fotoDoDescartavel(trio, null)).toBe('m.webp')
+  })
+
+  it('sem foto do M, antes de escolher mostra a primeira que existir', () => {
+    const semM = {
+      variacoes: [luva('P'), luva('M'), luva('G', 'g.webp')],
+    }
+    expect(fotoDoDescartavel(semM, null)).toBe('g.webp')
+  })
+
+  it('variação escolhida sem foto própria cai na foto padrão (M)', () => {
+    const faltaP = {
+      variacoes: [luva('P'), luva('M', 'm.webp'), luva('G', 'g.webp')],
+    }
+    expect(fotoDoDescartavel(faltaP, faltaP.variacoes[0])).toBe('m.webp')
+  })
+
+  it('produto com uma foto só continua como está, escolhida a variação ou não', () => {
+    const umaFoto = {
+      imagem: 'unica.webp',
+      variacoes: [luva('P'), luva('M'), luva('G')],
+    }
+    expect(fotoDoDescartavel(umaFoto, null)).toBe('unica.webp')
+    expect(fotoDoDescartavel(umaFoto, umaFoto.variacoes[2])).toBe('unica.webp')
+  })
+
+  it('sem nenhuma foto devolve undefined (o card usa o ícone da categoria)', () => {
+    expect(
+      fotoDoDescartavel({ variacoes: [luva('P'), luva('M')] }, null),
+    ).toBeUndefined()
+  })
+})
+
+describe('slugDoProduto', () => {
+  it('nome mais marca, sem acento, em minúsculas e com hífens', () => {
+    expect(slugDoProduto('Luva de Vinil Sem Pó', 'Vabene')).toBe(
+      'luva-de-vinil-sem-po-vabene',
+    )
+    expect(slugDoProduto('Água Sanitária 5 L', 'Gopabo')).toBe(
+      'agua-sanitaria-5-l-gopabo',
+    )
+  })
+
+  it('sem marca confirmada, só o nome', () => {
+    expect(slugDoProduto('Abaixador de Língua', null)).toBe(
+      'abaixador-de-lingua',
+    )
+  })
+
+  it('as águas sanitárias de 5 L têm slugs diferentes (uma foto por marca)', () => {
+    const slugs = DESCARTAVEIS.filter(
+      (p) => p.nome === 'Água Sanitária 5 L',
+    ).map((p) => slugDoProduto(p.nome, p.marca))
+    expect(new Set(slugs).size).toBe(3)
   })
 })
 
@@ -262,6 +433,13 @@ describe('paraCarrinho', () => {
     expect(item.linha).toBe('Vabene')
     expect(item.exclusivoProfissional).toBe(false)
     expect(item.nome).toBe('Luva de Vinil Sem Pó')
+  })
+
+  it('o item leva a foto da variação escolhida', () => {
+    const flex = DESCARTAVEIS.find((p) => p.nome === 'Luva Viniflex Sem Pó')!
+    const item = paraCarrinho(flex, flex.variacoes[2])
+    expect(item.imagem).toBe(flex.variacoes[2].imagem)
+    expect(item.imagem).toContain('luva-viniflex-sem-po-vabene-g')
   })
 
   it('produto sem variação não tem variant, e sem embalagem fica vazio', () => {

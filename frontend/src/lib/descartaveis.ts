@@ -12,6 +12,21 @@ export function linkDoWhatsapp(numero: string, mensagem: string) {
   return `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`
 }
 
+// Nome do arquivo de foto do produto, sem a extensão: o slug do nome mais o da
+// marca quando ela está confirmada (ex: "luva-de-vinil-sem-po-vabene"). É a
+// mesma regra do importador (scripts/importar-descartaveis.mjs); o teste de
+// fotos confere que as duas concordam.
+export function slugDoProduto(nome: string, marca: string | null) {
+  const slug = (texto: string) =>
+    texto
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+  return marca ? `${slug(nome)}-${slug(marca)}` : slug(nome)
+}
+
 // Mensagem do botão "Atacado ou licitação? Fale com a gente" de cada produto:
 // produto, variação e quantidade desejada. Se a pessoa ainda não escolheu a
 // variação, vai "a definir" (o botão do WhatsApp não exige a escolha).
@@ -50,8 +65,27 @@ export function paraCarrinho(
     variant: variacao.rotulo,
     preco: variacao.preco,
     exclusivoProfissional: false,
-    imagem: produto.imagem,
+    imagem: fotoDoDescartavel(produto, variacao),
   }
+}
+
+// Foto mostrada no card. Quando o produto tem uma foto por variação (ex: uma
+// caixa para cada tamanho da luva), vale a da variação escolhida. Antes de
+// escolher, ou se a escolhida não tiver foto, vale a da variação M, ou a
+// primeira variação que tiver foto; por último, a foto do produto inteiro.
+// Sem nenhuma foto devolve undefined e o card usa o ícone da categoria.
+export function fotoDoDescartavel(
+  produto: {
+    imagem?: string
+    variacoes: ReadonlyArray<{ rotulo: string | null; imagem?: string }>
+  },
+  variacao: { imagem?: string } | null,
+) {
+  if (variacao?.imagem) return variacao.imagem
+  const padrao =
+    produto.variacoes.find((v) => v.rotulo === 'M' && v.imagem) ??
+    produto.variacoes.find((v) => v.imagem)
+  return padrao?.imagem ?? produto.imagem
 }
 
 // Sem acento e em minúsculas, para a busca achar "luva" em "Luva" e "agua" em

@@ -11,8 +11,14 @@
 //   o próximo número livre, no fim da lista.
 // - "A CONFIRMAR" nunca vai para o JSON: marca e embalagem ficam nulas e o site
 //   mostra só o que está confirmado. As pendências saem na tela, para a Juliana.
-// - O campo `imagem` (opcional, escrito à mão no JSON) é preservado.
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+// - Fotos: basta colocar o arquivo em src/assets/descartaveis/ com o SLUG do
+//   produto no nome (ex: luva-de-vinil-sem-po-vabene.webp) e rodar o importador.
+//   O slug é o nome do produto, mais a marca quando ela está confirmada
+//   (slug do nome + "-" + slug da marca). Se a marca for confirmada depois, o
+//   arquivo só com o nome continua valendo, desde que o nome seja único na
+//   lista. A pasta é a fonte da verdade: o campo `imagem` do JSON guarda o nome
+//   do arquivo e é refeito a cada execução.
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -34,6 +40,14 @@ const slug = (texto) =>
     .replace(/^-+|-+$/g, '')
 
 const pendente = (texto) => /a confirmar/i.test(texto)
+
+// Produtos que mudaram de NOME no CSV (antigo -> novo). Os sku já gravados são
+// ligados pelo nome, então sem esta lista o renome criaria sku novos e o
+// antigo sumiria. Com ela o sku continua o mesmo. Pode ficar aqui para sempre.
+const RENOMEADOS = {
+  'Luva Vinilflex Sem Pó': 'Luva Viniflex Sem Pó', // grafia da marca
+}
+const nomeAtual = (nome) => RENOMEADOS[nome] ?? nome
 
 // CSV com ";" e aspas duplas opcionais, como a Juliana enviou (UTF-8 com BOM)
 function lerCsv(texto) {
@@ -87,14 +101,11 @@ const anterior = existsSync(ARQUIVO_JSON)
   : { produtos: [] }
 const existentes = anterior.produtos.flatMap((p) =>
   p.variacoes.map((v) => ({
-    nome: p.nome,
+    nome: nomeAtual(p.nome),
     marca: p.marca ?? '',
     variacao: v.rotulo ?? '',
     sku: v.sku,
   })),
-)
-const imagemPorNome = new Map(
-  anterior.produtos.filter((p) => p.imagem).map((p) => [p.nome, p.imagem]),
 )
 const usados = new Set()
 let proximo =
@@ -174,13 +185,77 @@ for (const linhas of grupos.values()) {
         ? 'Tamanho'
         : 'Fragrância'
       : null,
-    ...(imagemPorNome.get(primeira.nome)
-      ? { imagem: imagemPorNome.get(primeira.nome) }
-      : {}),
     variacoes,
   }
   produtos.push(produto)
 }
+
+// ---- fotos --------------------------------------------------------------------
+// Liga os arquivos de src/assets/descartaveis/ aos produtos pelo NOME do arquivo
+// (sem a extensão), que é o slug do produto: "nome-marca", ou só "nome" quando
+// o produto não tem marca confirmada ou o arquivo não a traz (e o nome é único
+// na lista; senão a foto iria para produtos diferentes, como as 3 águas
+// sanitárias de 5 L). Dois formatos:
+//   slug-do-produto.webp             uma foto para o produto inteiro
+//   slug-do-produto-<variação>.webp  uma foto por variação (ex: ...-vabene-m.webp)
+// Um produto pode ter os dois. O site troca a foto conforme a variação escolhida.
+const PASTA_DAS_FOTOS = resolve(raiz, 'src', 'assets', 'descartaveis')
+const EXTENSAO_DE_FOTO = /\.(webp|jpe?g|png)$/i
+const arquivosDeFoto = existsSync(PASTA_DAS_FOTOS)
+  ? readdirSync(PASTA_DAS_FOTOS)
+      .filter((a) => EXTENSAO_DE_FOTO.test(a))
+      .sort()
+  : []
+const arquivoPorSlug = new Map()
+const avisosDeFoto = []
+for (const arquivo of arquivosDeFoto) {
+  const base = arquivo.replace(EXTENSAO_DE_FOTO, '')
+  if (arquivoPorSlug.has(base)) {
+    avisosDeFoto.push(
+      `${arquivo}: já existe ${arquivoPorSlug.get(base)} para o mesmo produto (usei o primeiro)`,
+    )
+  } else arquivoPorSlug.set(base, arquivo)
+}
+const produtosPorNome = new Map()
+for (const p of produtos) {
+  produtosPorNome.set(p.nome, (produtosPorNome.get(p.nome) ?? 0) + 1)
+}
+const arquivosLigados = new Set()
+const comFoto = produtos.map((p) => {
+  const bases = [
+    p.marca ? `${slug(p.nome)}-${slug(p.marca)}` : null,
+    produtosPorNome.get(p.nome) === 1 ? slug(p.nome) : null,
+  ].filter(Boolean)
+  const arquivoDe = (sufixo) => {
+    for (const base of bases) {
+      const chave = sufixo ? `${base}-${slug(sufixo)}` : base
+      if (arquivoPorSlug.has(chave)) return arquivoPorSlug.get(chave)
+    }
+    return null
+  }
+  const fotoDoProduto = arquivoDe(null)
+  if (fotoDoProduto) arquivosLigados.add(fotoDoProduto)
+  const variacoes = p.variacoes.map((v) => {
+    const foto = v.rotulo ? arquivoDe(v.rotulo) : null
+    if (!foto) return v
+    arquivosLigados.add(foto)
+    return { sku: v.sku, rotulo: v.rotulo, imagem: foto, preco: v.preco }
+  })
+  const { variacoes: _antigas, ...resto } = p
+  return {
+    ...resto,
+    ...(fotoDoProduto ? { imagem: fotoDoProduto } : {}),
+    variacoes,
+  }
+})
+for (const arquivo of arquivoPorSlug.values()) {
+  if (!arquivosLigados.has(arquivo)) {
+    avisosDeFoto.push(
+      `${arquivo}: nenhum produto ou variação tem esse slug, a foto NÃO foi ligada`,
+    )
+  }
+}
+produtos.splice(0, produtos.length, ...comFoto)
 
 const saida = {
   fonte:
@@ -202,6 +277,18 @@ if (ausentes.length > 0) {
       .join(', ')}`,
   )
 }
+const ligadas = produtos.filter(
+  (p) => p.imagem || p.variacoes.some((v) => v.imagem),
+)
+console.log(`\nProdutos com foto: ${ligadas.length} de ${produtos.length}`)
+for (const p of ligadas) {
+  console.log(`  - ${p.nome}${p.marca ? ` (${p.marca})` : ''}`)
+  if (p.imagem) console.log(`      produto: ${p.imagem}`)
+  for (const v of p.variacoes) {
+    if (v.imagem) console.log(`      ${v.rotulo}: ${v.imagem}`)
+  }
+}
+for (const aviso of avisosDeFoto) console.log(`ATENÇÃO (foto): ${aviso}`)
 const semMarca = produtos.filter((p) => !p.marca).map((p) => p.nome)
 const semEmbalagem = produtos.filter((p) => !p.embalagem).map((p) => p.nome)
 console.log(`\nMarca a confirmar (${semMarca.length}): ${semMarca.join('; ')}`)

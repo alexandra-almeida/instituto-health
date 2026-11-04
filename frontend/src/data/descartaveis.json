@@ -5,46 +5,53 @@
       "nome": "Luva de Vinil Sem Pó",
       "categoria": "Luvas",
       "marca": "Vabene",
-      "embalagem": null,
+      "embalagem": "Caixa com 100",
       "rotuloDaVariacao": "Tamanho",
+      "imagem": "luva-de-vinil-sem-po-vabene.webp",
       "variacoes": [
         {
           "sku": "desc-luva-de-vinil-sem-po-p-0",
           "rotulo": "P",
+          "imagem": "luva-de-vinil-sem-po-vabene-p.webp",
           "preco": 19
         },
         {
           "sku": "desc-luva-de-vinil-sem-po-m-1",
           "rotulo": "M",
+          "imagem": "luva-de-vinil-sem-po-vabene-m.webp",
           "preco": 19
         },
         {
           "sku": "desc-luva-de-vinil-sem-po-g-2",
           "rotulo": "G",
+          "imagem": "luva-de-vinil-sem-po-vabene-g.webp",
           "preco": 19
         }
       ]
     },
     {
-      "nome": "Luva Vinilflex Sem Pó",
+      "nome": "Luva Viniflex Sem Pó",
       "categoria": "Luvas",
       "marca": "Vabene",
-      "embalagem": null,
+      "embalagem": "Caixa com 100",
       "rotuloDaVariacao": "Tamanho",
       "variacoes": [
         {
           "sku": "desc-luva-vinilflex-sem-po-p-3",
           "rotulo": "P",
+          "imagem": "luva-viniflex-sem-po-vabene-p.webp",
           "preco": 13.9
         },
         {
           "sku": "desc-luva-vinilflex-sem-po-m-4",
           "rotulo": "M",
+          "imagem": "luva-viniflex-sem-po-vabene-m.webp",
           "preco": 13.9
         },
         {
           "sku": "desc-luva-vinilflex-sem-po-g-5",
           "rotulo": "G",
+          "imagem": "luva-viniflex-sem-po-vabene-g.webp",
           "preco": 13.9
         }
       ]

@@ -11,7 +11,11 @@ import type { LucideIcon } from 'lucide-react'
 import { useState } from 'react'
 import { WHATSAPP_NUMBER } from '../../data/contact'
 import type { Descartavel } from '../../data/descartaveis'
-import { linkDoWhatsapp, mensagemDoProduto } from '../../lib/descartaveis'
+import {
+  fotoDoDescartavel,
+  linkDoWhatsapp,
+  mensagemDoProduto,
+} from '../../lib/descartaveis'
 import { CartPlusIcon } from '../icons'
 import PriceTag from '../PriceTag'
 
@@ -44,13 +48,18 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
   const [quantidade, setQuantidade] = useState(1)
   const [campoDeQuantidade, setCampoDeQuantidade] = useState('1')
   const [adicionado, setAdicionado] = useState(false)
-  const [imagemComErro, setImagemComErro] = useState(false)
+  // Fotos que não carregaram (arquivo corrompido, por exemplo); só elas voltam
+  // para o ícone, as outras variações continuam com a foto
+  const [fotosComErro, setFotosComErro] = useState<string[]>([])
 
   const Icone = ICONE_DA_CATEGORIA[produto.categoria] ?? Package
-  const mostrarImagem = Boolean(produto.imagem) && !imagemComErro
   const variacaoEscolhida = temVariacao
     ? (produto.variacoes.find((v) => v.sku === skuEscolhido) ?? null)
     : produto.variacoes[0]
+  // A foto troca conforme o tamanho escolhido, quando o produto tem uma por
+  // variação; antes de escolher mostra a do M (ou a primeira que existir)
+  const foto = fotoDoDescartavel(produto, variacaoEscolhida)
+  const mostrarImagem = Boolean(foto) && !fotosComErro.includes(foto ?? '')
   const faltaEscolher = temVariacao && !variacaoEscolhida
   const rotuloDaVariacao = produto.rotuloDaVariacao ?? 'variação'
 
@@ -90,11 +99,15 @@ function DescartavelCard({ produto, onAdicionar }: DescartavelCardProps) {
       <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-t-2xl bg-linear-to-br from-[#04452E]/8 to-[#CAA02D]/15">
         {mostrarImagem ? (
           <img
-            src={produto.imagem}
-            alt={produto.nome}
+            src={foto}
+            alt={
+              variacaoEscolhida?.rotulo
+                ? `${produto.nome}, ${variacaoEscolhida.rotulo}`
+                : produto.nome
+            }
             loading="lazy"
             decoding="async"
-            onError={() => setImagemComErro(true)}
+            onError={() => setFotosComErro((atuais) => [...atuais, foto ?? ''])}
             className="h-full w-full object-cover"
           />
         ) : (
