@@ -53,7 +53,7 @@ function FooterSimple() {
       </div>
 
       <div className="border-t border-offwhite/10 py-3 text-center text-xs text-offwhite/50">
-        © {new Date().getFullYear()} Instituto Health — Todos os direitos
+        © {new Date().getFullYear()} Instituto Health. Todos os direitos
         reservados.
       </div>
     </footer>
