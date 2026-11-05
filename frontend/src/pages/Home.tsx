@@ -540,7 +540,7 @@ function TulipiaShowcaseSection() {
 // fonte da verdade), em vez de duplicados à mão e arriscar ficar
 // desatualizados.
 const PROCEDIMENTOS_VITRINE_NOMES = [
-  { nome: 'Toxina Botulínica — Botox®', Icon: SyringeIcon },
+  { nome: 'Toxina Botulínica (Botox®)', Icon: SyringeIcon },
   { nome: 'Drenagem Linfática Corporal', Icon: DrenagemIcon },
   { nome: 'Microagulhamento Capilar', Icon: HairStrandIcon },
   { nome: 'Pós-Operatório Corporal', Icon: BodyIcon },
@@ -798,7 +798,7 @@ function AboutHealthSection() {
         <p className="max-w-xl text-sm text-verde-health/75 sm:text-base">
           Fisioterapeuta e esteticista, Juliana Gonella também é professora
           na Uniara, unindo prática clínica e formação acadêmica para
-          oferecer um cuidado completo — da saúde à estética — com base em
+          oferecer um cuidado completo, da saúde à estética, com base em
           conhecimento técnico e humanização.
         </p>
         <Link

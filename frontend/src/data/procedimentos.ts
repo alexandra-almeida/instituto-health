@@ -104,6 +104,9 @@ export function imagemDoProcedimento(
 
 interface ProcedimentoInput extends Omit<Procedimento, 'slug' | 'completo'> {
   completo?: boolean
+  /** só quando o nome muda mas o endereço (URL e sitemap) precisa continuar o
+   * mesmo; sem ele o slug sai do nome */
+  slug?: string
 }
 
 // Conteúdo real, fornecido pela Juliana (ver
@@ -220,7 +223,8 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
       'O tratamento deve ser individualizado de acordo com o grau e as características predominantes. A avaliação pode considerar grau de celulite, flacidez associada, adiposidade localizada, edema, qualidade da pele, hábitos alimentares e nível de atividade física. Podem ser utilizados recursos manuais, tecnologias, exercícios e outros procedimentos, isoladamente ou em associação. Não existe um único protocolo universal para todos os casos.',
   },
   {
-    nome: 'Procedimento Estético Injetável de Microvasos — PEIM',
+    nome: 'Procedimento Estético Injetável de Microvasos (PEIM)',
+    slug: 'procedimento-estetico-injetavel-de-microvasos-peim',
     categoria: 'Corporal',
     imagem: imgPeim,
     descricao:
@@ -366,7 +370,8 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
       'Profundidade, número de passadas e intervalo entre sessões devem ser individualizados. A técnica não deve ser realizada sobre pele com infecção ou inflamação ativa.',
   },
   {
-    nome: 'Clareamento de Manchas — Face, Mãos e Braços',
+    nome: 'Clareamento de Manchas: Face, Mãos e Braços',
+    slug: 'clareamento-de-manchas-face-maos-e-bracos',
     categoria: 'Facial',
     imagem: imgClareamento,
     descricao:
@@ -399,7 +404,8 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
       'A indicação depende do tipo e profundidade da cicatriz e da presença de fibrose. Pode ocorrer edema, equimose, dor, sensibilidade local e alterações temporárias da coloração. É necessário cuidado especial em pacientes com histórico de cicatrização inadequada ou tendência a alterações cicatriciais.',
   },
   {
-    nome: 'Toxina Botulínica — Botox®',
+    nome: 'Toxina Botulínica (Botox®)',
+    slug: 'toxina-botulinica-botox',
     categoria: 'Facial',
     imagem: imgToxina,
     descricao:
@@ -501,7 +507,8 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
       'Os cuidados variam conforme a técnica utilizada no transplante e as orientações do cirurgião. Técnicas manuais, aparelhos e produtos devem ser introduzidos somente quando houver segurança e liberação adequada.',
   },
   {
-    nome: 'Alopecia Androgenética — Masculina e Feminina',
+    nome: 'Alopecia Androgenética: Masculina e Feminina',
+    slug: 'alopecia-androgenetica-masculina-e-feminina',
     categoria: 'Capilar',
     imagem: imgMicroCapilarMasc,
     descricao:
@@ -658,7 +665,7 @@ const PROCEDIMENTOS_INPUT: ProcedimentoInput[] = [
 
 export const PROCEDIMENTOS: Procedimento[] = PROCEDIMENTOS_INPUT.map((item) => ({
   ...item,
-  slug: slugify(item.nome),
+  slug: item.slug ?? slugify(item.nome),
   completo: item.completo ?? true,
 }))
 
