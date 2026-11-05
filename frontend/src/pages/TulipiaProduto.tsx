@@ -210,7 +210,7 @@ function TulipiaProduto() {
             aria-disabled={product.exclusivoProfissional}
             title={
               product.exclusivoProfissional
-                ? 'Produto exclusivo para profissionais — indisponível sem login'
+                ? 'Produto exclusivo para profissionais. Faça login para comprar.'
                 : undefined
             }
             className={`mt-4 w-full rounded-full px-6 py-3.5 text-sm font-semibold transition-colors sm:mt-6 sm:w-auto sm:px-10 ${

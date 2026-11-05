@@ -196,7 +196,7 @@ function Header() {
         <Link
           to="/"
           className="flex min-w-0 items-center gap-2.5"
-          aria-label="Instituto Health — início"
+          aria-label="Instituto Health, início"
           tabIndex={visible ? undefined : -1}
           style={{ opacity: brandVisible ? 1 : 0 }}
         >

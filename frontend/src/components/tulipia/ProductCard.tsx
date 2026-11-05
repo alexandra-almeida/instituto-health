@@ -115,7 +115,7 @@ function ProductCard({
             aria-disabled={product.exclusivoProfissional}
             title={
               product.exclusivoProfissional
-                ? 'Produto exclusivo para profissionais — indisponível sem login'
+                ? 'Produto exclusivo para profissionais. Faça login para comprar.'
                 : undefined
             }
             className={`inline-flex items-center gap-1.5 text-[11px] transition-colors ${

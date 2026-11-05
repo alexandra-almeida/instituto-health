@@ -324,7 +324,7 @@ function Tulipia() {
       <div className="flex flex-col items-center gap-2 text-center xs:gap-3 lg:gap-4">
         <img
           src={tulipiaRepresentante}
-          alt="Tulípia — Representante Oficial"
+          alt="Tulípia, Representante Oficial"
           className="h-auto w-40 xs:w-48 sm:w-56 lg:w-64"
         />
         <p className="max-w-xl text-sm text-[#04452E]/70 sm:text-base">

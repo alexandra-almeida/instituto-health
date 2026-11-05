@@ -29,7 +29,7 @@ export const TULIPIA_LINE_BANNERS: TulipiaLineBanner[] = [
   {
     key: 'dermo-estetic',
     image: bannerLinhaDermoEstetic,
-    alt: 'Linha Dermo Estetic — para limpeza da pele',
+    alt: 'Linha Dermo Estetic, para limpeza da pele',
     aspectClass: 'aspect-[1340/764]',
     label: 'Dermo Estetic',
     match: (p) => p.linha === 'Dermo Estetic',
@@ -37,7 +37,7 @@ export const TULIPIA_LINE_BANNERS: TulipiaLineBanner[] = [
   {
     key: 'proskin',
     image: bannerLinhaProskin,
-    alt: 'ProSkin Repair — onde a pele reencontra sua força',
+    alt: 'ProSkin Repair: onde a pele reencontra sua força',
     aspectClass: 'aspect-[1152/1344]',
     capHeight: true,
     label: 'ProSkin Repair',

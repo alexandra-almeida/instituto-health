@@ -700,7 +700,7 @@ function CursosShowcaseSection() {
         ))}
       </div>
       <p className="mx-auto mt-4 max-w-xl text-center text-xs text-emerald-dark/50 italic">
-        Programação de exemplo — fale conosco para saber as próximas turmas.
+        Programação de exemplo. Fale conosco para saber as próximas turmas.
       </p>
       <div className="mt-6 flex justify-center">
         <Link

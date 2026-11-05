@@ -24,7 +24,7 @@ function buildWhatsappMessage(items: CartItem[], subtotal: number): string {
       item.preco != null && !item.exclusivoProfissional
         ? formatPrice(item.preco * item.quantidade)
         : 'consultar'
-    return `${item.quantidade}x ${itemLineLabel(item)} — ${itemPriceLabel(item)} (${total})`
+    return `${item.quantidade}x ${itemLineLabel(item)}: ${itemPriceLabel(item)} (${total})`
   })
 
   const hasConsultaItems = items.some(
@@ -186,7 +186,7 @@ function Carrinho() {
             </div>
             {hasConsultaItems && (
               <p className="mt-2 text-xs text-[#04452E]/60 italic">
-                Alguns itens exigem consulta de preço com um profissional —
+                Alguns itens exigem consulta de preço com um profissional:
                 o valor final será combinado pelo WhatsApp.
               </p>
             )}

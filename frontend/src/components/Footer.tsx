@@ -42,7 +42,7 @@ function Footer() {
                 contato@institutohealth.com.br
               </a>
             </li>
-            <li>Rincão — SP</li>
+            <li>Rincão, SP</li>
           </ul>
         </div>
 
