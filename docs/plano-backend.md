@@ -246,12 +246,12 @@ Princípios que não mudam:
   exclusivo, ou qualquer item para profissional, sem linha em
   `precos_profissionais` no caso de a venda exigir preço profissional. Nunca se
   cai para outro preço, nem para zero, quando o preço certo não existe.
-- Dados de cartão nunca chegam ao nosso backend em texto puro: o navegador
-  criptografa/tokeniza e o backend recebe só o resultado. EM ABERTO desde
-  26/10/2026: o manual do e.Rede (v1.32) não traz criptografia nem tokenização
-  no navegador; a autorização recebe `cardNumber` e `securityCode` no corpo,
-  numa chamada servidor a servidor. Esta regra NÃO pode ser aplicada como está
-  até a Alexandra decidir (ver "Progresso", passo 11, e a seção 12).
+- Dados de cartão PASSAM pelo nosso backend (decidido em 09/11/2026, ver
+  "Regras obrigatórias do módulo de pagamento" abaixo): a Rede não tem página de
+  pagamento hospedada, e a autorização recebe `cardNumber` e `securityCode` no
+  corpo, numa chamada servidor a servidor (manual v1.32). A regra antiga
+  ("nunca chegam ao backend em texto puro") foi substituída por regras de
+  manuseio rígidas.
 - As credenciais da Rede (PV e chave de integração) são secretas e ficam só no
   backend. O `access_token` OAuth dura 24 minutos e nunca vai para log nem
   para o navegador.
@@ -278,6 +278,85 @@ Endpoints previstos (ajustar após ler a documentação):
 - `POST /api/pagamentos/webhook` (chamado pela Rede)
 - `GET /api/produtos/precos-profissionais` (só profissional aprovado)
 
+### Resposta da Rede (09/11/2026)
+
+- PV de e-commerce **110115600** criado (duplicado do PV físico, o da
+  maquininha). É ele que o backend usa; o PV físico não entra.
+- As condições comerciais passam a valer em até 2 dias úteis a partir de
+  09/11/2026. Conferir com o gerente se já valem antes de testar em produção.
+- A **chave de integração** é gerada pela Juliana no portal da Rede, com o login
+  master. Ela NUNCA vai para chat, git, e-mail ou frontend: entra só como
+  variável de ambiente no projeto da API na Vercel (`healthinstituto-api`),
+  colada pela própria Juliana. Nomes adotados: `REDE_PV`,
+  `REDE_CHAVE_INTEGRACAO` e `REDE_AMBIENTE` (`sandbox` | `producao`). A
+  Alexandra e o Claude não veem o valor da chave.
+- **3DS 2.0 e tokenização de bandeira** são contratados no portal da Rede (Para
+  vender > E-commerce). O custo é por bandeira, conforme a documentação:
+  https://developer.userede.com.br/e-rede#documentacao-3d-secure2-0 (valores
+  ainda não registrados aqui; conferir na contratação).
+- A Rede NÃO tem página de pagamento hospedada: os dados do cartão passam pelo
+  nosso backend (regras abaixo).
+
+### Taxas informadas pela Rede (09/11/2026)
+
+| Forma | Taxa |
+| --- | --- |
+| Pix | 0,91% |
+| Crédito à vista (Visa e Mastercard) | 2,64% |
+| Débito | 1,01% |
+
+Outras bandeiras e o crédito parcelado ainda não foram registrados: a confirmar
+com a Rede antes de definir o parcelamento do Checkout ("até 3x sem juros" segue
+sendo valor de exemplo). Taxa de 3DS e de tokenização: ver acima.
+
+### Regras obrigatórias do módulo de pagamento
+
+Valem para todo código que toque em cartão (`pagamentos`, `rede.client.ts`, a
+rota de pedidos e os testes). Estão também no `CLAUDE.md`.
+
+1. Número do cartão, validade e CVV só existem em memória, durante a
+   requisição. Nunca são gravados em banco, log, mensagem de erro, Sentry ou
+   analytics (nem em teste, fixture ou arquivo de exemplo, a não ser os cartões
+   de teste públicos da Rede no sandbox).
+2. Logs e erros mascaram o cartão: no máximo os 4 últimos dígitos. O corpo da
+   requisição de pagamento não pode ser registrado inteiro (nem pelo
+   middleware de log, nem num `catch` que imprima o `req.body`).
+3. Só HTTPS. A rota de pagamento não aceita GET nem cache (`Cache-Control:
+   no-store`, e nenhuma resposta repete dados do cartão).
+4. Salvar cartão do cliente só via tokenização da Rede, nunca por conta
+   própria. Sem tokenização contratada e implementada, não existe "salvar
+   cartão".
+5. Fluxo 3DS: o cliente vai ao banco e volta; por isso o pedido precisa do
+   estado "aguardando autenticação" (ver o impacto na migração 0004 abaixo).
+
+### Impacto do 3DS na migração 0004 (só anotado; a 0004 NÃO foi criada)
+
+- `pedidos.status` hoje aceita `aguardando_pagamento`, `pago`, `cancelado`,
+  `enviado` e `entregue`. Precisa de um estado novo, `aguardando_autenticacao`:
+  o pedido existe, o cartão foi enviado à Rede e o cliente está no banco.
+  Mudar a regra `check` do `status` exige apagar e recriar a restrição na 0004.
+- `pagamentos.status` (`pendente`, `em_analise`, `pago`, `recusado`,
+  `cancelado`, `estornado`) provavelmente precisa do mesmo estado, ou o
+  pagamento fica `pendente` enquanto o pedido está em autenticação. Decidir na
+  leitura da documentação do 3DS.
+- Quem volta do banco chega por uma URL nossa; o backend confirma o resultado
+  com a Rede (por TID) antes de marcar `pago`, nunca pelo que o navegador diz.
+- Pedido que fica em `aguardando_autenticacao` e é abandonado precisa expirar
+  (cancelar e liberar), possivelmente por tarefa agendada: definir o prazo.
+- Se a 3DS devolver dados que precisem ser guardados (identificador da
+  autenticação, resultado), entram em colunas de `pagamentos` na mesma 0004.
+  Nunca dado de cartão.
+
+### Sandbox (pendente, 11/11/2026)
+
+Ainda não se sabe como se obtêm as credenciais de teste. O site oficial da
+documentação (developer.userede.com.br) respondeu 403 à leitura automática e a
+busca na web não trouxe a página oficial. Pistas indiretas, SEM confirmação: os
+SDKs de terceiros usam o par PV e chave com um ambiente `sandbox` (o mesmo par
+nos dois ambientes?). Próximo passo: a Alexandra abre a documentação no
+navegador e cola aqui a seção de sandbox, ou pergunta ao gerente da Rede. Nada
+foi cadastrado em lugar nenhum.
+
 ## 8. Frontend
 
 - Trocar os `TODO(backend)` de `frontend/src/pages/Cadastro.tsx` (4), `Login.tsx` (2) e
@@ -297,7 +376,7 @@ Endpoints previstos (ajustar após ler a documentação):
 Backend (projeto do backend na Vercel e `backend/.env` local, nunca no git):
 as variáveis do Supabase, `REDE_PV` (clientId), `REDE_CHAVE_INTEGRACAO`
 (clientSecret), `REDE_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
-(nomes provisórios da Rede, a confirmar no passo 13; antes do 26/10/2026 eram
+(nomes definidos em 09/11/2026, valores só na Vercel e colados pela Juliana; antes do 26/10/2026 eram
 `PAGBANK_TOKEN` e `PAGBANK_AMBIENTE`),
 `COOKIE_SECRET` (se necessário).
 
@@ -419,9 +498,12 @@ Etapa C — Pedidos e pagamento
 - Vercel: criar o projeto do backend (Root Directory `backend`) e cadastrar as
   variáveis de ambiente. A chave service role nunca vai para chat, git ou
   frontend.
-- Rede: pedir ao gerente da Juliana a habilitação de vendas online (e.Rede) e
-  as credenciais; criar o projeto de sandbox no portal de desenvolvedores
-  (ver o resumo do passo 11 para o que ainda não está claro).
+- Rede: o PV de e-commerce 110115600 já existe (09/11/2026). A Juliana gera a
+  chave de integração no portal da Rede (login master) e cola `REDE_PV`,
+  `REDE_CHAVE_INTEGRACAO` e `REDE_AMBIENTE` no projeto `healthinstituto-api` da
+  Vercel, ela mesma (a chave não passa por chat, git, e-mail nem frontend).
+  Contratar 3DS 2.0 e tokenização no portal (Para vender > E-commerce). Como
+  obter as credenciais de sandbox: ver "Sandbox (pendente)" na seção 7.
 
 ## 12. Pendências e decisões em aberto
 
@@ -464,8 +546,9 @@ Etapa C — Pedidos e pagamento
   provisiona). Projetos em plano pago não pausam por inatividade (documentação
   do Supabase). Tem custo mensal, na fatura da Vercel dela.
 - Credenciais de produção da Rede da Juliana (e.Rede habilitado no PV dela).
-- Dados de cartão e a regra de "nunca em texto no nosso backend": o e.Rede
-  recebe o cartão pelo servidor (decisão em aberto, ver "Progresso").
+- Cartão pelo nosso backend: DECIDIDO em 09/11/2026 (a Rede não tem página
+  hospedada). Valem as regras obrigatórias da seção 7. Ainda em aberto: a
+  contratação do 3DS 2.0 e da tokenização (custo por bandeira) e o sandbox.
 - Limite de tentativas (rate limit) nas rotas de autenticação (login,
   redefinir-senha, confirmar-email, cadastro, reenvio) e na rota pública
   `/api/saude/banco`: OBRIGATÓRIO antes do lançamento. Definir a solução, já que memória local não funciona em
@@ -650,8 +733,20 @@ Etapa C — Pedidos e pagamento
   Na Rede o TID (até 20 caracteres) faz o papel do id de transação; ver o
   resumo do passo 11 para o que cada coluna guarda.
 - [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
-  v1.32 (23/03/2026) e resumo apresentado à Alexandra, sem código. Decisão em
-  aberto: o e.Rede recebe o cartão pelo servidor (ver seção 7).
+  v1.32 (23/03/2026) e resumo apresentado à Alexandra, sem código. A decisão do
+  cartão pelo servidor foi tomada em 09/11/2026 (ver seção 7).
+- [x] Resposta da Rede (09/11/2026), registrada em 11/11/2026 sem código de
+  pagamento: PV de e-commerce 110115600 (duplicado do PV físico), condições
+  comerciais em até 2 dias úteis, chave de integração gerada pela Juliana e
+  colada por ela na Vercel (`REDE_PV`, `REDE_CHAVE_INTEGRACAO`,
+  `REDE_AMBIENTE`), 3DS 2.0 e tokenização contratados no portal, taxas (Pix
+  0,91%, crédito à vista 2,64% Visa e Master, débito 1,01%) e as 5 regras
+  obrigatórias do módulo de pagamento (seção 7, e no `CLAUDE.md`). O impacto
+  do 3DS na migração 0004 (estado `aguardando_autenticacao`) está anotado na
+  seção 7; a 0004 continua por escrever.
+- [ ] Sandbox da Rede: descobrir como se obtêm as credenciais de teste (ver
+  "Sandbox (pendente)" na seção 7). Sem criar conta em lugar nenhum até a
+  Alexandra decidir.
 
 ## Frontend: procedimentos (30/10/2026)
 
