@@ -116,14 +116,6 @@ export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   )
 }
 
-export function FacebookIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
-      <path d="M13.5 21v-7.6h2.6l.4-3h-3v-1.9c0-.9.2-1.5 1.5-1.5h1.6V4.3c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 3.9v2.2H7.9v3h2.5V21h3.1Z" />
-    </svg>
-  )
-}
-
 export function HeartIcon({
   filled,
   ...props

@@ -1,9 +1,9 @@
-import { INSTAGRAM_URL, WHATSAPP_DISPLAY, WHATSAPP_NUMBER } from '../data/contact'
 import {
-  FacebookIcon,
-  InstagramIcon,
-  WhatsappIcon,
-} from './icons'
+  INSTAGRAM_URL,
+  WHATSAPP_DISPLAY,
+  WHATSAPP_NUMBER,
+} from '../data/contact'
+import { InstagramIcon, WhatsappIcon } from './icons'
 
 function Footer() {
   return (
@@ -77,15 +77,6 @@ function Footer() {
               className="rounded-full border border-offwhite/20 p-2 transition-colors hover:border-gold hover:text-gold"
             >
               <InstagramIcon className="h-4 w-4" />
-            </a>
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Facebook"
-              className="rounded-full border border-offwhite/20 p-2 transition-colors hover:border-gold hover:text-gold"
-            >
-              <FacebookIcon className="h-4 w-4" />
             </a>
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}

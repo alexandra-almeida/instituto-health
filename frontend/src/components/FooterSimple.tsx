@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import logoNavbar from '../assets/logo-parts/logo-navbar-cropped.png'
 import { INSTAGRAM_URL, WHATSAPP_NUMBER } from '../data/contact'
-import { FacebookIcon, InstagramIcon, WhatsappIcon } from './icons'
+import { InstagramIcon, WhatsappIcon } from './icons'
 
 // Rodapé enxuto — usado em todas as páginas menos a home (que tem o Footer
 // completo, com contato/horário/pagamento). Só o essencial: marca (também
@@ -30,15 +30,6 @@ function FooterSimple() {
             className="rounded-full border border-offwhite/20 p-2 transition-colors hover:border-gold hover:text-gold"
           >
             <InstagramIcon className="h-4 w-4" />
-          </a>
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Facebook"
-            className="rounded-full border border-offwhite/20 p-2 transition-colors hover:border-gold hover:text-gold"
-          >
-            <FacebookIcon className="h-4 w-4" />
           </a>
           <a
             href={`https://wa.me/${WHATSAPP_NUMBER}`}
