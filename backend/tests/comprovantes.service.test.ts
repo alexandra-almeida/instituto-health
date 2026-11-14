@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComprovantesRepository } from '../src/repositories/comprovantes.repository.js'
+import type { Notificacoes } from '../src/modules/notificacoes/notificacoes.service.js'
 import type { PerfisRepository } from '../src/repositories/perfis.repository.js'
 import { TAMANHO_MAXIMO_BYTES } from '../src/modules/comprovantes/comprovantes.regras.js'
 import {
@@ -39,10 +40,15 @@ function criarFakes() {
   )
   const perfis = { reabrir: vi.fn<PerfisRepository['reabrir']>() }
   perfis.reabrir.mockResolvedValue()
+  const notificacoes = {
+    avisarNovoComprovante: vi.fn<Notificacoes['avisarNovoComprovante']>(),
+  }
+  notificacoes.avisarNovoComprovante.mockResolvedValue()
   return {
     comprovantes,
     perfis,
-    service: criarComprovantesService({ comprovantes, perfis }),
+    notificacoes,
+    service: criarComprovantesService({ comprovantes, perfis, notificacoes }),
   }
 }
 
@@ -52,6 +58,7 @@ const UUID = '3a3a3a3a-3b3b-4c3c-8d3d-3e3e3e3e3e3e'
 
 const profissional: PerfilDaSessao = {
   id: ID,
+  nome: 'Maria',
   tipo: 'profissional',
   status: 'pendente',
 }
@@ -231,6 +238,47 @@ describe('confirmar', () => {
       comprovantes.inserir.mock.invocationCallOrder
     const [ordemDoReabrir = 0] = perfis.reabrir.mock.invocationCallOrder
     expect(ordemDoInserir).toBeLessThan(ordemDoReabrir)
+  })
+
+  it('comprovante novo avisa a clínica, depois de gravar, só com o nome', async () => {
+    const { service, comprovantes, notificacoes } = criarFakes()
+    prepararArquivoValido(comprovantes)
+
+    await service.confirmar(profissional, { caminho })
+
+    expect(notificacoes.avisarNovoComprovante).toHaveBeenCalledTimes(1)
+    expect(notificacoes.avisarNovoComprovante).toHaveBeenCalledWith('Maria')
+    const [ordemDoInserir = Infinity] =
+      comprovantes.inserir.mock.invocationCallOrder
+    const [ordemDoAviso = 0] =
+      notificacoes.avisarNovoComprovante.mock.invocationCallOrder
+    expect(ordemDoInserir).toBeLessThan(ordemDoAviso)
+  })
+
+  it('confirmar de novo (nada gravado) não avisa a clínica outra vez', async () => {
+    const { service, comprovantes, notificacoes } = criarFakes()
+    comprovantes.buscarPorCaminho.mockResolvedValue({
+      id: 'c-1',
+      enviadoEm: '2026-10-22T10:00:00Z',
+    })
+
+    await service.confirmar(profissional, { caminho })
+
+    expect(notificacoes.avisarNovoComprovante).not.toHaveBeenCalled()
+  })
+
+  it('arquivo inválido não avisa ninguém', async () => {
+    const { service, comprovantes, notificacoes } = criarFakes()
+    comprovantes.obterInfo.mockResolvedValue({
+      tamanho: 2000,
+      tipo: 'text/html',
+    })
+
+    await expect(
+      service.confirmar(profissional, { caminho }),
+    ).rejects.toMatchObject({ codigo: 'arquivo_invalido' })
+
+    expect(notificacoes.avisarNovoComprovante).not.toHaveBeenCalled()
   })
 
   it('pendente que reenvia continua pendente: ninguém é reaberto', async () => {

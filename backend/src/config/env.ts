@@ -25,6 +25,13 @@ const esquema = z.object({
     (valor) => (valor === '' ? undefined : valor),
     z.string().min(16).optional(),
   ),
+  // Chave do Resend para os avisos por e-mail (aprovação de profissionais).
+  // Opcional até em produção: sem ela a API sobe normal e só não envia os
+  // avisos (um aviso no log). Segredo: nunca em log, resposta ou frontend.
+  RESEND_API_KEY: z.preprocess(
+    (valor) => (valor === '' ? undefined : valor),
+    z.string().min(1).optional(),
+  ),
 })
 
 const resultado = esquema.safeParse(process.env)

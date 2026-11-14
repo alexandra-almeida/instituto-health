@@ -40,6 +40,13 @@ vi.mock('../src/repositories/comprovantes.repository.js', () => ({
   comprovantesRepository: comprovantesFalso,
 }))
 
+// O envio de e-mail é trocado: nenhum teste fala com o Resend de verdade
+const emailFalso = vi.hoisted(() => ({ enviarEmail: vi.fn() }))
+vi.mock('../src/lib/email.js', () => ({
+  enviarEmail: emailFalso.enviarEmail,
+  REMETENTE: 'Instituto Health <naoresponda@healthinstituto.com.br>',
+}))
+
 const avaliacoesFalso = vi.hoisted(() => ({ ultimasPorPerfis: vi.fn() }))
 vi.mock('../src/repositories/avaliacoes.repository.js', () => ({
   avaliacoesRepository: avaliacoesFalso,
@@ -468,6 +475,93 @@ describe('POST /api/admin/profissionais/:id/recusar', () => {
     const resposta = await recusar({ motivo: 'Documento vencido' })
 
     expect(resposta.status).toBe(409)
+  })
+})
+
+describe('e-mails depois da decisão', () => {
+  const contato = { nome: 'Maria Souza', email: 'maria@exemplo.com' }
+
+  beforeEach(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    comoAdmin()
+    perfisFalso.avaliar.mockResolvedValue(true)
+    perfisFalso.buscarContato.mockResolvedValue(contato)
+    emailFalso.enviarEmail.mockResolvedValue(undefined)
+  })
+
+  it('aprovar avisa o profissional, no e-mail do cadastro', async () => {
+    await request(app)
+      .post(`/api/admin/profissionais/${ALVO}/aprovar`)
+      .set('Cookie', COOKIE)
+
+    expect(emailFalso.enviarEmail).toHaveBeenCalledTimes(1)
+    expect(emailFalso.enviarEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        para: 'maria@exemplo.com',
+        assunto: 'Seu cadastro foi aprovado',
+      }),
+    )
+  })
+
+  it('recusar avisa o profissional com o motivo', async () => {
+    await request(app)
+      .post(`/api/admin/profissionais/${ALVO}/recusar`)
+      .set('Cookie', COOKIE)
+      .send({ motivo: 'Comprovante ilegível' })
+
+    expect(emailFalso.enviarEmail).toHaveBeenCalledWith(
+      expect.objectContaining({
+        para: 'maria@exemplo.com',
+        assunto: 'Não conseguimos aprovar seu cadastro',
+        texto: expect.stringContaining('Motivo: Comprovante ilegível'),
+      }),
+    )
+  })
+
+  it('falha no envio NÃO desfaz a aprovação: 200, decisão gravada, log sem dados', async () => {
+    emailFalso.enviarEmail.mockRejectedValue(
+      new Error('O Resend respondeu 500'),
+    )
+
+    const resposta = await request(app)
+      .post(`/api/admin/profissionais/${ALVO}/aprovar`)
+      .set('Cookie', COOKIE)
+
+    expect(resposta.status).toBe(200)
+    expect(resposta.body).toEqual({ status: 'aprovado' })
+    expect(perfisFalso.avaliar).toHaveBeenCalledTimes(1)
+    const registrado = JSON.stringify(vi.mocked(console.error).mock.calls)
+    expect(registrado).not.toMatch(/Maria|maria@/)
+  })
+
+  it('falha ao buscar o contato também não desfaz a recusa', async () => {
+    perfisFalso.buscarContato.mockRejectedValue(
+      new Error('Falha ao buscar contato (XX)'),
+    )
+
+    const resposta = await request(app)
+      .post(`/api/admin/profissionais/${ALVO}/recusar`)
+      .set('Cookie', COOKIE)
+      .send({ motivo: 'Documento vencido' })
+
+    expect(resposta.status).toBe(200)
+    expect(resposta.body).toEqual({ status: 'recusado' })
+    expect(emailFalso.enviarEmail).not.toHaveBeenCalled()
+    expect(JSON.stringify(vi.mocked(console.error).mock.calls)).not.toContain(
+      'Documento vencido',
+    )
+  })
+
+  it('decisão que não valeu (já avaliado) não manda e-mail nenhum', async () => {
+    perfisFalso.avaliar.mockResolvedValue(false)
+
+    const resposta = await request(app)
+      .post(`/api/admin/profissionais/${ALVO}/aprovar`)
+      .set('Cookie', COOKIE)
+
+    expect(resposta.status).toBe(409)
+    expect(emailFalso.enviarEmail).not.toHaveBeenCalled()
   })
 })
 

@@ -47,3 +47,30 @@ describe('CRON_SECRET', () => {
     expect((erro as Error).message).not.toContain('curto-demais')
   })
 })
+
+describe('RESEND_API_KEY', () => {
+  it('ausente: a API sobe normal, até em produção (só não envia e-mails)', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('RESEND_API_KEY', undefined)
+
+    const env = await carregarEnv()
+
+    expect(env.RESEND_API_KEY).toBeUndefined()
+  })
+
+  it('vazia: vale como ausente', async () => {
+    vi.stubEnv('RESEND_API_KEY', '')
+
+    const env = await carregarEnv()
+
+    expect(env.RESEND_API_KEY).toBeUndefined()
+  })
+
+  it('definida: é lida', async () => {
+    vi.stubEnv('RESEND_API_KEY', 'chave-falsa-de-teste')
+
+    const env = await carregarEnv()
+
+    expect(env.RESEND_API_KEY).toBe('chave-falsa-de-teste')
+  })
+})

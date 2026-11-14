@@ -21,6 +21,7 @@ function perfilDaSessao(req: Request): PerfilDaSessao {
   }
   return {
     id: req.usuario.id,
+    nome: req.perfil.nome,
     tipo: req.perfil.tipo,
     status: req.perfil.status,
   }

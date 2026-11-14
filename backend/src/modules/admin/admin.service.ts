@@ -15,6 +15,10 @@ import {
   type PerfisRepository,
   type StatusDoPerfil,
 } from '../../repositories/perfis.repository.js'
+import {
+  notificacoes as notificacoesPadrao,
+  type Notificacoes,
+} from '../notificacoes/notificacoes.service.js'
 
 export const POR_PAGINA = 20
 
@@ -25,13 +29,14 @@ export const VALIDADE_DA_URL_EM_SEGUNDOS = 300
 interface Dependencias {
   perfis: Pick<
     PerfisRepository,
-    'buscarPorId' | 'listar' | 'contarPorStatus' | 'avaliar'
+    'buscarPorId' | 'buscarContato' | 'listar' | 'contarPorStatus' | 'avaliar'
   >
   comprovantes: Pick<
     ComprovantesRepository,
     'listarPorPerfis' | 'buscarPorId' | 'criarUrlDeLeitura'
   >
   avaliacoes: Pick<AvaliacoesRepository, 'ultimasPorPerfis'>
+  notificacoes: Pick<Notificacoes, 'avisarAprovado' | 'avisarRecusado'>
 }
 
 export interface Pagina<T> {
@@ -80,6 +85,7 @@ export function criarAdminService({
   perfis,
   comprovantes,
   avaliacoes,
+  notificacoes,
 }: Dependencias) {
   async function decidir(
     perfilId: string,
@@ -113,6 +119,21 @@ export function criarAdminService({
       )
     }
     return { perfil, decisao }
+  }
+
+  async function avisarSemFalhar(
+    tipo: string,
+    perfilId: string,
+    avisar: (contato: { nome: string; email: string | null }) => Promise<void>,
+  ) {
+    try {
+      const contato = await perfis.buscarContato(perfilId)
+      if (contato) await avisar(contato)
+    } catch (erro) {
+      // Sem nome, e-mail ou motivo no log: só o tipo e o id do cadastro
+      const motivo = erro instanceof Error ? erro.message : 'erro inesperado'
+      console.error(`Aviso "${tipo}" não enviado (${perfilId}): ${motivo}`)
+    }
   }
 
   return {
@@ -191,13 +212,21 @@ export function criarAdminService({
       return { url, expiraEmSegundos: VALIDADE_DA_URL_EM_SEGUNDOS }
     },
 
+    // O e-mail ao profissional sai DEPOIS da decisão gravada. Se o envio ou a
+    // busca do contato falharem, a decisão continua valendo: só vai para o log
     async aprovar(perfilId: string, avaliadorId: string) {
       await decidir(perfilId, 'aprovado', null, avaliadorId)
+      await avisarSemFalhar('aprovado', perfilId, (contato) =>
+        notificacoes.avisarAprovado(contato),
+      )
       return { status: 'aprovado' as const }
     },
 
     async recusar(perfilId: string, motivo: string, avaliadorId: string) {
       await decidir(perfilId, 'recusado', motivo, avaliadorId)
+      await avisarSemFalhar('recusado', perfilId, (contato) =>
+        notificacoes.avisarRecusado(contato, motivo),
+      )
       return { status: 'recusado' as const }
     },
   }
@@ -209,4 +238,5 @@ export const adminService = criarAdminService({
   perfis: perfisRepository,
   comprovantes: comprovantesRepository,
   avaliacoes: avaliacoesRepository,
+  notificacoes: notificacoesPadrao,
 })

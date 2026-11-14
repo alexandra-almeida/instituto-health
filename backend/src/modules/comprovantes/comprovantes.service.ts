@@ -12,6 +12,10 @@ import {
   type TipoDePerfil,
 } from '../../repositories/perfis.repository.js'
 import {
+  notificacoes as notificacoesPadrao,
+  type Notificacoes,
+} from '../notificacoes/notificacoes.service.js'
+import {
   BYTES_DA_ASSINATURA,
   conferirAssinatura,
   EXTENSAO_DO_TIPO,
@@ -29,6 +33,7 @@ import type {
 // do corpo da requisição
 export interface PerfilDaSessao {
   id: string
+  nome: string
   tipo: TipoDePerfil
   status: StatusDoPerfil
 }
@@ -36,6 +41,7 @@ export interface PerfilDaSessao {
 interface Dependencias {
   comprovantes: ComprovantesRepository
   perfis: Pick<PerfisRepository, 'reabrir'>
+  notificacoes: Pick<Notificacoes, 'avisarNovoComprovante'>
 }
 
 const MENSAGEM_ARQUIVO_INVALIDO =
@@ -83,6 +89,7 @@ function padraoDoCaminho(perfilId: string) {
 export function criarComprovantesService({
   comprovantes,
   perfis,
+  notificacoes,
 }: Dependencias) {
   // Arquivo que não passou na conferência não deve ficar no bucket
   async function descartar(caminho: string) {
@@ -171,6 +178,9 @@ export function criarComprovantesService({
 
       const comprovante = await comprovantes.inserir(perfil.id, caminho)
       if (perfil.status === 'recusado') await perfis.reabrir(perfil.id)
+      // Avisa a clínica (só o nome e o link da tela de cadastros, nada do
+      // comprovante). Não lança: o aviso nunca desfaz o envio.
+      await notificacoes.avisarNovoComprovante(perfil.nome)
       return { comprovante, criado: true }
     },
 
@@ -185,4 +195,5 @@ export type ComprovantesService = ReturnType<typeof criarComprovantesService>
 export const comprovantesService = criarComprovantesService({
   comprovantes: comprovantesRepository,
   perfis: perfisRepository,
+  notificacoes: notificacoesPadrao,
 })

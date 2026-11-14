@@ -81,7 +81,7 @@ describe('POST /api/comprovantes/url-de-envio', () => {
 
     expect(resposta.status).toBe(200)
     expect(comprovantesServiceFalso.gerarUrlDeEnvio).toHaveBeenCalledWith(
-      { id: ID, tipo: 'profissional', status: 'pendente' },
+      { id: ID, nome: 'Maria', tipo: 'profissional', status: 'pendente' },
       { tipo: 'application/pdf', tamanho: 1234 },
     )
     expect(resposta.body).toEqual({
@@ -164,7 +164,7 @@ describe('POST /api/comprovantes/confirmar', () => {
       comprovante: { id: 'c-1', enviadoEm: '2026-10-22T10:00:00Z' },
     })
     expect(comprovantesServiceFalso.confirmar).toHaveBeenCalledWith(
-      { id: ID, tipo: 'profissional', status: 'pendente' },
+      { id: ID, nome: 'Maria', tipo: 'profissional', status: 'pendente' },
       { caminho },
     )
   })
