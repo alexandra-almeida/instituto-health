@@ -54,6 +54,7 @@ describe('cadastrar', () => {
     expect(perfis.criar).toHaveBeenCalledWith({
       id: 'u-1',
       nome: 'Maria',
+      email: 'maria@exemplo.com',
       tipo: 'homecare',
       status: 'aprovado',
     })
@@ -195,11 +196,14 @@ describe('confirmarEmail', () => {
       '123456',
     )
     expect(resultado.sessao).toEqual(sessao)
+    // ehAdmin é só dica de tela; o is_admin em si não sai do service
     expect(resultado.perfil).toEqual({
       nome: 'Maria',
       tipo: 'profissional',
       status: 'pendente',
+      ehAdmin: false,
     })
+    expect(resultado.perfil).not.toHaveProperty('is_admin')
   })
 
   it('código inválido ou vencido vira erro 400 em português', async () => {

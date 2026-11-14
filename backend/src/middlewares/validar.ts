@@ -18,3 +18,22 @@ export function validar(esquema: ZodType): RequestHandler {
     next()
   }
 }
+
+// Valida a query string ou os parâmetros da rota e deixa o resultado já limpo
+// (e com os padrões aplicados) em `res.locals`. Não troca req.query: no
+// Express 5 ele é somente leitura.
+export function validarEntrada(
+  esquema: ZodType,
+  de: 'query' | 'params',
+): RequestHandler {
+  return (req, res, next) => {
+    const resultado = esquema.safeParse(req[de])
+    if (!resultado.success) {
+      const mensagem = resultado.error.issues[0]?.message ?? 'Dados inválidos.'
+      next(new ErroDeNegocio('dados_invalidos', mensagem))
+      return
+    }
+    res.locals[de] = resultado.data
+    next()
+  }
+}

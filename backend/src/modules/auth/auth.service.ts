@@ -34,7 +34,20 @@ interface Dependencias {
 const MENSAGEM_RECUPERACAO =
   'Se o e-mail estiver cadastrado, o código chega em instantes. Confira também a caixa de spam.'
 
-type PerfilPublico = Pick<Perfil, 'nome' | 'tipo' | 'status'>
+// `ehAdmin` é só uma dica para a tela mostrar o link "Cadastros". A proteção de
+// verdade fica no backend (exigirAdmin, que confere o banco a cada chamada).
+type PerfilPublico = Pick<Perfil, 'nome' | 'tipo' | 'status'> & {
+  ehAdmin: boolean
+}
+
+function perfilPublico(perfil: Perfil): PerfilPublico {
+  return {
+    nome: perfil.nome,
+    tipo: perfil.tipo,
+    status: perfil.status,
+    ehAdmin: perfil.is_admin,
+  }
+}
 
 export interface ResultadoDaConfirmacao {
   sessao: Sessao
@@ -133,6 +146,7 @@ export function criarAuthService({ auth, perfis }: Dependencias) {
         await perfis.criar({
           id: usuario.id,
           nome: entrada.nome,
+          email: entrada.email,
           tipo: entrada.perfil,
           status: entrada.perfil === 'homecare' ? 'aprovado' : 'pendente',
         })
@@ -190,7 +204,7 @@ export function criarAuthService({ auth, perfis }: Dependencias) {
       return {
         sessao: confirmado.sessao,
         usuario: confirmado.usuario,
-        perfil: { nome: perfil.nome, tipo: perfil.tipo, status: perfil.status },
+        perfil: perfilPublico(perfil),
       }
     },
 
@@ -239,7 +253,7 @@ export function criarAuthService({ auth, perfis }: Dependencias) {
       return {
         sessao: aberta.sessao,
         usuario: aberta.usuario,
-        perfil: { nome: perfil.nome, tipo: perfil.tipo, status: perfil.status },
+        perfil: perfilPublico(perfil),
       }
     },
 
@@ -296,7 +310,7 @@ export function criarAuthService({ auth, perfis }: Dependencias) {
 
       return {
         usuario,
-        perfil: { nome: perfil.nome, tipo: perfil.tipo, status: perfil.status },
+        perfil: perfilPublico(perfil),
         sessaoRenovada,
       }
     },

@@ -5,9 +5,11 @@ import {
   type ComprovanteRegistrado,
   type ComprovantesRepository,
 } from '../../repositories/comprovantes.repository.js'
-import type {
-  StatusDoPerfil,
-  TipoDePerfil,
+import {
+  perfisRepository,
+  type PerfisRepository,
+  type StatusDoPerfil,
+  type TipoDePerfil,
 } from '../../repositories/perfis.repository.js'
 import {
   BYTES_DA_ASSINATURA,
@@ -33,6 +35,7 @@ export interface PerfilDaSessao {
 
 interface Dependencias {
   comprovantes: ComprovantesRepository
+  perfis: Pick<PerfisRepository, 'reabrir'>
 }
 
 const MENSAGEM_ARQUIVO_INVALIDO =
@@ -48,7 +51,9 @@ function limiteAtingido() {
 
 // Só conta profissional que ainda não foi aprovada envia comprovante: homecare
 // não precisa e quem já foi aprovado não tem o que reenviar. Este módulo
-// NUNCA altera o status do perfil; aprovar é com a Juliana, pelo painel admin.
+// NUNCA aprova nem recusa: isso é da tela de cadastros (modules/admin). A única
+// mudança de status daqui é reabrir quem foi recusado e mandou um comprovante
+// novo, para o cadastro voltar à fila de pendentes.
 function exigirPodeEnviar(perfil: PerfilDaSessao) {
   if (perfil.tipo !== 'profissional') {
     throw new ErroDeNegocio(
@@ -75,7 +80,10 @@ function padraoDoCaminho(perfilId: string) {
   return new RegExp(`^${perfilId}/${uuid}\\.(${extensoes})$`)
 }
 
-export function criarComprovantesService({ comprovantes }: Dependencias) {
+export function criarComprovantesService({
+  comprovantes,
+  perfis,
+}: Dependencias) {
   // Arquivo que não passou na conferência não deve ficar no bucket
   async function descartar(caminho: string) {
     try {
@@ -162,6 +170,7 @@ export function criarComprovantesService({ comprovantes }: Dependencias) {
       }
 
       const comprovante = await comprovantes.inserir(perfil.id, caminho)
+      if (perfil.status === 'recusado') await perfis.reabrir(perfil.id)
       return { comprovante, criado: true }
     },
 
@@ -175,4 +184,5 @@ export type ComprovantesService = ReturnType<typeof criarComprovantesService>
 
 export const comprovantesService = criarComprovantesService({
   comprovantes: comprovantesRepository,
+  perfis: perfisRepository,
 })

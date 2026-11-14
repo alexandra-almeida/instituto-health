@@ -1,6 +1,7 @@
 import express from 'express'
 import './config/env.js'
 import { rotaNaoEncontrada, tratarErros } from './middlewares/tratarErros.js'
+import { adminRoutes } from './modules/admin/admin.routes.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
 import { comprovantesRoutes } from './modules/comprovantes/comprovantes.routes.js'
 import { cronRoutes } from './modules/cron/cron.routes.js'
@@ -19,6 +20,7 @@ app.use(express.json())
 
 app.use('/api/saude', saudeRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/admin', adminRoutes)
 app.use('/api/comprovantes', comprovantesRoutes)
 app.use('/api/cron', cronRoutes)
 

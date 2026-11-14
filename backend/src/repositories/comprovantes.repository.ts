@@ -8,6 +8,12 @@ export interface ComprovanteRegistrado {
   enviadoEm: string
 }
 
+export interface ComprovanteComCaminho {
+  id: string
+  perfilId: string
+  caminho: string
+}
+
 export interface InfoDoArquivo {
   tamanho: number
   tipo: string
@@ -16,6 +22,15 @@ export interface InfoDoArquivo {
 export interface ComprovantesRepository {
   contarRegistros(perfilId: string): Promise<number>
   listarPorPerfil(perfilId: string): Promise<ComprovanteRegistrado[]>
+  /** Os comprovantes de vários perfis de uma vez, do mais novo para o mais
+   * antigo (usado pela tela de cadastros) */
+  listarPorPerfis(
+    perfilIds: string[],
+  ): Promise<Map<string, ComprovanteRegistrado[]>>
+  buscarPorId(id: string): Promise<ComprovanteComCaminho | null>
+  /** URL assinada de LEITURA, com validade curta. Só o backend a gera, e só
+   * para admin (ver modules/admin). */
+  criarUrlDeLeitura(caminho: string, segundos: number): Promise<string>
   buscarPorCaminho(caminho: string): Promise<ComprovanteRegistrado | null>
   inserir(perfilId: string, caminho: string): Promise<ComprovanteRegistrado>
   contarArquivosNaPasta(perfilId: string): Promise<number>
@@ -57,6 +72,52 @@ export const comprovantesRepository: ComprovantesRepository = {
       .order('enviado_em', { ascending: false })
     if (error) throw new Error(`Falha ao listar comprovantes (${error.code})`)
     return (data as Linha[]).map(paraRegistro)
+  },
+
+  async listarPorPerfis(perfilIds) {
+    const resultado = new Map<string, ComprovanteRegistrado[]>()
+    if (perfilIds.length === 0) return resultado
+    const { data, error } = await supabaseAdmin
+      .from(TABELA)
+      .select('id, perfil_id, enviado_em')
+      .in('perfil_id', perfilIds)
+      .order('enviado_em', { ascending: false })
+    if (error) throw new Error(`Falha ao listar comprovantes (${error.code})`)
+    for (const linha of data as (Linha & { perfil_id: string })[]) {
+      const lista = resultado.get(linha.perfil_id) ?? []
+      lista.push(paraRegistro(linha))
+      resultado.set(linha.perfil_id, lista)
+    }
+    return resultado
+  },
+
+  async buscarPorId(id) {
+    const { data, error } = await supabaseAdmin
+      .from(TABELA)
+      .select('id, perfil_id, storage_path')
+      .eq('id', id)
+      .maybeSingle()
+    if (error) throw new Error(`Falha ao buscar comprovante (${error.code})`)
+    if (!data) return null
+    const linha = data as {
+      id: string
+      perfil_id: string
+      storage_path: string
+    }
+    return {
+      id: linha.id,
+      perfilId: linha.perfil_id,
+      caminho: linha.storage_path,
+    }
+  },
+
+  async criarUrlDeLeitura(caminho, segundos) {
+    const { data, error } = await supabaseAdmin.storage
+      .from(BUCKET)
+      .createSignedUrl(caminho, segundos)
+    // A URL assinada é credencial: nada dela (nem o caminho) vai para o erro
+    if (error) throw new Error('Falha ao criar a URL de leitura do comprovante')
+    return data.signedUrl
   },
 
   async buscarPorCaminho(caminho) {

@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComprovantesRepository } from '../src/repositories/comprovantes.repository.js'
+import type { PerfisRepository } from '../src/repositories/perfis.repository.js'
 import { TAMANHO_MAXIMO_BYTES } from '../src/modules/comprovantes/comprovantes.regras.js'
 import {
   criarComprovantesService,
@@ -11,6 +12,9 @@ function criarFakes() {
   const comprovantes = {
     contarRegistros: vi.fn<ComprovantesRepository['contarRegistros']>(),
     listarPorPerfil: vi.fn<ComprovantesRepository['listarPorPerfil']>(),
+    listarPorPerfis: vi.fn<ComprovantesRepository['listarPorPerfis']>(),
+    buscarPorId: vi.fn<ComprovantesRepository['buscarPorId']>(),
+    criarUrlDeLeitura: vi.fn<ComprovantesRepository['criarUrlDeLeitura']>(),
     buscarPorCaminho: vi.fn<ComprovantesRepository['buscarPorCaminho']>(),
     inserir: vi.fn<ComprovantesRepository['inserir']>(),
     contarArquivosNaPasta:
@@ -33,7 +37,13 @@ function criarFakes() {
       enviadoEm: `2026-10-22T10:00:00Z#${caminho}`,
     }),
   )
-  return { comprovantes, service: criarComprovantesService({ comprovantes }) }
+  const perfis = { reabrir: vi.fn<PerfisRepository['reabrir']>() }
+  perfis.reabrir.mockResolvedValue()
+  return {
+    comprovantes,
+    perfis,
+    service: criarComprovantesService({ comprovantes, perfis }),
+  }
 }
 
 const ID = '11111111-1111-4111-8111-111111111111'
@@ -205,6 +215,46 @@ describe('confirmar', () => {
     expect(comprovantes.inserir).toHaveBeenCalledTimes(1)
     expect(comprovantes.inserir).toHaveBeenCalledWith(ID, caminho)
     expect(comprovantes.removerArquivo).not.toHaveBeenCalled()
+  })
+
+  it('recusado que reenvia volta para pendente (depois de gravar o comprovante)', async () => {
+    const { service, comprovantes, perfis } = criarFakes()
+    prepararArquivoValido(comprovantes)
+
+    await service.confirmar(
+      { ...profissional, status: 'recusado' },
+      { caminho },
+    )
+
+    expect(perfis.reabrir).toHaveBeenCalledWith(ID)
+    const [ordemDoInserir = Infinity] =
+      comprovantes.inserir.mock.invocationCallOrder
+    const [ordemDoReabrir = 0] = perfis.reabrir.mock.invocationCallOrder
+    expect(ordemDoInserir).toBeLessThan(ordemDoReabrir)
+  })
+
+  it('pendente que reenvia continua pendente: ninguém é reaberto', async () => {
+    const { service, comprovantes, perfis } = criarFakes()
+    prepararArquivoValido(comprovantes)
+
+    await service.confirmar(profissional, { caminho })
+
+    expect(perfis.reabrir).not.toHaveBeenCalled()
+  })
+
+  it('arquivo inválido de recusado: não grava e não reabre', async () => {
+    const { service, comprovantes, perfis } = criarFakes()
+    comprovantes.obterInfo.mockResolvedValue({
+      tamanho: 2000,
+      tipo: 'text/html',
+    })
+
+    await expect(
+      service.confirmar({ ...profissional, status: 'recusado' }, { caminho }),
+    ).rejects.toMatchObject({ codigo: 'arquivo_invalido' })
+
+    expect(comprovantes.inserir).not.toHaveBeenCalled()
+    expect(perfis.reabrir).not.toHaveBeenCalled()
   })
 
   it('confirmar de novo devolve o mesmo registro sem gravar outra vez', async () => {

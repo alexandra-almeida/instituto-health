@@ -49,7 +49,8 @@ export const logout: RequestHandler = async (req, res) => {
 }
 
 // Chega aqui só depois do middleware `autenticar`, que preenche usuario e
-// perfil. is_admin nunca é devolvido ao navegador.
+// perfil. O perfil leva `ehAdmin`, só uma dica para a tela (o is_admin em si
+// nunca sai do banco): o backend sempre confere de novo em cada rota admin.
 export const eu: RequestHandler = (req, res) => {
   res.json({ usuario: req.usuario, perfil: req.perfil })
 }

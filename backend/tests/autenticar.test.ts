@@ -13,6 +13,7 @@ const perfil = {
   nome: 'Maria',
   tipo: 'profissional',
   status: 'aprovado',
+  ehAdmin: false,
 } as const
 
 describe('autenticar', () => {

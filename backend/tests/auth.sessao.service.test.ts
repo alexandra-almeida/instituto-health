@@ -55,7 +55,12 @@ describe('entrar', () => {
     expect(resultado).toEqual({
       sessao,
       usuario,
-      perfil: { nome: 'Maria', tipo: 'homecare', status: 'aprovado' },
+      perfil: {
+        nome: 'Maria',
+        tipo: 'homecare',
+        status: 'aprovado',
+        ehAdmin: true,
+      },
     })
     // is_admin não pode sair do service para o controller
     expect(resultado.perfil).not.toHaveProperty('is_admin')
@@ -158,6 +163,7 @@ describe('autenticarSessao', () => {
       nome: 'Maria',
       tipo: 'homecare',
       status: 'aprovado',
+      ehAdmin: true,
     })
     expect(resultado.sessaoRenovada).toBeUndefined()
     expect(auth.renovarSessao).not.toHaveBeenCalled()
