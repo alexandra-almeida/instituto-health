@@ -17,6 +17,13 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 - `ORIGEM_FRONTEND` (backend, na Vercel) tem os 3 endereços do site; o Site URL do Supabase é https://healthinstituto.com.br
 - `canonical`, `og:url`, `og:image` e `twitter:image` do `frontend/index.html` já usam o domínio novo; `public/robots.txt` libera o site, bloqueia as páginas de conta e de compra e `/api/`, e aponta para o sitemap, e o `sitemap.xml` (páginas públicas, procedimentos e produtos Tulípia, sem conta nem compra) é gerado no build por `frontend/scripts/gerar-sitemap.mjs` com os mesmos slugs das rotas
 
+## E-mail
+
+- Desde 14/11/2026 o Supabase Auth envia por SMTP próprio: Resend com o domínio `healthinstituto.com.br` verificado (região São Paulo, `sa-east-1`), DKIM, SPF e DMARC (`p=none`) no Registro.br; `smtp.resend.com:465`, remetente "Instituto Health" <naoresponda@healthinstituto.com.br>. A credencial do SMTP fica só no painel do Supabase.
+- Modelos em português com `{{ .Token }}` (código de 6 dígitos, sem link): Confirm signup e Reset password. Os HTML em `docs/emails/` são só referência: qualquer mudança é feita no painel do Supabase (Authentication > Emails) e a cópia é atualizada depois.
+- `contato@healthinstituto.com.br` encaminha para o Gmail da clínica pelo Forward Email (MX `mx1`/`mx2.forwardemail.net` e TXT `forward-email` no Registro.br). O recebimento pelo Resend fica DESLIGADO para não conflitar.
+- Aviso de novo comprovante (tela de aprovação, ainda não feita): `RESEND_API_KEY` no projeto `healthinstituto-api`, só Production e Sensitive, cadastrada pela Alexandra. Nunca no chat, no git ou no frontend.
+
 ## Estrutura do repositório
 
 - `frontend/` — site (React/Vite); todos os comandos abaixo rodam dentro dele
@@ -55,7 +62,7 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 
 ## O que ainda é simulado
 
-Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de senha, envio do comprovante profissional e a página Minha Conta (`/minha-conta`, com reenvio do comprovante e Sair) já chamam o backend de verdade, por `frontend/src/lib/api.ts` (o arquivo do comprovante vai direto para uma URL assinada do Storage, nunca pelo corpo de uma chamada ao backend, e fica só em memória no navegador). O teste ponta a ponta com e-mail real depende do SMTP (Resend + domínio, ver plano). Os pontos que ainda faltam estão marcados com `TODO(backend)`:
+Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de senha, envio do comprovante profissional e a página Minha Conta (`/minha-conta`, com reenvio do comprovante e Sair) já chamam o backend de verdade, por `frontend/src/lib/api.ts` (o arquivo do comprovante vai direto para uma URL assinada do Storage, nunca pelo corpo de uma chamada ao backend, e fica só em memória no navegador). O SMTP próprio (Resend) está ativo desde 14/11/2026 e o teste real de cadastro com e-mail real foi aprovado (ver seção "E-mail"). Os pontos que ainda faltam estão marcados com `TODO(backend)`:
 
 - `frontend/src/pages/Checkout.tsx` — confirmar pedido; pagamento (Pix, crédito, débito) e frete são só interface. O CEP já usa o ViaCEP de verdade. "Até 3x sem juros" é valor de exemplo.
 

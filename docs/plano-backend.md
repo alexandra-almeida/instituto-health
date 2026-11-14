@@ -40,8 +40,9 @@ no fim deste arquivo a cada passo concluído.
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
 - Migrações SQL: versionadas em `database/migrations/`. A Alexandra cola cada
   uma manualmente no SQL Editor. Não configurar a CLI do Supabase.
-- SMTP próprio (Resend) só depois que o domínio existir. Até lá, e-mail
-  embutido do Supabase, que tem limite baixo por hora (só para testes).
+- SMTP próprio (Resend): ATIVO desde 14/11/2026 (ver "E-mail: SMTP próprio e
+  contato" no fim deste arquivo). O e-mail embutido do Supabase não é mais
+  usado.
 
 ## 2. Arquitetura
 
@@ -378,7 +379,8 @@ as variáveis do Supabase, `REDE_PV` (clientId), `REDE_CHAVE_INTEGRACAO`
 (clientSecret), `REDE_AMBIENTE` (sandbox | producao), `ORIGEM_FRONTEND`,
 (nomes definidos em 09/11/2026, valores só na Vercel e colados pela Juliana; antes do 26/10/2026 eram
 `PAGBANK_TOKEN` e `PAGBANK_AMBIENTE`),
-`COOKIE_SECRET` (se necessário).
+`COOKIE_SECRET` (se necessário) e, para o aviso de novo comprovante (tela de
+aprovação, Fase 3), `RESEND_API_KEY` (ver "E-mail: SMTP próprio e contato").
 
 Variáveis do Supabase: a integração do Marketplace cria e sincroniza as
 variáveis no projeto da Vercel a que o banco for conectado (ex.: `SUPABASE_URL`,
@@ -533,7 +535,6 @@ Etapa C — Pedidos e pagamento
   Sem urgência. (A antiga pendência de visualizar HEIC no painel admin deixou
   de existir.)
 - Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
-- SMTP próprio (Resend): depende do domínio.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
   antes de receber pedidos reais. Ao migrar, decidir se o despertador do passo
   5b é removido (rota, `crons`, tabela `batimentos` e `CRON_SECRET`) ou
@@ -553,10 +554,6 @@ Etapa C — Pedidos e pagamento
   redefinir-senha, confirmar-email, cadastro, reenvio) e na rota pública
   `/api/saude/banco`: OBRIGATÓRIO antes do lançamento. Definir a solução, já que memória local não funciona em
   Functions. Até lá só vale o limite próprio do Supabase.
-- Teste ponta a ponta dos passos 5 a 9 (cadastro, código por e-mail, login,
-  recuperação de senha, comprovante) com e-mail real: fica para DEPOIS do SMTP
-  (Resend + domínio). O e-mail embutido do Supabase tem limite baixo e pode
-  não entregar. Até lá, só testes com Supabase simulado.
 
 ## Progresso
 
@@ -744,6 +741,10 @@ Etapa C — Pedidos e pagamento
   obrigatórias do módulo de pagamento (seção 7, e no `CLAUDE.md`). O impacto
   do 3DS na migração 0004 (estado `aguardando_autenticacao`) está anotado na
   seção 7; a 0004 continua por escrever.
+- [x] E-mail e teste real de cadastro (14/11/2026): SMTP próprio ativo e o
+  fluxo de cadastro profissional testado de ponta a ponta com e-mail real (ver
+  "E-mail: SMTP próprio e contato"). Resolve as notas antigas "teste real
+  depois do SMTP" deste arquivo (passos 5 a 9 e modelo "Reset password").
 - [ ] Sandbox da Rede: descobrir como se obtêm as credenciais de teste (ver
   "Sandbox (pendente)" na seção 7). Sem criar conta em lugar nenhum até a
   Alexandra decidir.
@@ -1124,3 +1125,45 @@ Registrada em 02/11/2026; ainda não estava escrita.
 - **Detalhe das fotos:** a caixa da Luva de Vinil traz "luvas de vinil
   industrial" e "uso profissional, food"; vale a Juliana conferir se esse texto
   da caixa combina com o uso em clínica.
+
+## E-mail: SMTP próprio e contato (14/11/2026)
+
+### SMTP do Supabase Auth (Resend)
+
+- Resend com o domínio `healthinstituto.com.br` verificado, região São Paulo
+  (`sa-east-1`). No Registro.br: DKIM, SPF e DMARC (`p=none`, só monitora, não
+  rejeita).
+- O Supabase Auth envia por SMTP em `smtp.resend.com`, porta 465, com o
+  remetente "Instituto Health" <naoresponda@healthinstituto.com.br>. A
+  credencial do SMTP fica só no painel do Supabase (nunca neste arquivo, no
+  git, no chat ou no frontend).
+- Recebimento pelo Resend DESLIGADO, para não conflitar com o encaminhamento do
+  contato (abaixo).
+
+### Modelos de e-mail do Supabase
+
+- Em português, com `{{ .Token }}` (código de 6 dígitos, sem link): Confirm
+  signup e Reset password.
+- Os dois HTML ficam em `docs/emails/` só como REFERÊNCIA. Quem vale é o que
+  está no painel do Supabase (Authentication > Emails): qualquer mudança é
+  feita LÁ, e depois a cópia em `docs/emails/` é atualizada para não divergir.
+  (Os arquivos entram quando a Alexandra enviar o conteúdo.)
+
+### Teste real
+
+Cadastro profissional feito e APROVADO com e-mail real (14/11/2026): o código
+de 6 dígitos chegou, a confirmação funcionou e o envio do comprovante também.
+
+### Contato do site
+
+- `contato@healthinstituto.com.br` encaminha para
+  `contato.healthinstituto@gmail.com` pelo Forward Email: no Registro.br, MX
+  `mx1.forwardemail.net` e `mx2.forwardemail.net` e o TXT `forward-email`.
+
+### Aviso de novo comprovante (ainda não implementado)
+
+Quando a tela de aprovação existir (Fase 3), o backend avisará por e-mail que
+há comprovante novo. A chave do Resend para isso será `RESEND_API_KEY` no
+projeto `healthinstituto-api` da Vercel, SÓ no ambiente Production e marcada
+como Sensitive, cadastrada pela Alexandra. Nunca no chat, no git ou no
+frontend, e o valor não aparece em log nem em resposta da API.
