@@ -24,4 +24,16 @@ describe('redes sociais do site', () => {
       expect(fonte).toContain('aria-label="WhatsApp"')
     }
   })
+
+  it('o e-mail de contato é o do domínio certo, em link mailto, e não há boleto', () => {
+    expect(contatoFonte).toContain("'contato@healthinstituto.com.br'")
+    expect(footerFonte).toContain('mailto:${EMAIL_CONTATO}')
+    for (const fonte of [footerFonte, footerSimplesFonte, contatoFonte]) {
+      expect(fonte).not.toMatch(/institutohealth\.com\.br/)
+    }
+    expect(footerFonte).not.toMatch(/boleto/i)
+    expect(footerFonte).toMatch(
+      /Pix · Cartão de crédito · Cartão de débito\s*</,
+    )
+  })
 })

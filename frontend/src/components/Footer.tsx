@@ -1,4 +1,5 @@
 import {
+  EMAIL_CONTATO,
   INSTAGRAM_URL,
   WHATSAPP_DISPLAY,
   WHATSAPP_NUMBER,
@@ -35,11 +36,8 @@ function Footer() {
               </a>
             </li>
             <li>
-              <a
-                href="mailto:contato@institutohealth.com.br"
-                className="hover:text-gold"
-              >
-                contato@institutohealth.com.br
+              <a href={`mailto:${EMAIL_CONTATO}`} className="hover:text-gold">
+                {EMAIL_CONTATO}
               </a>
             </li>
             <li>Rincão, SP</li>
@@ -60,7 +58,7 @@ function Footer() {
             Formas de pagamento
           </h3>
           <p className="mt-3 text-sm text-offwhite/80">
-            Pix · Cartão de crédito · Cartão de débito · Boleto
+            Pix · Cartão de crédito · Cartão de débito
           </p>
         </div>
 

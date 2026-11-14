@@ -4,3 +4,5 @@
 export const WHATSAPP_NUMBER = '5516997304585'
 export const WHATSAPP_DISPLAY = '(16) 99730-4585'
 export const INSTAGRAM_URL = 'https://www.instagram.com/health_instituto/'
+// Encaminha para o Gmail da clínica (Forward Email, ver plano: E-mail)
+export const EMAIL_CONTATO = 'contato@healthinstituto.com.br'
