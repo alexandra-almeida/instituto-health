@@ -35,7 +35,7 @@ no fim deste arquivo a cada passo concluído.
   o pedido de habilitação de vendas online (e.Rede) e do token vai ao gerente.
   HISTÓRICO: até 25/10/2026 o gateway decidido era o PagBank; a troca foi
   registrada na seção "Progresso". As menções ao PagBank que restam neste
-  plano são histórico (ou nomes de colunas da 0002, renomeados na 0004).
+  plano são histórico (ou nomes de colunas da 0002, renomeados na 0005).
 - Fluxo do cadastro profissional mantém a ordem das telas atuais
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
 - Migrações SQL: versionadas em `database/migrations/`. A Alexandra cola cada
@@ -149,7 +149,7 @@ Tabelas (nomes fixos, não renomear):
   `quantidade` (> 0), `preco_unitario`.
 - `pagamentos`: `id`, `pedido_id`, `pagbank_order_id`, `pagbank_charge_id`,
   `status`, `valor`, `forma`, `created_at`, `updated_at`. (Nomes da migração
-  0002, ainda com o prefixo `pagbank_`. A 0004 os renomeia para nomes neutros
+  0002, ainda com o prefixo `pagbank_`. A 0005 os renomeia para nomes neutros
   `gateway_order_id`, `gateway_charge_id` e `gateway_status`, ver "Progresso".)
 - `eventos_webhook`: `id`, identificador do evento do gateway (único),
   `recebido_em`, `processado_em`. Serve para não processar o mesmo aviso
@@ -328,14 +328,14 @@ rota de pedidos e os testes). Estão também no `CLAUDE.md`.
    própria. Sem tokenização contratada e implementada, não existe "salvar
    cartão".
 5. Fluxo 3DS: o cliente vai ao banco e volta; por isso o pedido precisa do
-   estado "aguardando autenticação" (ver o impacto na migração 0004 abaixo).
+   estado "aguardando autenticação" (ver o impacto na migração 0005 abaixo).
 
-### Impacto do 3DS na migração 0004 (só anotado; a 0004 NÃO foi criada)
+### Impacto do 3DS na migração 0005 (só anotado; a 0005 NÃO foi criada)
 
 - `pedidos.status` hoje aceita `aguardando_pagamento`, `pago`, `cancelado`,
   `enviado` e `entregue`. Precisa de um estado novo, `aguardando_autenticacao`:
   o pedido existe, o cartão foi enviado à Rede e o cliente está no banco.
-  Mudar a regra `check` do `status` exige apagar e recriar a restrição na 0004.
+  Mudar a regra `check` do `status` exige apagar e recriar a restrição na 0005.
 - `pagamentos.status` (`pendente`, `em_analise`, `pago`, `recusado`,
   `cancelado`, `estornado`) provavelmente precisa do mesmo estado, ou o
   pagamento fica `pendente` enquanto o pedido está em autenticação. Decidir na
@@ -345,7 +345,7 @@ rota de pedidos e os testes). Estão também no `CLAUDE.md`.
 - Pedido que fica em `aguardando_autenticacao` e é abandonado precisa expirar
   (cancelar e liberar), possivelmente por tarefa agendada: definir o prazo.
 - Se a 3DS devolver dados que precisem ser guardados (identificador da
-  autenticação, resultado), entram em colunas de `pagamentos` na mesma 0004.
+  autenticação, resultado), entram em colunas de `pagamentos` na mesma 0005.
   Nunca dado de cartão.
 
 ### Sandbox (pendente, 11/11/2026)
@@ -475,12 +475,12 @@ Etapa C — Pedidos e pagamento
     código). (Trocado de PagBank para Rede em 26/10/2026.)
     Itens a confirmar nessa leitura, além do que o resumo já cobrir:
     - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
-      entra numa migração `0004` com a coluna em `pedidos` (e o formulário do
+      entra numa migração `0005` com a coluna em `pedidos` (e o formulário do
       Checkout passa a pedir). A 0002 NÃO tem essa coluna.
     - Como o aviso (webhook) se identifica, para decidir como montar o
       `eventos_webhook.evento_id` (id do aviso ou charge + status).
     - Quais dados de Pix (QR Code, copia-e-cola, validade) e de cartão precisam
-      ser guardados; se precisarem de colunas, entram na mesma `0004`.
+      ser guardados; se precisarem de colunas, entram na mesma `0005`.
 12. Módulo `pedidos`: criação com total calculado no servidor, com testes.
 13. `rede.client.ts` e pagamento por Pix no sandbox.
 14. Aviso (webhook) do Pix e atualização de status.
@@ -718,7 +718,7 @@ Etapa C — Pedidos e pagamento
   será usado. Ajustados neste arquivo: seções 1, 2, 4, 7, 9, 10, 11 e 12 e o
   `CLAUDE.md`. O código da migração 0002 e a conferência ainda citam
   `pagbank_*` (a migração já foi aplicada e não se edita).
-- [ ] Migração 0004 (pagamentos; era a 0003 até 31/10/2026, quando a 0003 virou
+- [ ] Migração 0005 (pagamentos; foi a 0003 até 31/10/2026 e a 0004 até 14/11/2026, quando a 0004 passou a ser a aprovação de cadastros; a 0003 virou
   `0003_batimentos`; a escrever, SQL a ser mostrado à Alexandra antes): além de
   `cpf_cnpj`/dados de Pix que o resumo do passo 11 indicar, renomear em
   `pagamentos` as colunas `pagbank_order_id` para `gateway_order_id`,
@@ -726,7 +726,7 @@ Etapa C — Pedidos e pagamento
   `gateway_status`, e os índices `pagamentos_pagbank_order_id_idx` e
   `pagamentos_pagbank_charge_id_idx` para `pagamentos_gateway_order_id_idx` e
   `pagamentos_gateway_charge_id_idx`. Ajustar na mesma entrega a conferência
-  `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0004.
+  `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0005.
   Na Rede o TID (até 20 caracteres) faz o papel do id de transação; ver o
   resumo do passo 11 para o que cada coluna guarda.
 - [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
@@ -739,8 +739,8 @@ Etapa C — Pedidos e pagamento
   `REDE_AMBIENTE`), 3DS 2.0 e tokenização contratados no portal, taxas (Pix
   0,91%, crédito à vista 2,64% Visa e Master, débito 1,01%) e as 5 regras
   obrigatórias do módulo de pagamento (seção 7, e no `CLAUDE.md`). O impacto
-  do 3DS na migração 0004 (estado `aguardando_autenticacao`) está anotado na
-  seção 7; a 0004 continua por escrever.
+  do 3DS na migração 0005 (estado `aguardando_autenticacao`) está anotado na
+  seção 7; a 0005 continua por escrever.
 - [x] E-mail e teste real de cadastro (14/11/2026): SMTP próprio ativo e o
   fluxo de cadastro profissional testado de ponta a ponta com e-mail real (ver
   "E-mail: SMTP próprio e contato"). Resolve as notas antigas "teste real
@@ -832,7 +832,7 @@ Os originais ficam para a página de detalhe.
     O cron passa a fazer upsert dessa linha com a data de agora e depois lê de
     volta (500 se a leitura não confirmar a gravação), e o schedule vai de
     `0 9 * * *` para `0 */6 * * *` (a cada 6 horas, UTC; a equipe da Vercel é
-    Pro). Não há garantia de que baste. A 0003 original (pagamentos) virou 0004.
+    Pro). Não há garantia de que baste. A 0003 original (pagamentos) virou 0004 e, em 14/11/2026, 0005 (a 0004 passou a ser a aprovação de cadastros).
   - C (aprovado): monitor externo gratuito (UptimeRobot), criado pela
     Alexandra (passo a passo dado na conversa), com 3 monitores a cada 5
     minutos: `https://healthinstituto-api.vercel.app/api/saude` (API no ar),
@@ -1167,3 +1167,135 @@ há comprovante novo. A chave do Resend para isso será `RESEND_API_KEY` no
 projeto `healthinstituto-api` da Vercel, SÓ no ambiente Production e marcada
 como Sensitive, cadastrada pela Alexandra. Nunca no chat, no git ou no
 frontend, e o valor não aparece em log nem em resposta da API.
+
+## Tela de cadastros (admin) (14/11/2026)
+
+Aprovar profissionais e consultar quem se cadastrou. Plano aprovado pela
+Alexandra com 6 decisões; backend, e-mails e frontend prontos e commitados.
+**A migração `0004_aprovacao_cadastros` ainda NÃO foi criada** (o SQL foi
+mostrado à Alexandra para revisão antes de virar arquivo).
+
+### Ordem para colocar no ar (importante)
+
+1. Colar a migração 0004 no SQL Editor do Supabase. O backend novo grava e lê a
+   coluna `perfis.email` e chama a função `avaliar_perfil`: SEM a migração, o
+   cadastro e a tela quebram. Por isso a migração vem ANTES do push.
+2. Colar o SQL que torna a Juliana e a Bia admin (abaixo).
+3. Cadastrar `RESEND_API_KEY` no projeto `healthinstituto-api` da Vercel (só
+   Production e Sensitive, pela Alexandra). Sem ela tudo funciona e só não
+   saem os e-mails.
+4. Push e conferir os deploys.
+
+### Quem acessa
+
+- Só `perfis.is_admin = true`. No backend, todas as rotas `/api/admin` passam
+  por `protegerOrigem`, `autenticar` e `exigirAdmin` (que lê `is_admin` no
+  banco a cada chamada; nada que vem do navegador decide). Respostas com
+  `Cache-Control: no-store`.
+- No frontend, `/admin/cadastros` fica atrás de `RotaDeAdmin`: deslogado vai
+  ao login, quem não é admin vê "Você não tem permissão para ver esta página."
+  O link "Cadastros" (com o número de pendentes) aparece no header e em Minha
+  Conta só para admin.
+- `GET /api/auth/eu` e os logins devolvem `ehAdmin` dentro de `perfil`: é só
+  uma dica para a tela (decisão 1). O `is_admin` em si nunca sai do banco, e o
+  backend confere de novo em cada rota admin.
+- Não existe tela para virar admin. SQL (a Alexandra revisa e cola):
+
+```sql
+-- 1) conferir: deve listar exatamente as 2 contas
+select p.id, p.nome, u.email, p.is_admin
+from public.perfis p join auth.users u on u.id = p.id
+where lower(u.email) in ('EMAIL_DA_JULIANA', 'EMAIL_DA_BIA');
+
+-- 2) tornar admin
+update public.perfis set is_admin = true
+where id in (select id from auth.users
+             where lower(email) in ('EMAIL_DA_JULIANA', 'EMAIL_DA_BIA'));
+
+-- 3) conferir o resultado
+select p.nome, u.email, p.is_admin
+from public.perfis p join auth.users u on u.id = p.id where p.is_admin;
+```
+
+### Rotas (módulo `modules/admin`, camadas routes, controller, service, repository)
+
+| Rota | Função |
+| --- | --- |
+| `GET /api/admin/resumo` | contagens: profissionais por situação e Home Care |
+| `GET /api/admin/profissionais?status=&busca=&pagina=` | 20 por página, mais recentes primeiro, com total |
+| `GET /api/admin/homecare?busca=&pagina=` | só consulta (nome, e-mail, telefone, data) |
+| `GET /api/admin/comprovantes/:id/url` | URL assinada de 5 minutos; nunca o arquivo |
+| `POST /api/admin/profissionais/:id/aprovar` | aprova |
+| `POST /api/admin/profissionais/:id/recusar` | recusa, com `motivo` obrigatório (3 a 300 caracteres) |
+
+- Entradas validadas com zod (`validar` no corpo e `validarEntrada` na query e
+  nos parâmetros). A busca é por nome ou e-mail e escapa os curingas do LIKE e
+  a sintaxe do filtro do PostgREST (`lib/busca.ts`).
+- LGPD: as respostas só levam o necessário (id, nome, e-mail, telefone,
+  registro, datas, situação e, nas decididas, quem decidiu, quando e o motivo).
+  Nunca senha, token, endereço, dado de pagamento nem o caminho do arquivo.
+- Decisão e histórico acontecem juntos na função `avaliar_perfil` do banco, e só
+  valem se o cadastro ainda está pendente: duas pessoas decidindo ao mesmo
+  tempo, só a primeira vale (a outra recebe 409).
+- Ver comprovante: o backend gera a URL assinada (5 minutos) só para admin; o
+  navegador abre uma aba nova (sem referência à aba de origem). O arquivo nunca
+  passa pelo corpo da resposta.
+
+### As 6 decisões (aprovadas em 14/11/2026)
+
+1. `ehAdmin` no `/eu` (acima).
+2. `telefone` e `registro_profissional` existem como colunas vazias; o
+   formulário de cadastro NÃO muda neste pedido, então a tela só mostra esses
+   campos quando houver valor (hoje nunca). Quando o cadastro passar a pedir,
+   é só preencher as colunas.
+3. Coluna `perfis.email`, preenchida no cadastro e recuperada dos perfis
+   existentes na migração. É uma CÓPIA do e-mail de `auth.users`: **se um dia
+   existir troca de e-mail, essa coluna precisa ser atualizada junto** (também
+   anotado no `perfis.repository.ts`).
+4. Esta é a `0004_aprovacao_cadastros`; a de pagamentos virou `0005` (textos
+   acima e no `CLAUDE.md` ajustados).
+5. Profissional recusado que reenvia um comprovante volta para "pendente"
+   (`comprovantes.service`, só depois de gravar o comprovante).
+6. Abas Aprovados e Recusados são só leitura (sem desfazer).
+
+### Migração 0004 (a criar)
+
+`perfis`: colunas `email`, `telefone` e `registro_profissional` (opcionais) e
+um índice por tipo, situação e data. Tabela `avaliacoes_perfil` (histórico:
+perfil, decisão, motivo, quem decidiu, quando; RLS ligado, sem política, sem
+privilégios para anon e authenticated). Função `avaliar_perfil` (só
+`service_role` executa). O histórico guarda recusa, reenvio e aprovação, não só
+a última decisão.
+
+### E-mails (Resend)
+
+- `RESEND_API_KEY` é opcional no `env`: sem ela a API sobe e só registra um
+  aviso, sem enviar. O cliente é um `fetch` à API do Resend (sem SDK).
+- Para `contato@healthinstituto.com.br`, a cada comprovante novo confirmado:
+  "Novo profissional aguardando aprovação", só com o nome e o link para
+  `/admin/cadastros` (sem anexo e sem dado sensível).
+- Para o profissional, ao ser aprovado ("Seu cadastro foi aprovado") e ao ser
+  recusado ("Não conseguimos aprovar seu cadastro", com o motivo e como
+  reenviar em Minha Conta). Remetente "Instituto Health"
+  <naoresponda@healthinstituto.com.br>. Textos em
+  `modules/notificacoes/notificacoes.textos.ts`, em português, sem travessão,
+  com o que vem de uma pessoa escapado no HTML.
+- Falha no envio NUNCA desfaz a decisão nem o envio do comprovante: vai para o
+  log só com o tipo do aviso (sem nome, e-mail, motivo ou comprovante).
+
+### Testes e verificação
+
+- Backend: 392 testes (403 nos não admin em todas as rotas, aprovar muda o
+  status, recusar exige motivo, URL assinada só para admin, falha de e-mail
+  não desfaz, reenvio do recusado, busca escapada, formato das respostas).
+- Frontend: funções puras em `lib/admin.ts` e a estrutura da rota; 276 testes.
+- No navegador (API simulada) em 390 e 1440 px: abas, busca com espera,
+  paginação, confirmação, motivo obrigatório, conflito 409, aba com o
+  comprovante, sem rolagem lateral e botões de 44 px.
+
+### Pendências desta tela
+
+- Colar a 0004 e o SQL de admin e cadastrar a chave do Resend (ordem acima).
+- O cadastro ainda não pede telefone nem registro profissional.
+- Minha Conta não mostra o motivo da recusa (ele vai só por e-mail).
+- A tela e os e-mails ainda não foram testados com a API e o Resend de verdade.
