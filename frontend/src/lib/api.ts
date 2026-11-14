@@ -25,6 +25,9 @@ export interface PerfilDaConta {
   nome: string
   tipo: TipoDePerfil
   status: StatusDoPerfil
+  /** só uma dica para mostrar o link "Cadastros": quem decide é o backend,
+   * que confere de novo em toda rota /api/admin */
+  ehAdmin: boolean
 }
 
 export interface DadosDaSessao {
@@ -41,6 +44,57 @@ export interface Mensagem {
 export interface ComprovanteEnviado {
   id: string
   enviadoEm: string
+}
+
+// ---- Tela de cadastros (admin) --------------------------------------------
+
+export interface ResumoDeCadastros {
+  profissionais: Record<StatusDoPerfil, number>
+  homecare: number
+}
+
+export interface ComprovanteDoProfissional {
+  id: string
+  enviadoEm: string
+}
+
+export interface AvaliacaoDoProfissional {
+  decisao: 'aprovado' | 'recusado'
+  /** só nas recusas */
+  motivo: string | null
+  em: string
+  /** quem decidiu (null se a conta de quem decidiu foi apagada) */
+  por: string | null
+}
+
+export interface ProfissionalNaLista {
+  id: string
+  nome: string
+  email: string | null
+  telefone: string | null
+  registroProfissional: string | null
+  status: StatusDoPerfil
+  criadoEm: string
+  /** do mais novo para o mais antigo */
+  comprovantes: ComprovanteDoProfissional[]
+  ultimoComprovanteEm: string | null
+  avaliacao: AvaliacaoDoProfissional | null
+}
+
+export interface HomeCareNaLista {
+  id: string
+  nome: string
+  email: string | null
+  telefone: string | null
+  criadoEm: string
+}
+
+export interface PaginaDeCadastros<T> {
+  itens: T[]
+  total: number
+  pagina: number
+  porPagina: number
+  totalDePaginas: number
 }
 
 const MENSAGEM_SEM_CONEXAO =
@@ -193,7 +247,60 @@ async function enviarComprovante(arquivo: File): Promise<ComprovanteEnviado> {
   return comprovante
 }
 
+// Monta "?a=1&b=2" só com o que tem valor
+function consulta(parametros: Record<string, string | number | undefined>) {
+  const busca = new URLSearchParams()
+  for (const [nome, valor] of Object.entries(parametros)) {
+    if (valor !== undefined && valor !== '') busca.set(nome, String(valor))
+  }
+  const texto = busca.toString()
+  return texto ? `?${texto}` : ''
+}
+
+const admin = {
+  resumo: () => requisicao<ResumoDeCadastros>('GET', '/admin/resumo'),
+
+  listarProfissionais: (parametros: {
+    status: StatusDoPerfil
+    busca?: string
+    pagina: number
+  }) =>
+    requisicao<PaginaDeCadastros<ProfissionalNaLista>>(
+      'GET',
+      `/admin/profissionais${consulta(parametros)}`,
+    ),
+
+  listarHomeCare: (parametros: { busca?: string; pagina: number }) =>
+    requisicao<PaginaDeCadastros<HomeCareNaLista>>(
+      'GET',
+      `/admin/homecare${consulta(parametros)}`,
+    ),
+
+  // URL assinada de 5 minutos para abrir o comprovante em outra aba; nunca é
+  // guardada nem mostrada (é credencial)
+  urlDoComprovante: (id: string) =>
+    requisicao<{ url: string; expiraEmSegundos: number }>(
+      'GET',
+      `/admin/comprovantes/${encodeURIComponent(id)}/url`,
+    ),
+
+  aprovar: (id: string) =>
+    requisicao<{ status: 'aprovado' }>(
+      'POST',
+      `/admin/profissionais/${encodeURIComponent(id)}/aprovar`,
+    ),
+
+  recusar: (id: string, motivo: string) =>
+    requisicao<{ status: 'recusado' }>(
+      'POST',
+      `/admin/profissionais/${encodeURIComponent(id)}/recusar`,
+      { motivo },
+    ),
+}
+
 export const api = {
+  admin,
+
   cadastro: (dados: {
     perfil: TipoDePerfil
     nome: string

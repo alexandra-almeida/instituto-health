@@ -1,11 +1,12 @@
 import { motion } from 'motion/react'
 import { useEffect, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import AlertaDeFormulario from '../components/AlertaDeFormulario'
 import PrimaryButton from '../components/PrimaryButton'
 import SeletorDeComprovante from '../components/SeletorDeComprovante'
 import { useAuth } from '../context/useAuth'
 import { WHATSAPP_NUMBER } from '../data/contact'
+import { podeVerCadastros } from '../lib/admin'
 import { ApiError, api } from '../lib/api'
 import type { ComprovanteEnviado } from '../lib/api'
 import {
@@ -214,7 +215,7 @@ function SecaoDoComprovante({ recusado }: { recusado: boolean }) {
 // Área da conta: dados da pessoa, comprovante (só profissional) e Sair. A
 // sessão vem do AuthContext (cookies httpOnly); nada daqui vai para storage.
 function MinhaConta() {
-  const { status, usuario, perfil, sair } = useAuth()
+  const { status, usuario, perfil, pendentes, sair } = useAuth()
   const navigate = useNavigate()
   const [saindo, setSaindo] = useState(false)
 
@@ -269,6 +270,22 @@ function MinhaConta() {
           Sua conta é Home Care. Não é preciso enviar comprovante.
         </p>
       ) : null}
+
+      {podeVerCadastros(perfil) && (
+        <div className="mt-8">
+          <Link
+            to="/admin/cadastros"
+            className="font-flatline flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-verde-health px-8 py-3 text-sm uppercase leading-none text-offwhite shadow-[0_6px_20px_-6px_rgba(4,69,46,0.5)] transition-all hover:bg-verde-health/90"
+          >
+            Cadastros
+            {pendentes ? (
+              <span className="rounded-full bg-dourado-health px-2.5 py-1 text-xs text-verde-profundo">
+                {pendentes} {pendentes === 1 ? 'pendente' : 'pendentes'}
+              </span>
+            ) : null}
+          </Link>
+        </div>
+      )}
 
       <div className="mt-10 border-t border-[#04452E]/10 pt-6">
         <button

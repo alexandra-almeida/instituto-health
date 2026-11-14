@@ -6,6 +6,7 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom'
+import RotaDeAdmin from './components/admin/RotaDeAdmin'
 import BackToTop from './components/BackToTop'
 import FloatingWhatsapp from './components/FloatingWhatsapp'
 import Footer from './components/Footer'
@@ -16,6 +17,7 @@ import ScrollToTop from './components/ScrollToTop'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { NavProvider } from './context/NavContext'
+import AdminCadastros from './pages/AdminCadastros'
 import Cadastro from './pages/Cadastro'
 import Carrinho from './pages/Carrinho'
 import Checkout from './pages/Checkout'
@@ -102,6 +104,14 @@ function App() {
                     <Route path="/cadastro" element={<Cadastro />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/minha-conta" element={<MinhaConta />} />
+                    <Route
+                      path="/admin/cadastros"
+                      element={
+                        <RotaDeAdmin>
+                          <AdminCadastros />
+                        </RotaDeAdmin>
+                      }
+                    />
                     <Route
                       path="/redefinir-senha"
                       element={<RedefinirSenha />}

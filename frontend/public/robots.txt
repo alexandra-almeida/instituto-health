@@ -6,6 +6,7 @@ Disallow: /pedido-confirmado
 Disallow: /cadastro
 Disallow: /login
 Disallow: /minha-conta
+Disallow: /admin
 Disallow: /redefinir-senha
 Disallow: /api/
 

@@ -6,6 +6,7 @@ import { useAuth } from '../context/useAuth'
 import { useCart } from '../context/useCart'
 import { useNav } from '../context/useNav'
 import BrandIcon from './BrandIcon'
+import { podeVerCadastros } from '../lib/admin'
 import { primeiroNome } from '../lib/conta'
 import { CartIcon, CloseIcon, MenuIcon } from './icons'
 
@@ -34,9 +35,15 @@ function NavLinks({
   onNavigate?: () => void
 }) {
   const location = useLocation()
+  const { perfil, pendentes } = useAuth()
+  // "Cadastros" (aprovar profissionais) só aparece para admin, com o número de
+  // profissionais pendentes ao lado. É só interface: o backend confere de novo.
+  const links = podeVerCadastros(perfil)
+    ? [...NAV_LINKS, { to: '/admin/cadastros', label: 'Cadastros' }]
+    : NAV_LINKS
   return (
     <nav className={className} aria-label="Navegação principal">
-      {NAV_LINKS.map((link) => {
+      {links.map((link) => {
         const isActive =
           link.to === '/'
             ? location.pathname === '/'
@@ -50,6 +57,14 @@ function NavLinks({
             className={`${linkClassName} ${isActive ? 'text-gold' : 'text-emerald-dark'}`}
           >
             {link.label}
+            {link.to === '/admin/cadastros' && pendentes ? (
+              <span
+                aria-label={`${pendentes} ${pendentes === 1 ? 'pendente' : 'pendentes'}`}
+                className="ml-1.5 inline-flex min-w-5 items-center justify-center rounded-full bg-gold px-1.5 text-[10px] leading-5 font-bold text-emerald-dark"
+              >
+                {pendentes}
+              </span>
+            ) : null}
           </Link>
         )
       })}
@@ -163,6 +178,7 @@ function Header() {
   const location = useLocation()
   const isHome = location.pathname === '/'
   const { introFinished, brandReady, brandIconRef, brandTextRef } = useNav()
+  const ehAdmin = podeVerCadastros(useAuth().perfil)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   // `visible` controla o "chrome" do menu (fundo, borda, ícones) — some/
@@ -220,7 +236,12 @@ function Header() {
             deixaria o nome do instituto cortado. Abaixo disso vira um menu
             suspenso (ver botão hambúrguer abaixo). */}
         <NavLinks
-          className="hidden items-center gap-7 xl:flex"
+          className={`hidden items-center xl:flex ${
+            // O 8º link (só admin) aperta a barra em 1280 px: menos espaço
+            // entre os links até 1439 px, para o nome do instituto não ser
+            // cortado
+            ehAdmin ? 'gap-3.5 3xl:gap-7' : 'gap-7'
+          }`}
           linkClassName={navLinkClass}
         />
 

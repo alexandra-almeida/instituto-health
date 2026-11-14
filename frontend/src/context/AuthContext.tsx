@@ -11,6 +11,29 @@ import type { AuthContextValue, StatusDaSessao } from './auth-context'
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<StatusDaSessao>('carregando')
   const [dados, setDados] = useState<DadosDaSessao | null>(null)
+  const [pendentes, setPendentes] = useState<number | null>(null)
+  const ehAdmin = status === 'logado' && dados?.perfil.ehAdmin === true
+
+  // Só admin pergunta quantos cadastros esperam aprovação. Falha (rede, 403)
+  // só deixa o número de fora: o link continua funcionando.
+  const atualizarPendentes = useCallback(() => {
+    if (!ehAdmin) return
+    api.admin
+      .resumo()
+      .then((resumo) => setPendentes(resumo.profissionais.pendente))
+      .catch(() => {})
+  }, [ehAdmin])
+
+  useEffect(() => {
+    if (!ehAdmin) return
+    atualizarPendentes()
+    // Quem volta de outra aba (ou do celular bloqueado) vê o número em dia
+    const aoVoltar = () => {
+      if (document.visibilityState === 'visible') atualizarPendentes()
+    }
+    document.addEventListener('visibilitychange', aoVoltar)
+    return () => document.removeEventListener('visibilitychange', aoVoltar)
+  }, [ehAdmin, atualizarPendentes])
 
   useEffect(() => {
     // `ativo` evita aplicar a resposta se o componente já saiu de cena
@@ -69,11 +92,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       status,
       usuario: dados?.usuario ?? null,
       perfil: dados?.perfil ?? null,
+      // Quem não é admin (ou saiu) nunca vê o número
+      pendentes: ehAdmin ? pendentes : null,
+      atualizarPendentes,
       entrar,
       confirmarEmail,
       sair,
     }),
-    [status, dados, entrar, confirmarEmail, sair],
+    [
+      status,
+      dados,
+      ehAdmin,
+      pendentes,
+      atualizarPendentes,
+      entrar,
+      confirmarEmail,
+      sair,
+    ],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

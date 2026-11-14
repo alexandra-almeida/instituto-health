@@ -31,6 +31,7 @@ const PAGINAS_PRIVADAS = [
   '/login',
   '/minha-conta',
   '/redefinir-senha',
+  '/admin',
 ]
 
 describe('caminhosPublicos', () => {
