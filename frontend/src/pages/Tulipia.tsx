@@ -21,7 +21,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
-import { promocaoDeHoje } from '../data/promocoes'
+import { ofertaDeHoje } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -132,7 +132,8 @@ function Tulipia() {
   const [customFilter, setCustomFilter] = useState<CustomFilter | null>(null)
   // Promoção no ar hoje (dias no fuso de São Paulo); null fora do período e,
   // aí, banner, faixa e o ícone "Ofertas do mês" somem. Lida uma vez ao abrir.
-  const [promocao] = useState(() => promocaoDeHoje())
+  const [oferta] = useState(() => ofertaDeHoje())
+  const promocao = oferta.promocao
   const [search, setSearch] = useState('')
   const [favorites, setFavorites] = useState<Set<string>>(() =>
     loadFavorites(),
@@ -406,7 +407,7 @@ function Tulipia() {
 
       {/* 1. Banner principal da promoção (a faixa fina fica no fim da
           página); dados em src/data/promocoes.ts. */}
-      <PromoHero promocao={promocao} onClick={handlePromoClick} />
+      <PromoHero hero={oferta.hero} onClick={handlePromoClick} />
 
       {/* Os queridinhos das esteticistas — banner do Kit Esteticista com um
           card que leva ao produto (dados do catálogo pelo sku). Quando chegar
@@ -721,7 +722,7 @@ function Tulipia() {
 
       {/* Faixa fina da promoção, no fim da página (some sozinha sem faixa
           vigente; escondida abaixo de 640px). Mesmo filtro do banner do topo. */}
-      <PromoStrip promocao={promocao} onClick={handlePromoClick} />
+      <PromoStrip faixa={oferta.faixa} onClick={handlePromoClick} />
     </motion.section>
   )
 }

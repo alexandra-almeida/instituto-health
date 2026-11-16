@@ -3,7 +3,8 @@ import bannerEsquentaBlackSemana2 from '../assets/tulipia-banners/banner-esquent
 import bannerEsquentaBlackSabonetes from '../assets/tulipia-banners/banner-esquenta-black-sabonetes-desktop.webp'
 import faixaEsquentaBlackSemana1 from '../assets/tulipia-banners/faixa-esquenta-black-semana-1.webp'
 import faixaEsquentaBlackSemana2 from '../assets/tulipia-banners/faixa-esquenta-black-semana-2-mascaras.webp'
-import { promocaoVigente } from '../lib/promocao'
+import faixaEsquentaBlackSemana3 from '../assets/tulipia-banners/faixa-esquenta-black-semana-3-seruns.webp'
+import { estaVigente, promocaoVigente } from '../lib/promocao'
 
 // Promoções da Tulípia exibidas na página /tulipia (faixa, banner principal e
 // ícone "Ofertas do mês"). Cada uma tem início e fim (dias no fuso de São
@@ -20,23 +21,35 @@ export interface FaixaDaPromocao {
   altura: number
 }
 
-export interface Promocao {
-  /** primeiro dia da promoção, 'AAAA-MM-DD' (fuso de São Paulo), inclusive */
+// Banner principal. Tem período próprio: o banner geral do Esquenta Black vale
+// de 01 a 20 de novembro, mais que cada semana, e filtra os produtos da semana
+// vigente.
+export interface HeroDaPromocao {
+  src: string
+  /** proporção real da arte (classe do Tailwind) */
+  proporcao: string
+  alt: string
+  /** primeiro e último dia, 'AAAA-MM-DD' (fuso de São Paulo), inclusive */
   inicio: string
-  /** último dia da promoção, 'AAAA-MM-DD' (fuso de São Paulo), inclusive */
+  fim: string
+}
+
+export interface Promocao {
+  /** primeiro dia da semana da promoção (faixa, filtro e ícone), 'AAAA-MM-DD'
+   * (fuso de São Paulo), inclusive */
+  inicio: string
+  /** último dia da semana da promoção, 'AAAA-MM-DD', inclusive */
   fim: string
   /** texto mostrado em "Mostrando: ..." quando a faixa é clicada */
   rotuloFiltro: string
   /** sku (campo `sku` do catálogo, igual ao `id` do produto) dos itens */
   skus: string[]
-  /** texto alternativo da imagem da faixa e do banner */
+  /** texto alternativo da imagem da faixa */
   alt: string
   /** faixa fina, mostrada de 640px para cima; null = sem faixa agora */
   faixa: FaixaDaPromocao | null
-  /** banner principal */
-  hero: string
-  /** proporção real do banner principal (classe do Tailwind) */
-  heroProporcao: string
+  /** banner principal desta promoção */
+  hero: HeroDaPromocao
   /** artes prontas que a promoção ainda não usa (não são exibidas) */
   reserva?: { hero: string; faixa: FaixaDaPromocao }
 }
@@ -70,17 +83,32 @@ export const PROMO_ESQUENTA_BLACK_SEMANA_1: Promocao = {
   ],
   alt: 'Esquenta Black 2026: sabonetes com até 30% OFF, de 01 a 08 de novembro',
   faixa: { src: faixaEsquentaBlackSemana1, largura: 2720, altura: 200 },
-  hero: bannerEsquentaBlackSabonetes,
-  heroProporcao: 'aspect-[1920/837]',
+  hero: {
+    src: bannerEsquentaBlackSabonetes,
+    proporcao: 'aspect-[1920/837]',
+    alt: 'Esquenta Black 2026: sabonetes com até 30% OFF, de 01 a 08 de novembro',
+    inicio: '2026-11-01',
+    fim: '2026-11-08',
+  },
 }
 
-// Esquenta Black 2026, semana 2: máscaras com até 30% OFF. O banner é o GERAL
-// do Esquenta Black (vale de 01 a 20 de novembro, por isso o período vai até
-// 20/11), filtrando os produtos da semana 2. A faixa fina fica fora do ar
-// (null) e as artes específicas da semana 2 ficam guardadas em `reserva`.
-export const PROMO_ESQUENTA_BLACK_SEMANA_2: Promocao = {
+// Banner geral do Esquenta Black (01 a 20 de novembro), o mesmo nas semanas 2 e
+// 3. O clique filtra os produtos da semana vigente.
+const HERO_ESQUENTA_BLACK_GERAL: HeroDaPromocao = {
+  src: bannerEsquentaBlackGeral,
+  proporcao: 'aspect-[1920/565]',
+  alt: 'Esquenta Black 2026: até 30% OFF, de 01 a 20 de novembro',
   inicio: '2026-11-01',
   fim: '2026-11-20',
+}
+
+// Esquenta Black 2026, semana 2: máscaras com até 30% OFF, de 09 a 15 de
+// novembro. O banner é o GERAL do Esquenta Black, filtrando os produtos desta
+// semana. A faixa fina ficou fora do ar (null) e as artes específicas da semana
+// 2 ficam guardadas em `reserva`.
+export const PROMO_ESQUENTA_BLACK_SEMANA_2: Promocao = {
+  inicio: '2026-11-09',
+  fim: '2026-11-15',
   rotuloFiltro: 'Esquenta Black: Máscaras até 30% OFF',
   skus: [
     'chokola-mascara-de-chocolate-200g-28',
@@ -94,28 +122,69 @@ export const PROMO_ESQUENTA_BLACK_SEMANA_2: Promocao = {
     'black-secret-peeling-facial-2-fases-30g-cada-121',
     'kit-life-c-profissional-kit-90',
   ],
-  alt: 'Esquenta Black 2026: até 30% OFF, de 01 a 20 de novembro',
+  alt: 'Esquenta Black 2026: máscaras com até 30% OFF, de 09 a 15 de novembro',
   faixa: null,
-  hero: bannerEsquentaBlackGeral,
-  heroProporcao: 'aspect-[1920/565]',
+  hero: HERO_ESQUENTA_BLACK_GERAL,
   reserva: {
     hero: bannerEsquentaBlackSemana2,
     faixa: { src: faixaEsquentaBlackSemana2, largura: 2720, altura: 340 },
   },
 }
 
-// Em ordem de data: a semana 1 vale até 08/11 e a semana 2 cobre o resto do
-// período do banner geral.
+// Esquenta Black 2026, semana 3: séruns com até 30% OFF, de 16 a 19 de
+// novembro (faixa e filtro). O banner é o geral, que vale até 20/11.
+export const PROMO_ESQUENTA_BLACK_SEMANA_3: Promocao = {
+  inicio: '2026-11-16',
+  fim: '2026-11-19',
+  rotuloFiltro: 'Esquenta Black: Séruns até 30% OFF',
+  skus: [
+    'skin-molecular-serum-de-vitamina-b12-30ml-18',
+    'niacine-serum-de-niacinamida-20-30ml-7',
+    'immortalite-c-nano-serum-de-vitamina-c-50ml-9',
+    'resilience-serum-multirreparador-calmante-50ml-19',
+    'dermo-estetic-serum-ultra-calmante-50ml-52',
+    'hialux-serum-preenchedor-30ml-124',
+    'black-secret-peeling-facial-2-fases-30g-cada-121',
+    'age-matte-serum-antioleosidade-50ml-20',
+  ],
+  alt: 'Esquenta Black 2026: séruns com até 30% OFF, de 16 a 19 de novembro',
+  faixa: { src: faixaEsquentaBlackSemana3, largura: 2720, altura: 340 },
+  hero: HERO_ESQUENTA_BLACK_GERAL,
+}
+
+// Em ordem de data
 export const PROMOCOES: Promocao[] = [
   PROMO_ESQUENTA_BLACK_SEMANA_1,
   PROMO_ESQUENTA_BLACK_SEMANA_2,
+  PROMO_ESQUENTA_BLACK_SEMANA_3,
 ]
 
-// A promoção no ar hoje (null fora de qualquer período).
-export function promocaoDeHoje(agora: Date = new Date()): Promocao | null {
-  return promocaoVigente(PROMOCOES, agora)
+// O que a página mostra hoje (dias no fuso de São Paulo):
+// - `promocao`: o filtro (banner, ícone "Ofertas do mês" e atalho). É a semana
+//   vigente; se o banner ainda está no ar mas nenhuma semana vale (20/11), é a
+//   última semana que começou;
+// - `hero`: o banner principal, só dentro do período dele;
+// - `faixa`: a faixa fina, só dentro da semana dela e se ela tiver faixa.
+// Fora de tudo, tudo é null e a página não deixa espaço vazio.
+export interface OfertaDeHoje {
+  promocao: Promocao | null
+  hero: HeroDaPromocao | null
+  faixa: { arte: FaixaDaPromocao; alt: string } | null
 }
 
-// A promoção configurada mais recente. Só serve de base dos skus do ícone
-// "Ofertas do mês" na vitrine; quem decide se aparece é promocaoDeHoje.
-export const PROMOCAO_ATUAL: Promocao = PROMO_ESQUENTA_BLACK_SEMANA_2
+export function ofertaDeHoje(agora: Date = new Date()): OfertaDeHoje {
+  const semana = promocaoVigente(PROMOCOES, agora)
+  const comHero = PROMOCOES.filter((p) => estaVigente(p.hero, agora))
+  const heroDe =
+    semana && estaVigente(semana.hero, agora) ? semana : comHero.at(-1)
+  const promocao = semana ?? heroDe ?? null
+  return {
+    promocao,
+    hero: heroDe?.hero ?? null,
+    faixa: semana?.faixa ? { arte: semana.faixa, alt: semana.alt } : null,
+  }
+}
+
+// A semana configurada mais recente. Só serve de base dos skus do ícone
+// "Ofertas do mês" na vitrine; quem decide o que aparece é ofertaDeHoje.
+export const PROMOCAO_ATUAL: Promocao = PROMO_ESQUENTA_BLACK_SEMANA_3

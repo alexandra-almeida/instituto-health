@@ -6,10 +6,14 @@ import PromoStrip from '../components/tulipia/PromoStrip'
 import {
   PROMO_ESQUENTA_BLACK_SEMANA_1,
   PROMO_ESQUENTA_BLACK_SEMANA_2,
+  PROMO_ESQUENTA_BLACK_SEMANA_3,
   PROMOCAO_ATUAL,
   PROMOCOES,
-  promocaoDeHoje,
+  ofertaDeHoje,
 } from '../data/promocoes'
+
+// o banner geral é o mesmo objeto nas semanas 2 e 3
+const HERO_GERAL = PROMO_ESQUENTA_BLACK_SEMANA_3.hero
 import { ALL_PRODUCTS, findProductById } from '../data/tulipiaProducts'
 import { TULIPIA_VITRINE } from '../data/tulipiaVitrine'
 import vitrineFonte from '../data/tulipiaVitrine.ts?raw'
@@ -59,8 +63,8 @@ describe('PROMO_ESQUENTA_BLACK_SEMANA_2', () => {
 
   it('usa o banner geral (1920x565) e o rótulo das máscaras', () => {
     expect(semana2.rotuloFiltro).toBe('Esquenta Black: Máscaras até 30% OFF')
-    expect(semana2.heroProporcao).toBe('aspect-[1920/565]')
-    expect(semana2.hero).toMatch(/banner-esquenta-black-geral-01-a-20/)
+    expect(semana2.hero.proporcao).toBe('aspect-[1920/565]')
+    expect(semana2.hero.src).toMatch(/banner-esquenta-black-geral-01-a-20/)
   })
 
   it('a faixa está fora do ar e as artes da semana 2 ficam guardadas', () => {
@@ -73,43 +77,110 @@ describe('PROMO_ESQUENTA_BLACK_SEMANA_2', () => {
   })
 })
 
-describe('período das promoções (fuso de São Paulo, extremos inclusive)', () => {
-  const durante = new Date('2026-11-16T15:00:00Z')
+describe('PROMO_ESQUENTA_BLACK_SEMANA_3', () => {
+  const semana3 = PROMO_ESQUENTA_BLACK_SEMANA_3
 
-  it('antes do início, nenhuma promoção está no ar', () => {
-    expect(promocaoDeHoje(new Date('2026-10-31T12:00:00Z'))).toBeNull()
+  it('tem os 8 séruns, na ordem combinada', () => {
+    expect(semana3.skus).toEqual([
+      'skin-molecular-serum-de-vitamina-b12-30ml-18',
+      'niacine-serum-de-niacinamida-20-30ml-7',
+      'immortalite-c-nano-serum-de-vitamina-c-50ml-9',
+      'resilience-serum-multirreparador-calmante-50ml-19',
+      'dermo-estetic-serum-ultra-calmante-50ml-52',
+      'hialux-serum-preenchedor-30ml-124',
+      'black-secret-peeling-facial-2-fases-30g-cada-121',
+      'age-matte-serum-antioleosidade-50ml-20',
+    ])
+    expect(new Set(semana3.skus).size).toBe(8)
+  })
+
+  it.each(PROMO_ESQUENTA_BLACK_SEMANA_3.skus)(
+    'o sku %s existe no catálogo',
+    (sku) => {
+      expect(findProductById(sku)).toBeDefined()
+    },
+  )
+
+  it('o rótulo, o período e a faixa (2720x340) são os da semana 3', () => {
+    expect(semana3.rotuloFiltro).toBe('Esquenta Black: Séruns até 30% OFF')
+    expect([semana3.inicio, semana3.fim]).toEqual(['2026-11-16', '2026-11-19'])
+    expect(semana3.faixa).toMatchObject({ largura: 2720, altura: 340 })
+    expect(semana3.faixa?.src).toMatch(/faixa-esquenta-black-semana-3-seruns/)
+  })
+
+  it('o banner é o geral, de 01 a 20/11', () => {
+    expect(semana3.hero.src).toMatch(/banner-esquenta-black-geral-01-a-20/)
+    expect([semana3.hero.inicio, semana3.hero.fim]).toEqual([
+      '2026-11-01',
+      '2026-11-20',
+    ])
+  })
+})
+
+describe('o que aparece em cada dia (fuso de São Paulo, extremos inclusive)', () => {
+  // meio-dia em São Paulo (15h UTC) do dia pedido
+  const dia = (d: string) => ofertaDeHoje(new Date(`${d}T15:00:00Z`))
+
+  it('antes do início (31/10) nada aparece', () => {
+    expect(dia('2026-10-31')).toEqual({
+      promocao: null,
+      hero: null,
+      faixa: null,
+    })
     // 31/10 às 23h59 em São Paulo ainda é antes
-    expect(promocaoDeHoje(new Date('2026-11-01T02:59:59Z'))).toBeNull()
+    expect(ofertaDeHoje(new Date('2026-11-01T02:59:59Z')).hero).toBeNull()
   })
 
-  it('começa à meia-noite de 01/11 em São Paulo', () => {
-    expect(promocaoDeHoje(new Date('2026-11-01T03:00:00Z'))).toBe(
-      PROMO_ESQUENTA_BLACK_SEMANA_1,
-    )
+  it('começa à meia-noite de 01/11 em São Paulo, com a semana 1', () => {
+    const oferta = ofertaDeHoje(new Date('2026-11-01T03:00:00Z'))
+    expect(oferta.promocao).toBe(PROMO_ESQUENTA_BLACK_SEMANA_1)
+    expect(oferta.hero).toBe(PROMO_ESQUENTA_BLACK_SEMANA_1.hero)
   })
 
-  it('a semana 1 vale até 08/11 e a semana 2 assume no dia seguinte', () => {
-    expect(promocaoDeHoje(new Date('2026-11-09T02:59:59Z'))).toBe(
+  it('a semana 1 vale até 08/11 e a semana 2 assume no dia 9', () => {
+    expect(ofertaDeHoje(new Date('2026-11-09T02:59:59Z')).promocao).toBe(
       PROMO_ESQUENTA_BLACK_SEMANA_1,
     )
-    expect(promocaoDeHoje(new Date('2026-11-09T03:00:00Z'))).toBe(
+    expect(ofertaDeHoje(new Date('2026-11-09T03:00:00Z')).promocao).toBe(
       PROMO_ESQUENTA_BLACK_SEMANA_2,
     )
   })
 
-  it('durante o período, a semana 2 está no ar', () => {
-    expect(promocaoDeHoje(durante)).toBe(PROMO_ESQUENTA_BLACK_SEMANA_2)
+  it('15/11: semana 2 (máscaras), banner geral e SEM faixa da semana 3', () => {
+    const oferta = dia('2026-11-15')
+    expect(oferta.promocao).toBe(PROMO_ESQUENTA_BLACK_SEMANA_2)
+    expect(oferta.hero).toBe(HERO_GERAL)
+    expect(oferta.faixa).toBeNull()
   })
 
-  it('20/11 ainda vale até 23h59 em São Paulo; a partir de 21/11 some', () => {
-    expect(promocaoDeHoje(new Date('2026-11-21T02:59:59Z'))).toBe(
-      PROMO_ESQUENTA_BLACK_SEMANA_2,
-    )
-    expect(promocaoDeHoje(new Date('2026-11-21T03:00:00Z'))).toBeNull()
-    expect(promocaoDeHoje(new Date('2026-12-05T12:00:00Z'))).toBeNull()
+  it.each(['2026-11-16', '2026-11-17', '2026-11-18', '2026-11-19'])(
+    '%s: semana 3 (séruns) com banner geral e com a faixa da semana 3',
+    (d) => {
+      const oferta = dia(d)
+      expect(oferta.promocao).toBe(PROMO_ESQUENTA_BLACK_SEMANA_3)
+      expect(oferta.hero).toBe(HERO_GERAL)
+      expect(oferta.faixa?.arte).toBe(PROMO_ESQUENTA_BLACK_SEMANA_3.faixa)
+    },
+  )
+
+  it('20/11: sem faixa, mas com o banner geral (filtrando a última semana)', () => {
+    const oferta = dia('2026-11-20')
+    expect(oferta.faixa).toBeNull()
+    expect(oferta.hero).toBe(HERO_GERAL)
+    expect(oferta.promocao).toBe(PROMO_ESQUENTA_BLACK_SEMANA_3)
   })
 
-  it('usa o dia de São Paulo, não o de Greenwich', () => {
+  it('20/11 vale até 23h59 em São Paulo; a partir de 21/11 nada aparece', () => {
+    expect(ofertaDeHoje(new Date('2026-11-21T02:59:59Z')).hero).toBe(HERO_GERAL)
+    expect(ofertaDeHoje(new Date('2026-11-21T03:00:00Z'))).toEqual({
+      promocao: null,
+      hero: null,
+      faixa: null,
+    })
+    expect(dia('2026-12-05').hero).toBeNull()
+  })
+
+  it('o dia de São Paulo, não o de Greenwich', () => {
     expect(diaEmSaoPaulo(new Date('2026-11-21T02:00:00Z'))).toBe('2026-11-20')
     expect(diaEmSaoPaulo(new Date('2026-11-21T03:00:00Z'))).toBe('2026-11-21')
   })
@@ -130,58 +201,77 @@ describe('período das promoções (fuso de São Paulo, extremos inclusive)', ()
 
   it('toda promoção tem datas válidas e início antes do fim', () => {
     for (const p of PROMOCOES) {
-      expect(p.inicio).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      expect(p.fim).toMatch(/^\d{4}-\d{2}-\d{2}$/)
-      expect(p.inicio <= p.fim).toBe(true)
+      for (const periodo of [p, p.hero]) {
+        expect(periodo.inicio).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+        expect(periodo.fim).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+        expect(periodo.inicio <= periodo.fim).toBe(true)
+      }
+    }
+  })
+
+  it('as semanas não se sobrepõem', () => {
+    for (const [i, p] of PROMOCOES.entries()) {
+      const anterior = PROMOCOES[i - 1]
+      if (anterior) expect(anterior.fim < p.inicio).toBe(true)
     }
   })
 })
 
-describe('faixa e banner da promoção na página', () => {
-  const semFaixa = PROMO_ESQUENTA_BLACK_SEMANA_2
-  const comFaixa = PROMO_ESQUENTA_BLACK_SEMANA_1
+describe('faixa e banner na página', () => {
+  const comFaixa = {
+    arte: PROMO_ESQUENTA_BLACK_SEMANA_3.faixa!,
+    alt: PROMO_ESQUENTA_BLACK_SEMANA_3.alt,
+  }
   const naoFaz = () => {}
 
-  it('faixa nula não renderiza nada (nem espaço)', () => {
+  it('sem faixa vigente a faixa não renderiza nada (nem espaço)', () => {
     expect(
       renderToStaticMarkup(
-        createElement(PromoStrip, { promocao: semFaixa, onClick: naoFaz }),
-      ),
-    ).toBe('')
-    expect(
-      renderToStaticMarkup(
-        createElement(PromoStrip, { promocao: null, onClick: naoFaz }),
+        createElement(PromoStrip, { faixa: null, onClick: naoFaz }),
       ),
     ).toBe('')
   })
 
-  it('faixa vigente usa a proporção real da imagem, sem aspect fixo', () => {
+  it('a faixa vigente usa a proporção real da imagem, sem aspect fixo', () => {
     const html = renderToStaticMarkup(
-      createElement(PromoStrip, { promocao: comFaixa, onClick: naoFaz }),
+      createElement(PromoStrip, { faixa: comFaixa, onClick: naoFaz }),
     )
-    expect(html).toContain('aspect-ratio:2720 / 200')
+    expect(html).toContain('aspect-ratio:2720 / 340')
     expect(html).toContain('width="2720"')
     expect(html).not.toMatch(/aspect-\[/)
   })
 
-  it('sem promoção o banner principal não renderiza', () => {
+  it('a proporção da faixa muda de uma promoção para outra (2720x200 na semana 1)', () => {
+    const html = renderToStaticMarkup(
+      createElement(PromoStrip, {
+        faixa: {
+          arte: PROMO_ESQUENTA_BLACK_SEMANA_1.faixa!,
+          alt: 'x',
+        },
+        onClick: naoFaz,
+      }),
+    )
+    expect(html).toContain('aspect-ratio:2720 / 200')
+  })
+
+  it('sem banner vigente o banner principal não renderiza', () => {
     expect(
       renderToStaticMarkup(
-        createElement(PromoHero, { promocao: null, onClick: naoFaz }),
+        createElement(PromoHero, { hero: null, onClick: naoFaz }),
       ),
     ).toBe('')
   })
 
-  it('o banner principal usa a proporção da própria promoção', () => {
+  it('o banner principal usa a proporção da própria arte', () => {
     const html = renderToStaticMarkup(
-      createElement(PromoHero, { promocao: semFaixa, onClick: naoFaz }),
+      createElement(PromoHero, { hero: HERO_GERAL, onClick: naoFaz }),
     )
     expect(html).toContain('aspect-[1920/565]')
     expect(html).not.toContain('aspect-[1920/837]')
   })
 
   it('a página só mostra a vitrine "Ofertas do mês" com promoção no ar', () => {
-    expect(paginaFonte).toMatch(/promocaoDeHoje\(\)/)
+    expect(paginaFonte).toMatch(/ofertaDeHoje\(\)/)
     expect(paginaFonte).toMatch(
       /item\.key !== CHAVE_FILTRO_PROMOCAO \|\| promocao !== null/,
     )
@@ -193,9 +283,9 @@ describe('PROMOCAO_ATUAL e a grade filtrada pela promoção', () => {
     PROMO_ESQUENTA_BLACK_SEMANA_1.skus.includes(p.id),
   )
 
-  it('a promoção configurada tem banner e a mais recente é a semana 2', () => {
+  it('a promoção configurada tem banner e a mais recente é a semana 3', () => {
     expect(PROMOCAO_ATUAL.hero).toBeTruthy()
-    expect(PROMOCAO_ATUAL).toBe(PROMO_ESQUENTA_BLACK_SEMANA_2)
+    expect(PROMOCAO_ATUAL).toBe(PROMO_ESQUENTA_BLACK_SEMANA_3)
   })
 
   it('o catálogo não traz os produtos na ordem da promoção (senão o teste não prova nada)', () => {
