@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
-import bannerQueridinhosFloraty from '../assets/tulipia-banners/banner-queridinhos-floraty-desktop.webp'
+import bannerLancamentoExogenetic from '../assets/tulipia-banners/banner-lancamento-exogenetic-pdrn-desktop.webp'
+import bannerQueridinhosKitEsteticista from '../assets/tulipia-banners/banner-queridinhos-kit-esteticista-desktop.webp'
 import tulipiaRepresentante from '../assets/tulipia-brand/tulipia-representante.png'
 import type { IconBadgeItem } from '../components/tulipia/IconBadgeCarousel'
 import BannerProduto from '../components/tulipia/BannerProduto'
@@ -55,7 +56,10 @@ const AUDIENCE_LABELS: Record<Audience, string> = {
 const EDITORIAL_QUERIDINHOS_COUNT = 3
 
 // Produto para onde o banner dos queridinhos das esteticistas leva (sku = id)
-const SKU_BANNER_QUERIDINHOS = 'floraty-creme-emoliente-para-cravos-200g-1'
+const SKU_BANNER_QUERIDINHOS = 'kit-esteticista-para-limpeza-de-pele-kit-63'
+
+// Produto para onde o banner dos últimos lançamentos leva (sku = id)
+const SKU_BANNER_LANCAMENTO = 'exogenetic-pdrn-creme-facial-30g-57'
 
 // Filtro "livre" — ativado pela fileira de coleções (Mais Vendidos, Alta
 // Tecnologia...), pelos cards de tipo de pele ou pelos banners de linha no
@@ -346,10 +350,11 @@ function Tulipia() {
           página); dados em src/data/promocoes.ts. */}
       <PromoHero promocao={promocao} onClick={handlePromoClick} />
 
-      {/* Os queridinhos das esteticistas — banner do Floraty com um card que
-          leva ao produto (dados do catálogo pelo sku). Quando chegar a arte
-          mobile, troque `mobile` (ver BannerImagem). */}
-      <div className="mt-10">
+      {/* Os queridinhos das esteticistas — banner do Kit Esteticista com um
+          card que leva ao produto (dados do catálogo pelo sku). Quando chegar
+          a arte mobile, troque `mobile` (ver BannerImagem). O banner do
+          Floraty continua em src/assets/tulipia-banners/, sem uso. */}
+      <div id="tulipia-queridinhos" className="mt-10 scroll-mt-20">
         <div className="mb-5 flex flex-col items-center gap-1 text-center">
           <div className="h-1 w-12 rounded-full bg-[#CAA02D]" />
           <h2 className="font-flatline text-xl leading-tight text-[#04452E] sm:text-2xl">
@@ -358,10 +363,30 @@ function Tulipia() {
         </div>
         <BannerProduto
           sku={SKU_BANNER_QUERIDINHOS}
-          desktop={bannerQueridinhosFloraty}
-          mobile={bannerQueridinhosFloraty}
-          alt="Floraty Creme Emoliente para Cravos 200g"
+          desktop={bannerQueridinhosKitEsteticista}
+          mobile={bannerQueridinhosKitEsteticista}
+          alt="Kit Esteticista para Limpeza de Pele"
           proporcao="aspect-[1920/802]"
+        />
+      </div>
+
+      {/* Últimos lançamentos — mesmo formato: banner sem corte (<picture>,
+          pronto para a arte mobile) e um card que leva ao produto. A arte já
+          traz texto no lado direito, então o card fica embaixo, centralizado. */}
+      <div id="tulipia-lancamentos" className="mt-10 scroll-mt-20">
+        <div className="mb-5 flex flex-col items-center gap-1 text-center">
+          <div className="h-1 w-12 rounded-full bg-[#CAA02D]" />
+          <h2 className="font-flatline text-xl leading-tight text-[#04452E] sm:text-2xl">
+            Últimos Lançamentos
+          </h2>
+        </div>
+        <BannerProduto
+          sku={SKU_BANNER_LANCAMENTO}
+          desktop={bannerLancamentoExogenetic}
+          mobile={bannerLancamentoExogenetic}
+          alt="Lançamento ExoGenetic PDRN Creme Facial"
+          proporcao="aspect-[1920/802]"
+          cartao="abaixo"
         />
       </div>
 

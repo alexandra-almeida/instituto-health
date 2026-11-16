@@ -13,6 +13,13 @@ interface BannerProdutoProps {
   alt: string
   /** proporção real da arte, ex: `aspect-[1920/802]` */
   proporcao: string
+  /**
+   * Onde o card fica de 640px para cima: `sobre` (padrão) o põe sobre a
+   * imagem, à direita; `abaixo` o põe centralizado, cobrindo só a borda de
+   * baixo, como no celular. Use `abaixo` quando a arte já tem texto ou o
+   * produto no lado direito.
+   */
+  cartao?: 'sobre' | 'abaixo'
 }
 
 // Banner de produto com um card por cima (HTML, não embutido na foto) que leva
@@ -32,6 +39,7 @@ function BannerProduto({
   mobile,
   alt,
   proporcao,
+  cartao = 'sobre',
 }: BannerProdutoProps) {
   const produto = findProductById(sku)
   if (!produto) return null
@@ -54,7 +62,13 @@ function BannerProduto({
         />
       </Link>
 
-      <div className="relative z-10 mx-3 -mt-6 flex flex-col items-center gap-2 rounded-2xl bg-white p-4 text-center shadow-[0_6px_20px_-4px_rgba(4,32,18,0.2)] sm:absolute sm:top-1/2 sm:right-[3%] sm:mx-0 sm:mt-0 sm:w-[32%] sm:max-w-[300px] sm:-translate-y-1/2 sm:gap-1.5 sm:p-3 lg:right-[5%] lg:w-[28%] lg:gap-2 lg:p-5">
+      <div
+        className={`relative z-10 mx-3 -mt-6 flex flex-col items-center gap-2 rounded-2xl bg-white p-4 text-center shadow-[0_6px_20px_-4px_rgba(4,32,18,0.2)] ${
+          cartao === 'sobre'
+            ? 'sm:absolute sm:top-1/2 sm:right-[3%] sm:mx-0 sm:mt-0 sm:w-[32%] sm:max-w-[300px] sm:-translate-y-1/2 sm:gap-1.5 sm:p-3 lg:right-[5%] lg:w-[28%] lg:gap-2 lg:p-5'
+            : 'sm:mx-auto sm:max-w-[340px]'
+        }`}
+      >
         <p className="font-flatline text-2xl leading-none text-verde-health sm:text-xl lg:text-3xl">
           {dados.marca}
         </p>
