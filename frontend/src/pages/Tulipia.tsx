@@ -19,7 +19,7 @@ import { getCategoryMeta } from '../data/categoryIconsLucide'
 import { getCuidadoMeta } from '../data/cuidadoIconsLucide'
 import type { SkinType } from '../data/skinTypes'
 import { SKIN_TYPES } from '../data/skinTypes'
-import { PROMOCAO_ATUAL } from '../data/promocoes'
+import { promocaoDeHoje } from '../data/promocoes'
 import { TULIPIA_LINE_BANNERS } from '../data/tulipiaLineBanners'
 import {
   ALL_PRODUCTS,
@@ -124,6 +124,9 @@ function Tulipia() {
   const [selectedLinha, setSelectedLinha] = useState(LINHAS[0])
   const [selectedCuidado, setSelectedCuidado] = useState(CUIDADOS[0])
   const [customFilter, setCustomFilter] = useState<CustomFilter | null>(null)
+  // Promoção no ar hoje (dias no fuso de São Paulo); null fora do período e,
+  // aí, banner, faixa e o ícone "Ofertas do mês" somem. Lida uma vez ao abrir.
+  const [promocao] = useState(() => promocaoDeHoje())
   const [search, setSearch] = useState('')
   const [favorites, setFavorites] = useState<Set<string>>(() =>
     loadFavorites(),
@@ -169,15 +172,16 @@ function Tulipia() {
   // Se o filtro da promoção já está ligado, o clique só rola até a grade, sem
   // desligá-lo nem mexer no modo (Home Care ou Profissional) escolhido.
   function handlePromoClick() {
+    if (!promocao) return
     const estavaBuscando = search.trim().length > 0
     if (estavaBuscando) setSearch('')
     if (customFilter?.key !== CHAVE_FILTRO_PROMOCAO) {
       setAudience('profissional')
       setCustomFilter({
         key: CHAVE_FILTRO_PROMOCAO,
-        label: PROMOCAO_ATUAL.rotuloFiltro,
-        match: (p) => PROMOCAO_ATUAL.skus.includes(p.id),
-        ordem: PROMOCAO_ATUAL.skus,
+        label: promocao.rotuloFiltro,
+        match: (p) => promocao.skus.includes(p.id),
+        ordem: promocao.skus,
       })
     }
     if (estavaBuscando) window.setTimeout(rolarAteListagem, 100)
@@ -194,7 +198,7 @@ function Tulipia() {
       handlePromoClick()
       return
     }
-    const item = TULIPIA_VITRINE.find((v) => v.key === key)
+    const item = vitrine.find((v) => v.key === key)
     if (item) applyCustomFilter(item)
   }
 
@@ -203,6 +207,11 @@ function Tulipia() {
   }
 
   const searching = search.trim().length > 0
+
+  // Ícones da vitrine; "Ofertas do mês" só existe com promoção no ar
+  const vitrine = TULIPIA_VITRINE.filter(
+    (item) => item.key !== CHAVE_FILTRO_PROMOCAO || promocao !== null,
+  )
 
   // "Home Care" esconde os itens exclusivos a profissionais; "Profissional"
   // mostra todos (os exclusivos aparecem com a tag no lugar do preço).
@@ -335,7 +344,7 @@ function Tulipia() {
 
       {/* 1. Banner principal da promoção (a faixa fina fica no fim da
           página); dados em src/data/promocoes.ts. */}
-      <PromoHero onClick={handlePromoClick} />
+      <PromoHero promocao={promocao} onClick={handlePromoClick} />
 
       {/* Os queridinhos das esteticistas — banner do Floraty com um card que
           leva ao produto (dados do catálogo pelo sku). Quando chegar a arte
@@ -403,7 +412,7 @@ function Tulipia() {
       {/* 2. Coleções em destaque — carrossel de ícones circulares */}
       <div className="mt-6">
         <IconBadgeCarousel
-          items={TULIPIA_VITRINE}
+          items={vitrine}
           activeKey={customFilter?.key ?? null}
           onSelect={handleSelectVitrine}
         />
@@ -599,9 +608,9 @@ function Tulipia() {
         </>
       )}
 
-      {/* Faixa fina da promoção, no fim da página (aparece sempre; escondida
-          abaixo de 640px). Mesmo filtro do banner do topo. */}
-      <PromoStrip onClick={handlePromoClick} />
+      {/* Faixa fina da promoção, no fim da página (some sozinha sem faixa
+          vigente; escondida abaixo de 640px). Mesmo filtro do banner do topo. */}
+      <PromoStrip promocao={promocao} onClick={handlePromoClick} />
     </motion.section>
   )
 }
