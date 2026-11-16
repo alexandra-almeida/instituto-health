@@ -258,6 +258,14 @@ function Tulipia() {
 
   // Base do grid padrão: catálogo + os Queridinhos que sobraram do destaque
   // editorial (pra não sumirem da página).
+  // Com filtro ligado, a grade parte de TODOS os produtos do público: os
+  // queridinhos que viraram destaque editorial também entram, senão um filtro
+  // perderia produtos (ex.: os Firm Flaccid no Corporal).
+  const filterPool = useMemo(
+    () => [...audienceQueridinhos, ...audienceCatalogo],
+    [audienceQueridinhos, audienceCatalogo],
+  )
+
   const gridPool = useMemo(
     () => [...remainingQueridinhos, ...audienceCatalogo],
     [remainingQueridinhos, audienceCatalogo],
@@ -273,19 +281,19 @@ function Tulipia() {
 
   const browsedProducts = useMemo(() => {
     if (customFilter) {
-      const filtrados = gridPool.filter(customFilter.match)
+      const filtrados = filterPool.filter(customFilter.match)
       return customFilter.ordem
         ? ordenarPelosSkus(filtrados, customFilter.ordem)
         : filtrados
     }
     if (viewMode === 'todos') return gridPool
     if (viewMode === 'categoria') {
-      return gridPool.filter((p) => p.categoria === selectedCategoria)
+      return filterPool.filter((p) => p.categoria === selectedCategoria)
     }
     if (viewMode === 'cuidado') {
-      return gridPool.filter((p) => p.cuidado.includes(selectedCuidado))
+      return filterPool.filter((p) => p.cuidado.includes(selectedCuidado))
     }
-    return gridPool.filter((p) => p.linha === selectedLinha)
+    return filterPool.filter((p) => p.linha === selectedLinha)
   }, [
     customFilter,
     viewMode,
@@ -293,6 +301,7 @@ function Tulipia() {
     selectedLinha,
     selectedCuidado,
     gridPool,
+    filterPool,
   ])
 
   // Home Care esconde os exclusivos. Quando o filtro (ou categoria, linha,

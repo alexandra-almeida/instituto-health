@@ -151,3 +151,23 @@ describe('aviso dos exclusivos em Home Care', () => {
     }
   })
 })
+
+describe('grade com filtro ligado', () => {
+  it('parte de todos os produtos do público, inclusive os queridinhos do destaque', () => {
+    const inicio = paginaFonte.indexOf('const browsedProducts')
+    const corpo = paginaFonte.slice(
+      inicio,
+      paginaFonte.indexOf('const showAlsoLike'),
+    )
+    expect(paginaFonte).toMatch(/const filterPool = useMemo/)
+    // só a visão "Todos" sem filtro usa a grade sem os destaques editoriais
+    expect(corpo.match(/gridPool/g)).toHaveLength(2)
+    expect(corpo.match(/filterPool\.filter/g)).toHaveLength(4)
+  })
+
+  it('os Firm Flaccid (queridinhos) entram no Corporal de Home Care', () => {
+    const firm = ALL_PRODUCTS.filter((p) => /^firm-flaccid/.test(p.id))
+    expect(firm.length).toBe(2)
+    expect(firm.every((p) => p.destaque && !p.exclusivoProfissional)).toBe(true)
+  })
+})
