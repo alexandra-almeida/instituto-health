@@ -1,4 +1,5 @@
 import bannerAmpolas from '../assets/tulipia-banners/banner-ampolas.jpg'
+import bannerMarezi from '../assets/tulipia-banners/banner-marezi-frescor-desktop.webp'
 import bannerLinhaDermoEstetic from '../assets/tulipia-banners/banner-linha-dermo-estetic.jpg'
 import bannerLinhaProskin from '../assets/tulipia-banners/banner-linha-proskin.jpg'
 import type { TulipiaProduct } from './tulipiaProducts'
@@ -42,5 +43,15 @@ export const TULIPIA_LINE_BANNERS: TulipiaLineBanner[] = [
     capHeight: true,
     label: 'ProSkin Repair',
     match: (p) => p.linha === 'ProSkin Repair',
+  },
+  {
+    // Fica perto do fim da página, não no bloco do topo (a página escolhe os
+    // do topo pela chave). Proporção real da arte (1920x350), sem corte.
+    key: 'marezi',
+    image: bannerMarezi,
+    alt: 'Linha Marezi: um banho de frescor e equilíbrio',
+    aspectClass: 'aspect-[1920/350]',
+    label: 'Linha Marezi',
+    match: (p) => p.linha === 'Marezi',
   },
 ]

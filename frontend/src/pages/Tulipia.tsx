@@ -160,9 +160,14 @@ function Tulipia() {
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  // Com um termo digitado a página mostra os resultados da busca e a grade
+  // filtrada nem existe: limpa a busca e espera a grade aparecer para rolar.
   function applyCustomFilter(filter: CustomFilter) {
+    const estavaBuscando = search.trim().length > 0
+    if (estavaBuscando) setSearch('')
     setCustomFilter(filter)
-    rolarAteListagem()
+    if (estavaBuscando) window.setTimeout(rolarAteListagem, 100)
+    else rolarAteListagem()
   }
 
   // Faixa e banner da promoção: mostram os produtos dela. Parte deles é
@@ -325,6 +330,7 @@ function Tulipia() {
     (b) => b.key === 'dermo-estetic',
   )
   const ampolasBanner = TULIPIA_LINE_BANNERS.find((b) => b.key === 'ampolas')
+  const mareziBanner = TULIPIA_LINE_BANNERS.find((b) => b.key === 'marezi')
 
   return (
     <motion.section
@@ -631,6 +637,19 @@ function Tulipia() {
             )}
           </div>
         </>
+      )}
+
+      {/* Banner da linha Marezi, perto do fim (antes da faixa e do rodapé):
+          clicável, aplica o filtro da linha. Proporção real da arte, sem corte. */}
+      {mareziBanner && (
+        <div className="mt-14">
+          <LineBanner
+            image={mareziBanner.image}
+            alt={mareziBanner.alt}
+            className={mareziBanner.aspectClass}
+            onClick={() => applyCustomFilter(mareziBanner)}
+          />
+        </div>
       )}
 
       {/* Faixa fina da promoção, no fim da página (some sozinha sem faixa
