@@ -4,6 +4,7 @@ import bannerLancamentoExogenetic from '../assets/tulipia-banners/banner-lancame
 import bannerQueridinhosKitEsteticista from '../assets/tulipia-banners/banner-queridinhos-kit-esteticista-desktop.webp'
 import tulipiaRepresentante from '../assets/tulipia-brand/tulipia-representante.png'
 import type { IconBadgeItem } from '../components/tulipia/IconBadgeCarousel'
+import AtalhosDaPagina from '../components/tulipia/AtalhosDaPagina'
 import BannerProduto from '../components/tulipia/BannerProduto'
 import IconBadgeCarousel from '../components/tulipia/IconBadgeCarousel'
 import LinhaDropdown from '../components/tulipia/LinhaDropdown'
@@ -158,6 +159,12 @@ function Tulipia() {
   function rolarAteListagem() {
     document
       .getElementById('tulipia-listagem')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function rolarAteSecao(id: string) {
+    document
+      .getElementById(id)
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
@@ -375,6 +382,18 @@ function Tulipia() {
           Health.
         </p>
       </div>
+
+      {/* Atalhos do topo (como no menu da Tulípia). Profissional e Home Care
+          usam o mesmo estado do seletor mais abaixo; "Ofertas" só existe com
+          promoção no ar. */}
+      <AtalhosDaPagina
+        publico={audience}
+        onPublico={setAudience}
+        onQueridinhos={() => rolarAteSecao('tulipia-queridinhos')}
+        onLancamentos={() => rolarAteSecao('tulipia-lancamentos')}
+        onOfertas={promocao ? handlePromoClick : undefined}
+        ofertasLigadas={customFilter?.key === CHAVE_FILTRO_PROMOCAO}
+      />
 
       {/* 1. Banner principal da promoção (a faixa fina fica no fim da
           página); dados em src/data/promocoes.ts. */}
