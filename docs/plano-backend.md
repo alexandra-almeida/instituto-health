@@ -239,8 +239,12 @@ Princípios que não mudam:
 
 - O total é SEMPRE calculado no servidor, a partir dos `sku` e quantidades,
   com os preços da tabela `produtos` (ou `precos_profissionais` para
-  profissional aprovado). Preço vindo do navegador é ignorado.
-- Itens `exclusivo_profissional` só entram no pedido de profissional aprovado.
+  profissional aprovado). Preço vindo do navegador é ignorado. ATENÇÃO: desde
+  16/11/2026 o preço do profissional é 30% sobre o preço CHEIO, item a item, e
+  não uma lista por produto; ver "Regra de preço do profissional". Sobre o que
+  acontece com `precos_profissionais`, há uma pergunta aberta para a Juliana.
+- Itens `exclusivo_profissional` só entram no pedido de profissional aprovado
+  (confirmado pela Juliana em 16/11/2026: o aprovado PODE comprá-los).
 - Produto sem preço aplicável NUNCA é vendido, e o service recusa o pedido
   (não é uma regra que o banco garanta sozinho). Vale para: produto NÃO
   exclusivo com `preco` nulo (sem preço público); produto `ativo = false`;
@@ -535,6 +539,9 @@ Etapa C — Pedidos e pagamento
   Sem urgência. (A antiga pendência de visualizar HEIC no painel admin deixou
   de existir.)
 - Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
+- Preço cheio dos 82 exclusivos (a Juliana vai mandar a tabela) e as 2
+  perguntas da regra de preço: ver "Regra de preço do profissional". Bloqueiam
+  o módulo `pedidos`.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
   antes de receber pedidos reais. Ao migrar, decidir se o despertador do passo
   5b é removido (rota, `crons`, tabela `batimentos` e `CRON_SECRET`) ou
@@ -1015,33 +1022,96 @@ Tulípia.
 - **Texto do bloco de atacado e licitações e a frase de apresentação da
   página:** rascunhos, para a Juliana revisar.
 
-## Regra de preço do profissional (decidida com a Juliana em 26/10/2026)
+## Regra de preço do profissional (26/10/2026, revista em 16/11/2026)
 
-Registrada em 02/11/2026; ainda não estava escrita.
+Registrada em 16/11/2026. **Ainda NÃO implementada**: o site, o carrinho, o
+banco e o backend não aplicam desconto nenhum, e o módulo `pedidos` (passo 12)
+não foi construído.
 
-- O profissional **aprovado** tem **30% de desconto sobre o TOTAL da compra**.
-  Exige conta aprovada. O cliente comum (Home Care) compra sem cadastro e sem
-  desconto.
-- **Perguntas em aberto para a Juliana:**
-  1. O desconto inclui o frete?
-  2. Soma com promoções (como a de 15% do Mês dos Lançamentos)?
-  3. Vale também para os descartáveis?
-  4. Qual é o preço cheio dos **82 produtos exclusivos de profissional**, que
-     hoje não têm preço público (ficam com preço nulo no banco e no site)?
-- **Pergunta explícita (muda o passo 12 e a tabela `precos_profissionais`):** essa
-  regra SUBSTITUI a ideia de uma lista de preços de profissional por produto?
-  Se sim, a tabela `precos_profissionais` e o script
-  `seed:precos-profissionais` perdem a função: o servidor aplicaria 30% sobre
-  o total do pedido a partir dos preços cheios, e o que falta é o preço cheio
-  dos 82 exclusivos (pergunta 4), não uma lista de preços de profissional. Se
-  não (a lista continua), o desconto de 30% convive com ela e é preciso decidir
-  qual vale. **Não construir o módulo `pedidos` (passo 12) antes desta resposta.**
-- Efeito nos descartáveis: eles não têm preço de profissional por produto; com
-  a pergunta 3 respondida "sim", o desconto vem do total, e com "não" o item é
-  vendido sempre ao preço único. Até lá, o service de pedidos do passo 12 NÃO
-  pode recusar um descartável só por não ter linha em `precos_profissionais`.
-- Hoje não existe nada disso no código: o site, o carrinho e o banco ainda não
-  aplicam o desconto.
+Histórico: em 26/10/2026 a Juliana decidiu "30% de desconto sobre o TOTAL da
+compra para profissional aprovado" e ficaram perguntas em aberto (frete,
+promoções, descartáveis, preço cheio dos 82 exclusivos). Em 16/11/2026 ela
+respondeu, e a regra abaixo SUBSTITUI a do total.
+
+### Decisões da Juliana (16/11/2026)
+
+1. **Profissional APROVADO pode comprar os produtos exclusivos.** Home Care e
+   visitante continuam sem comprá-los (preço oculto, compra desabilitada).
+2. **30% de desconto para profissional aprovado, só sobre os produtos Tulípia
+   do pedido** (não sobre o total do pedido). Exige conta aprovada.
+3. **Descartáveis (skus `desc-`) não têm desconto, nem para profissional.** No
+   pedido misto, o desconto incide só sobre os itens Tulípia.
+4. **O frete NÃO entra no desconto:** é cobrado cheio.
+5. **Não soma com promoção.** Para cada item Tulípia vale o MAIOR desconto
+   entre (a) o preço promocional vigente e (b) 30% sobre o preço CHEIO. Nunca
+   30% em cima do preço promocional. O cálculo é por item, a partir do preço
+   cheio, e é feito no servidor: preço vindo do navegador é ignorado.
+
+Fórmula, por item Tulípia, para profissional aprovado (em centavos inteiros, nunca
+em ponto flutuante):
+
+```
+preco_com_30 = preco_cheio - 30%      (o desconto é arredondado no centavo)
+preco_final  = promocao_vigente existe ? menor(promocao_vigente, preco_com_30)
+                                       : preco_com_30
+```
+
+Exemplos para os testes (os dois são casos reais de 16/11/2026):
+
+| Produto | Cheio | Promoção | 30% sobre o cheio | Fica |
+| --- | --- | --- | --- | --- |
+| Niacine+ | 149,00 | 104,30 | 104,30 | 104,30 |
+| Resilience | 139,00 | 125,10 | 97,30 | 97,30 |
+
+No primeiro a promoção é igual ao desconto de 30%; no segundo ela é menor (10%)
+e o profissional paga 97,30, não 30% sobre 125,10 (que daria 87,57).
+
+### No site
+
+- No card de um produto exclusivo, para o profissional aprovado: botão de
+  comprar NORMAL. O desconto aparece no carrinho e no checkout, não no card.
+- O preço de profissional nunca vai no código do frontend: vem do servidor, só
+  para profissional aprovado (regra que já existia).
+- Hoje o seletor "Profissional / Home Care" da /tulipia é só um filtro de
+  vitrine, sem conta. A compra de exclusivos e o desconto dependem de conta
+  aprovada, checada no servidor.
+
+### Efeito no resto do plano
+
+- O princípio "o total é calculado no servidor" (passo 12) continua; o que muda
+  é a conta: o preço cheio vem de `produtos.preco`, e o desconto é calculado por
+  item como acima, em vez de ler um preço pronto em `precos_profissionais`.
+- Frete (quando houver transportadora) entra no total SEM desconto.
+- Itens `desc-` entram sempre ao preço único, mesmo para profissional, e o
+  service de pedidos NÃO pode recusar um descartável por falta de linha em
+  `precos_profissionais`.
+
+### Em aberto (não construir o módulo `pedidos` antes da resposta)
+
+- **Preço cheio dos 82 produtos exclusivos**, que hoje não têm preço no
+  catálogo (preço nulo no banco e no site). A Juliana vai mandar a tabela. Sem
+  ela não há como calcular os 30% desses itens.
+
+### Perguntas para a Juliana (lista atualizada em 16/11/2026)
+
+Respondidas e retiradas: se o desconto inclui o frete (não inclui), se soma com
+promoção (não soma, vale o maior), se vale para os descartáveis (não vale).
+
+1. **A tabela com o preço cheio dos 82 exclusivos** (decisão dela de mandar).
+2. Pelas decisões acima, o desconto sai sempre do preço cheio, então a lista de
+   preços de profissional por produto (tabela `precos_profissionais` e o script
+   `seed:precos-profissionais`) parece não ser mais necessária. **Confirmar?**
+   Até a resposta, nada é apagado e o seed não é usado.
+3. **O preço promocional vale também para o cliente comum** (Home Care e
+   visitante), sem desconto de profissional? Hoje a regra só diz como a
+   promoção se combina com os 30%.
+
+Pendência técnica (observação da Alexandra/Claude, não é pergunta): o servidor
+precisa saber o preço promocional VIGENTE de cada sku para aplicar a regra 5, e
+isso hoje não existe em lugar nenhum (o site e o banco só têm o preço cheio; as
+promoções do Esquenta Black são só texto e filtro na página). Definir onde
+guardar (por exemplo uma tabela de promoções com sku, preço e período) antes de
+construir o passo 12.
 
 ### Fotos dos descartáveis (03/11/2026)
 
