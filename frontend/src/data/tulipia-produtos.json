@@ -27,7 +27,7 @@
       "sku": "firm-flaccid-nano-fluido-remineralizante-60ml-2",
       "nome": "Firm Flaccid - Nano Fluido Remineralizante",
       "tamanho": "60ml",
-      "preco": 71.1,
+      "preco": 79,
       "categoria": "Firmeza",
       "cuidado": [
         "Firmeza e Contorno Facial"
@@ -103,7 +103,7 @@
       "sku": "immortalite-c-nano-serum-de-vitamina-c-50ml-9",
       "nome": "Immortalité-C - Nano Sérum de Vitamina C",
       "tamanho": "50ml",
-      "preco": 152.1,
+      "preco": 169,
       "categoria": "Séruns",
       "cuidado": [
         "Clareamento",
@@ -115,7 +115,7 @@
       "sku": "life-c-nano-sabonete-mousse-150ml-10",
       "nome": "Life C+ - Nano Sabonete Mousse",
       "tamanho": "150ml",
-      "preco": 109.65,
+      "preco": 129,
       "categoria": "Limpeza",
       "cuidado": [
         "Clareamento"
@@ -126,7 +126,7 @@
       "sku": "immortalite-c-sabonete-antioxidante-de-vitamina-c-110ml-11",
       "nome": "Immortalité-C - Sabonete Antioxidante de Vitamina C",
       "tamanho": "110ml",
-      "preco": 71.1,
+      "preco": 79,
       "categoria": "Limpeza",
       "cuidado": [
         "Clareamento"
@@ -284,7 +284,7 @@
       "sku": "hidrasol-fps-60-fotoprotetor-facial-50g-25",
       "nome": "Hidrasol FPS 60 - Fotoprotetor Facial",
       "tamanho": "50g",
-      "preco": 125.1,
+      "preco": 139,
       "categoria": "Fotoproteção",
       "cuidado": [],
       "destaque": false
@@ -293,7 +293,7 @@
       "sku": "hidrasol-fps-30-fotoprotetor-facial-50g-26",
       "nome": "Hidrasol FPS 30 - Fotoprotetor Facial",
       "tamanho": "50g",
-      "preco": 116.1,
+      "preco": 129,
       "categoria": "Fotoproteção",
       "cuidado": [],
       "destaque": false
@@ -436,7 +436,7 @@
       "sku": "essence-cleansing-oil-150ml-39",
       "nome": "Essence - Cleansing Oil",
       "tamanho": "150ml",
-      "preco": 126.65,
+      "preco": 149,
       "categoria": "Limpeza",
       "cuidado": [],
       "destaque": false
@@ -445,7 +445,7 @@
       "sku": "citrata-sabonete-liquido-antioleosidade-110ml-40",
       "nome": "Citrata - Sabonete Líquido Antioleosidade",
       "tamanho": "110ml",
-      "preco": 71.1,
+      "preco": 79,
       "categoria": "Limpeza",
       "cuidado": [
         "Antiacne"
@@ -1115,7 +1115,7 @@
       "sku": "sweet-lips-gloss-labial-chocolate-10g-101",
       "nome": "Sweet Lips - Gloss Labial Chocolate",
       "tamanho": "10g",
-      "preco": 67.15,
+      "preco": 79,
       "categoria": "Labial",
       "cuidado": [],
       "destaque": false
@@ -1152,7 +1152,7 @@
       "sku": "sweet-lips-esfoliante-labial-chocolate-15g-105",
       "nome": "Sweet Lips - Esfoliante Labial Chocolate",
       "tamanho": "15g",
-      "preco": 73.95,
+      "preco": 87,
       "categoria": "Labial",
       "cuidado": [],
       "destaque": false
@@ -1218,7 +1218,7 @@
       "sku": "kinelyn-locao-ultrassecativa-fps-30-tonalizante-50ml-111",
       "nome": "Kinelyn - Loção Ultrassecativa FPS 30 Tonalizante",
       "tamanho": "50ml",
-      "preco": 134.1,
+      "preco": 149,
       "categoria": "Fotoproteção",
       "cuidado": [
         "Antiacne"
