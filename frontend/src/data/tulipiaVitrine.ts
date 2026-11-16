@@ -3,6 +3,7 @@ import {
   Citrus,
   ListChecks,
   Paintbrush,
+  PersonStanding,
   Pipette,
   SoapDispenserDroplet,
   Star,
@@ -18,7 +19,29 @@ export interface VitrineItem {
   label: string
   Icon: LucideIcon
   match: (product: TulipiaProduct) => boolean
+  /** quando existe, a grade mostra os produtos nesta ordem de sku */
+  ordem?: string[]
 }
+
+// Linha corporal, por sku e na ordem combinada com a Juliana. Não vem do campo
+// `categoria` (que mistura Corporal, Firmeza, Kits, Argilas e Peelings) e não
+// muda nenhum sku. Home Care só vê os 2 Firm Flaccid (públicos); Profissional
+// vê os 13.
+export const SKUS_CORPORAIS = [
+  'firm-flaccid-nano-fluido-remineralizante-60ml-2',
+  'firm-flaccid-nano-fluido-remineralizante-300ml-4',
+  'elegance-nano-dual-peeling-esfoliante-500g-137',
+  'moovy-creme-de-massagem-neutro-1kg-142',
+  'corpus-mascara-de-argila-amarela-e-colageno-1kg-138',
+  'body-hd-creme-de-massagem-redutor-1kg-141',
+  'elegance-body-nano-spray-lipotermico-5-em-1-300ml-139',
+  'body-hd-gel-hiperemiante-500g-145',
+  'body-hd-gel-crioterapico-1kg-144',
+  'kit-drenagem-para-tecnicas-de-massagem-corporal-kit-81',
+  'ocean-ox-by-ana-julia-graf-flocos-de-magnesio-dermico-3-saches-140',
+  'moovy-creme-de-massagem-ozonizado-1kg-143',
+  'body-hd-goma-esfoliante-500g-146',
+]
 
 // Coleções curadas pra fileira de ícones logo abaixo do banner hero —
 // atalhos rápidos, diferentes do filtro "Por Categoria" (que usa as
@@ -76,5 +99,12 @@ export const TULIPIA_VITRINE: VitrineItem[] = [
     label: 'Vitamina C',
     Icon: Citrus,
     match: (p) => p.categoria === 'Vitamina C',
+  },
+  {
+    key: 'corporal',
+    label: 'Corporal',
+    Icon: PersonStanding,
+    match: (p) => SKUS_CORPORAIS.includes(p.id),
+    ordem: SKUS_CORPORAIS,
   },
 ]

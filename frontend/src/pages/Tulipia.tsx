@@ -33,6 +33,7 @@ import {
 } from '../data/tulipiaProducts'
 import type { TulipiaProduct } from '../data/tulipiaProducts'
 import { TULIPIA_VITRINE } from '../data/tulipiaVitrine'
+import { avisoDosExclusivos } from '../lib/exclusivos'
 import { CHAVE_FILTRO_PROMOCAO, ordenarPelosSkus } from '../lib/promocao'
 
 type ViewMode = 'todos' | 'categoria' | 'linha' | 'cuidado'
@@ -286,6 +287,29 @@ function Tulipia() {
     selectedCuidado,
     gridPool,
   ])
+
+  // Home Care esconde os exclusivos. Quando o filtro (ou categoria, linha,
+  // cuidado) pegaria algum deles, conta quantos para avisar abaixo da grade.
+  // A visão "Todos" sem filtro não conta: ali o aviso seria sobre o catálogo
+  // inteiro.
+  function combinaComOFiltro(product: TulipiaProduct) {
+    if (customFilter) return customFilter.match(product)
+    if (viewMode === 'categoria') return product.categoria === selectedCategoria
+    if (viewMode === 'cuidado') return product.cuidado.includes(selectedCuidado)
+    if (viewMode === 'linha') return product.linha === selectedLinha
+    return true
+  }
+  const filtrando = customFilter !== null || viewMode !== 'todos'
+  const exclusivosEscondidos =
+    audience === 'homecare' && !searching && filtrando
+      ? ALL_PRODUCTS.filter(
+          (p) => p.exclusivoProfissional && combinaComOFiltro(p),
+        ).length
+      : 0
+  const avisoExclusivos = avisoDosExclusivos(
+    browsedProducts.length,
+    exclusivosEscondidos,
+  )
 
   const showAlsoLike =
     !searching &&
@@ -619,12 +643,27 @@ function Tulipia() {
                   />
                 </ScrollReveal>
               ))}
-              {browsedProducts.length === 0 && (
+              {browsedProducts.length === 0 && exclusivosEscondidos === 0 && (
                 <p className="col-span-full text-center text-sm text-[#04452E]/60">
                   Nenhum produto nessa seleção.
                 </p>
               )}
             </div>
+
+            {/* Home Care esconde os exclusivos: avisa e oferece trocar para
+                o modo Profissional (o filtro continua ligado). */}
+            {avisoExclusivos && (
+              <div className="mt-6 flex flex-col items-center gap-3 text-center">
+                <p className="text-sm text-[#04452E]/70">{avisoExclusivos}</p>
+                <button
+                  type="button"
+                  onClick={() => setAudience('profissional')}
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#04452E] px-5 text-sm font-medium text-[#04452E] transition-colors hover:bg-[#04452E] hover:text-offwhite"
+                >
+                  Ver como profissional
+                </button>
+              </div>
+            )}
 
             {/* 7. "Você também pode gostar" — quando o filtro sobra pouco */}
             {showAlsoLike && alsoLikeProducts.length > 0 && (

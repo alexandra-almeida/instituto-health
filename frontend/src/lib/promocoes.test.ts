@@ -231,7 +231,11 @@ describe('PROMOCAO_ATUAL e a grade filtrada pela promoção', () => {
   it('só o filtro da promoção define a ordem: vitrine e tipos de pele seguem a ordem do catálogo', () => {
     expect(paginaFonte).toMatch(/ordem: promocao\.skus/)
     expect(paginaFonte.match(/ordem: /g)).toHaveLength(1)
-    expect(vitrineFonte).not.toMatch(/ordem\??:/)
+    // só o Corporal (lista por sku, na ordem combinada) tem ordem própria
+    expect(vitrineFonte.match(/ordem\??:/g)).toHaveLength(2)
+    expect(TULIPIA_VITRINE.filter((v) => v.ordem).map((v) => v.key)).toEqual([
+      'corporal',
+    ])
   })
 })
 
@@ -246,6 +250,7 @@ describe('vitrine de ícones da /tulipia', () => {
       'Sabonetes',
       'Protocolos',
       'Vitamina C',
+      'Corporal',
     ])
   })
 
