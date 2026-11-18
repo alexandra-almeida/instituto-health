@@ -36,3 +36,11 @@ frontend/public/sitemap.xml
 # Planilhas da carga do banco (preço de profissional é confidencial e nunca vai
 # para o git; ver database/seeds/0002_precos_profissionais.ts)
 database/seeds/dados/
+
+# Preço cheio dos exclusivos de profissional (CSV): confidencial e o repositório é
+# PÚBLICO. Fica só no computador; o lugar que o seed usa é database/seeds/dados/
+# (acima), esta pasta é uma rede de segurança caso o arquivo seja salvo aqui.
+backend/dados/
+
+# Prints, planilhas em branco e outros arquivos de trabalho (não são do projeto)
+Claude outputs/
