@@ -35,11 +35,18 @@ export type CodigoDeErroDoMelhorEnvio =
 // Erro técnico do cliente; o service decide o que mostrar ao cliente da loja
 export class ErroDoMelhorEnvio extends Error {
   readonly codigo: CodigoDeErroDoMelhorEnvio
+  /**
+   * Só o campo `message` da resposta de erro (texto de validação do Melhor
+   * Envio), curto e com números longos mascarados (CEP, documento). Serve para
+   * diagnosticar um 400/422 nos logs; nunca é mostrado ao cliente da loja.
+   */
+  readonly detalhe?: string
 
-  constructor(codigo: CodigoDeErroDoMelhorEnvio) {
+  constructor(codigo: CodigoDeErroDoMelhorEnvio, detalhe?: string) {
     super(`Melhor Envio: ${codigo}`)
     this.name = 'ErroDoMelhorEnvio'
     this.codigo = codigo
+    this.detalhe = detalhe
   }
 }
 
@@ -117,6 +124,21 @@ function lerOpcao(bruto: unknown): OpcaoDoMelhorEnvio | null {
   }
 }
 
+// Só a mensagem curta de validação (sem o objeto `errors`, que pode repetir o
+// que enviamos), com sequências de 5 ou mais dígitos mascaradas
+async function mensagemDeValidacao(
+  resposta: Response,
+): Promise<string | undefined> {
+  try {
+    const corpo: unknown = await resposta.json()
+    const mensagem = objeto(corpo)?.message
+    if (typeof mensagem !== 'string') return undefined
+    return mensagem.replace(/\d{5,}/g, '#').slice(0, 160)
+  } catch {
+    return undefined
+  }
+}
+
 export function criarMelhorEnvioClient({
   token,
   ambiente,
@@ -151,7 +173,10 @@ export function criarMelhorEnvioClient({
     }
     if (resposta.status === 429) throw new ErroDoMelhorEnvio('limite_de_uso')
     if (resposta.status === 400 || resposta.status === 422) {
-      throw new ErroDoMelhorEnvio('entrada_invalida')
+      throw new ErroDoMelhorEnvio(
+        'entrada_invalida',
+        await mensagemDeValidacao(resposta),
+      )
     }
     if (!resposta.ok) throw new ErroDoMelhorEnvio('indisponivel')
     try {

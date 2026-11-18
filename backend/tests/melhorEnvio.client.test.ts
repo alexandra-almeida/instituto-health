@@ -145,24 +145,22 @@ describe('resposta', () => {
 
   it('descarta serviço com erro, sem preço, com preço zero ou sem prazo', async () => {
     const r = await cliente(
-      vi
-        .fn()
-        .mockResolvedValue(
-          resposta([
-            PAC,
-            {
-              id: 3,
-              name: 'Com erro',
-              error: 'Serviço indisponível',
-              price: '10.00',
-              delivery_time: 5,
-            },
-            { id: 4, name: 'Sem preço', delivery_time: 5 },
-            { id: 5, name: 'Preço zero', price: '0.00', delivery_time: 5 },
-            { id: 6, name: 'Sem prazo', price: '10.00' },
-            'lixo',
-          ]),
-        ) as unknown as typeof fetch,
+      vi.fn().mockResolvedValue(
+        resposta([
+          PAC,
+          {
+            id: 3,
+            name: 'Com erro',
+            error: 'Serviço indisponível',
+            price: '10.00',
+            delivery_time: 5,
+          },
+          { id: 4, name: 'Sem preço', delivery_time: 5 },
+          { id: 5, name: 'Preço zero', price: '0.00', delivery_time: 5 },
+          { id: 6, name: 'Sem prazo', price: '10.00' },
+          'lixo',
+        ]),
+      ) as unknown as typeof fetch,
     ).calcular(entrada)
     expect(r.map((o) => o.servicoId)).toEqual([1])
   })
@@ -253,5 +251,43 @@ describe('erros', () => {
       .calcular(entrada)
       .catch(() => {})
     expect(fetchFalso).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('detalhe do erro de entrada (para diagnóstico nos logs)', () => {
+  it('guarda só a mensagem curta, com números longos mascarados, e nunca o objeto errors', async () => {
+    const fetchFalso = vi.fn().mockResolvedValue(
+      resposta(
+        {
+          message: 'The to.postal_code 01310100 is invalid',
+          errors: { 'from.postal_code': ['Rua Secreta 10, 14830000'] },
+        },
+        422,
+      ),
+    )
+    const erro = await cliente(fetchFalso as unknown as typeof fetch)
+      .calcular(entrada)
+      .catch((e: unknown) => e)
+    expect((erro as ErroDoMelhorEnvio).codigo).toBe('entrada_invalida')
+    expect((erro as ErroDoMelhorEnvio).detalhe).toBe(
+      'The to.postal_code # is invalid',
+    )
+    expect((erro as Error).message).not.toMatch(/postal|Secreta/)
+  })
+
+  it('sem mensagem ou corpo ilegível: sem detalhe', async () => {
+    const semMensagem = vi.fn().mockResolvedValue(resposta({ errors: {} }, 422))
+    const e1 = await cliente(semMensagem as unknown as typeof fetch)
+      .calcular(entrada)
+      .catch((e: unknown) => e)
+    expect((e1 as ErroDoMelhorEnvio).detalhe).toBeUndefined()
+    const ilegivel = vi
+      .fn()
+      .mockResolvedValue(new Response('<html>', { status: 422 }))
+    const e2 = await cliente(ilegivel as unknown as typeof fetch)
+      .calcular(entrada)
+      .catch((e: unknown) => e)
+    expect((e2 as ErroDoMelhorEnvio).codigo).toBe('entrada_invalida')
+    expect((e2 as ErroDoMelhorEnvio).detalhe).toBeUndefined()
   })
 })

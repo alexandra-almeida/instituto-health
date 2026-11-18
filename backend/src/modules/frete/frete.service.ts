@@ -176,14 +176,20 @@ export function criarFreteService({
     } catch (erro) {
       if (erro instanceof ErroDoMelhorEnvio) {
         if (erro.codigo === 'entrada_invalida') {
+          console.error(
+            `Melhor Envio: entrada recusada${erro.detalhe ? `: ${erro.detalhe}` : ''}`,
+          )
           throw new ErroDeNegocio(
             'cep_invalido',
             'Não foi possível calcular o frete para este CEP. Confira o CEP ou escolha retirar.',
             422,
           )
         }
-        // só o código, nunca o corpo da resposta nem o token
-        console.error(`Melhor Envio: cotação falhou (${erro.codigo})`)
+        // só o código (e a mensagem curta de validação, quando é um erro de
+        // entrada), nunca o corpo da resposta nem o token
+        console.error(
+          `Melhor Envio: cotação falhou (${erro.codigo})${erro.detalhe ? `: ${erro.detalhe}` : ''}`,
+        )
         return apenasRetirada({ freteIndisponivel: true })
       }
       throw erro
