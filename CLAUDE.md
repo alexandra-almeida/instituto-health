@@ -61,6 +61,10 @@ Desenvolvido por Alexandra Almeida (freelancer). Produção: https://healthinsti
 - `frontend/src/data/procedimentos.ts` — 28 procedimentos (texto clínico da Juliana; não reescrever)
 - `frontend/src/data/contact.ts` — WhatsApp e Instagram oficiais
 
+## Pedidos (passo 12)
+
+- `POST /api/pedidos` (visitante ou com conta), `GET /api/pedidos` e `GET /api/pedidos/:id` (só o dono ou admin) já existem no backend, com testes, mas dependem das migrações `0007_frete` e `0008_criar_pedido` (a Alexandra cola) e nada do site chama a API ainda. O servidor calcula tudo em centavos (preço público; profissional aprovado, lido no banco, paga 30% a menos sobre o preço cheio; `desc-` sem desconto; exclusivo só para profissional aprovado; produto sem preço é recusado); o navegador NUNCA manda preço, desconto, frete nem total. Só a retirada na clínica funciona: o envio responde 503 até o módulo de frete (interface `CotadorDeFrete`). Sem pagamento (bloqueado pela pendência do e.Rede). Detalhes no plano ("Pedidos (passo 12)").
+
 ## O que ainda é simulado
 
 Cadastro, confirmação de e-mail, reenvio de código, login, redefinição de senha, envio do comprovante profissional e a página Minha Conta (`/minha-conta`, com reenvio do comprovante e Sair) já chamam o backend de verdade, por `frontend/src/lib/api.ts` (o arquivo do comprovante vai direto para uma URL assinada do Storage, nunca pelo corpo de uma chamada ao backend, e fica só em memória no navegador). O SMTP próprio (Resend) está ativo desde 14/11/2026 e o teste real de cadastro com e-mail real foi aprovado (ver seção "E-mail"). Os pontos que ainda faltam estão marcados com `TODO(backend)`:

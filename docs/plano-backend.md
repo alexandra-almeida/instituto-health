@@ -642,8 +642,8 @@ Etapa C — Pedidos e pagamento
 
 ## 12. Pendências e decisões em aberto
 
-- Comprar exige conta? (login obrigatório no checkout ou compra como
-  visitante). Decidir antes do passo 12.
+- Comprar exige conta? RESPONDIDO: não, visitante compra (regra de 26/10/2026;
+  implementado no passo 12, ver "Pedidos (passo 12)").
 - Comprovantes de profissionais recusados: por quanto tempo guardar
   (decisão da Juliana; sugestão: apagar após 90 dias).
 - Exclusão de conta e dos arquivos (LGPD): implementar antes de abrir o
@@ -1953,3 +1953,59 @@ exceções documentadas (agência e volumes).
 9. **Aprovar a lista de 13 skus** (só retirada).
 10. **Limite de tentativas** nas rotas públicas (já pendente; a cotação passa a
     ser mais uma que depende dele).
+
+## Pedidos (passo 12) (18/11/2026)
+
+Implementado no backend, com testes, SEM pagamento e SEM frete de envio. Commits
+locais, nada no ar até as migrações 0007 e 0008 serem coladas (ver "Ordem").
+
+- **Rotas** (`modules/pedidos`, camadas routes, controller, service, repository;
+  zod nas entradas): `POST /api/pedidos` (visitante OU com conta),
+  `GET /api/pedidos` e `GET /api/pedidos/:id` (só o dono ou admin; para qualquer
+  outra pessoa e para pedido de visitante a resposta é 404, igual à de pedido
+  inexistente). Todas com `Cache-Control: no-store`; o POST passa por
+  `protegerOrigem`. O middleware novo `autenticarOpcional` deixa o visitante
+  seguir (sessão ausente ou vencida) e nunca decide preço: quem decide é o
+  service, lendo o BANCO.
+- **Compra sem cadastro: SIM** (decisão que estava pendente na seção 12, fechada
+  pela regra de 26/10/2026: "cliente comum compra sem cadastro e sem desconto").
+  O pedido de visitante guarda só o e-mail e os dados de entrega. A consulta do
+  pedido de visitante (página de confirmação) fica para o passo do frontend
+  (precisa de um token de acesso ao pedido; não existe ainda).
+- **O que o navegador manda:** `itens` (`sku`, `quantidade` de 1 a 99, `variacao`
+  opcional), `contato` (nome, e-mail, telefone), `entrega` (`retirada`, ou
+  `envio` com `servicoId` e `endereco`) e `formaPagamento` (`pix`, `credito` ou
+  `debito`). Preço, desconto, frete, total e tabela de preços NÃO existem no
+  esquema: o zod descarta qualquer campo declarado a mais.
+- **Cálculo no servidor** (`precificacao.ts`, centavos inteiros): preço público
+  do banco; profissional aprovado (tipo e status lidos do banco a cada pedido)
+  paga 30% a menos sobre o preço CHEIO dos produtos Tulípia, descartáveis `desc-`
+  sem desconto; exclusivo de profissional só para profissional aprovado; produto
+  inexistente, inativo ou sem preço aplicável recusa o pedido todo (422), nunca
+  se cai para outro valor; o mesmo sku e variação viram uma linha só (até 99
+  unidades somadas). Total = subtotal + frete, e o banco ainda confere
+  (`pedidos_total_confere`). A regra do MAIOR desconto com a promoção vigente
+  entra quando existir a tabela de promoções; para o cliente comum o preço
+  promocional também ainda não existe (pergunta aberta para a Juliana).
+- **Frete:** a retirada na clínica é grátis ("Retirada na clínica"). O envio
+  depende do módulo de frete (Melhor Envio): o `pedidos.service` só conhece a
+  interface `CotadorDeFrete` (`modules/pedidos/entrega.ts`), que ao criar o pedido
+  cota DE NOVO o serviço escolhido. Hoje a implementação responde 503
+  (`frete_indisponivel`) e nada é criado; a do frete real entra nas etapas F3 a
+  F5. A regra "descartável pesado só retirada" também entra nelas.
+- **Gravação atômica:** função `criar_pedido` do banco (migração 0008), que grava
+  o pedido e os itens juntos: um pedido sem itens nunca existe. Só o
+  `service_role` executa. Valores entram como texto exato (`"129.90"`).
+- **Pedido nasce `aguardando_pagamento`.** Nada marca `pago` ainda: pagamento
+  está bloqueado pela pendência do e.Rede (seção 7). Não existe expiração de
+  pedido abandonado nem estoque (o catálogo não tem estoque no banco).
+- **Falta:** limite de tentativas por IP em `POST /api/pedidos` (rota pública;
+  pendência obrigatória antes do lançamento, seção 12), o pagamento, a tela do
+  Checkout ligada à API e o token de consulta do pedido de visitante.
+
+### Ordem para colocar no ar (importante)
+
+1. Colar a `0007_frete` e rodar `database/conferencias/0007_frete.sql`.
+2. Colar a `0008_criar_pedido` e rodar `database/conferencias/0008_criar_pedido.sql`.
+3. Só então o push do backend. Sem elas, `POST /api/pedidos` responde 500 (nada do
+   site chama a rota ainda, então não quebra ninguém).
