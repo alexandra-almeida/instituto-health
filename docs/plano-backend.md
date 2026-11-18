@@ -366,16 +366,16 @@ texto de 26/10/2026), lida no navegador logado da Alexandra (o acesso automátic
 dá 403). Nenhuma credencial foi vista. **Nenhum código de pagamento foi
 escrito.**
 
-**PENDÊNCIA QUE BLOQUEIA O CÓDIGO DE PAGAMENTO.** A própria página diz que, ao
-longo de 2027, o e.Rede será desativado e que o Itaú Checkout 2.0 é a evolução
-(a busca na web não confirmou isso fora do portal). A Juliana vai perguntar à
-gerente da Rede: a data, se dá para começar direto pelo Itaú Checkout 2.0, o
-custo, se tem página hospedada (o que poderia tirar o cartão do nosso backend),
-como ficam Pix, crédito, débito e 3DS e como é o sandbox. **Até a resposta, NÃO
-escrever código de pagamento** (passos 13 a 16). Quando houver código de
-pagamento, ele fica atrás de uma **interface de gateway**: `modules/pagamentos`
-fala só com a interface, e trocar de provedor mexe num arquivo só (hoje seria
-`rede.client.ts`).
+**RISCO CONHECIDO (bloqueio REMOVIDO em 18/11/2026).** A própria página diz que,
+ao longo de 2027, o e.Rede será desativado e que o Itaú Checkout 2.0 é a
+evolução (a busca na web não confirmou isso fora do portal). DECISÃO da
+Alexandra em 18/11/2026: **seguimos com o e.Rede agora**, sem esperar a resposta
+da Rede. O fim do e.Rede em 2027 continua como risco conhecido; a migração para o
+Itaú Checkout 2.0 será planejada quando a Rede informar a data. O código de
+pagamento fica atrás de uma **interface de gateway** (`GatewayDePagamento`): o
+resto do backend nunca chama o e.Rede direto, e trocar de provedor mexe num
+arquivo só. Plano dos passos 13 a 16 em "Pagamentos: plano dos passos 13 a 16"
+(no fim deste arquivo).
 
 - **Autenticação (OAuth 2.0).** PV = `clientId` e chave de integração =
   `clientSecret`. `POST` no endereço de token com
@@ -604,8 +604,9 @@ Etapa C — Pedidos e pagamento
     carga dos produtos a partir do JSON.
 11. Leitura da documentação da Rede (e.Rede) e resumo para aprovação (sem
     código). FEITO e aprovado em 18/11/2026 (ver "Resumo da documentação (passo
-    11)" na seção 7); os passos 13 a 16 esperam a resposta da gerente da Rede
-    sobre o fim do e.Rede em 2027. (Trocado de PagBank para Rede em 26/10/2026.)
+    11)" na seção 7); os passos 13 a 16 SEGUEM com o e.Rede (decisão de 18/11/2026;
+    o fim do e.Rede em 2027 é risco conhecido). Plano em "Pagamentos: plano dos
+    passos 13 a 16". (Trocado de PagBank para Rede em 26/10/2026.)
     Itens a confirmar nessa leitura, além do que o resumo já cobrir:
     - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
       entra numa migração `0006` com a coluna em `pedidos` (e o formulário do
@@ -685,10 +686,9 @@ Etapa C — Pedidos e pagamento
   provisiona). Projetos em plano pago não pausam por inatividade (documentação
   do Supabase). Tem custo mensal, na fatura da Vercel dela.
 - Credenciais de produção da Rede da Juliana (e.Rede habilitado no PV dela).
-- **Fim do e.Rede em 2027 (18/11/2026):** a Juliana pergunta à gerente da Rede a
-  data, se dá para começar direto pelo Itaú Checkout 2.0, o custo, se tem página
-  hospedada, Pix, crédito, débito, 3DS e o sandbox. SEM CÓDIGO DE PAGAMENTO até a
-  resposta; depois, tudo atrás de uma interface de gateway.
+- **Fim do e.Rede em 2027 (18/11/2026):** RISCO CONHECIDO, sem bloqueio. Seguimos
+  com o e.Rede; a migração para o Itaú Checkout 2.0 será planejada quando a Rede
+  informar a data. Todo código de pagamento fica atrás de `GatewayDePagamento`.
 - Conferir se a chave Pix da conta Itaú da clínica está habilitada no Portal Use
   Rede (Para vender > Pix), e cadastrar por telefone a URL de aviso do Pix
   (CNPJ, PV, e-mail e URL; 2 dias úteis), pela Juliana, quando a rota existir.
@@ -878,9 +878,10 @@ Etapa C — Pedidos e pagamento
   resumo do passo 11 para o que cada coluna guarda.
 - [x] Passo 11 (26/10/2026; concluído em 18/11/2026): leitura da documentação
   oficial do e.Rede e resumo aprovado pela Alexandra, sem código (ver seção 7). A
-  decisão do cartão pelo servidor foi tomada em 09/11/2026. NOVA PENDÊNCIA: o
-  e.Rede será desativado ao longo de 2027 (Itaú Checkout 2.0); sem a resposta da
-  gerente da Rede, nenhum código de pagamento.
+  decisão do cartão pelo servidor foi tomada em 09/11/2026. RISCO CONHECIDO: o
+  e.Rede será desativado ao longo de 2027 (Itaú Checkout 2.0); em 18/11/2026
+  decidimos seguir com o e.Rede (sem bloqueio) e planejar a migração quando a Rede
+  informar a data.
 - [x] Resposta da Rede (09/11/2026), registrada em 11/11/2026 sem código de
   pagamento: PV de e-commerce 110115600 (duplicado do PV físico), condições
   comerciais em até 2 dias úteis, chave de integração gerada pela Juliana e
@@ -1998,8 +1999,8 @@ locais, nada no ar até as migrações 0007 e 0008 serem coladas (ver "Ordem").
 - **Gravação atômica:** função `criar_pedido` do banco (migração 0008), que grava
   o pedido e os itens juntos: um pedido sem itens nunca existe. Só o
   `service_role` executa. Valores entram como texto exato (`"129.90"`).
-- **Pedido nasce `aguardando_pagamento`.** Nada marca `pago` ainda: pagamento
-  está bloqueado pela pendência do e.Rede (seção 7). Não existe expiração de
+- **Pedido nasce `aguardando_pagamento`.** Nada marca `pago` ainda: o pagamento vem nos
+  passos 13 a 16 (ver "Pagamentos: plano dos passos 13 a 16"). Não existe expiração de
   pedido abandonado nem estoque (o catálogo não tem estoque no banco).
 - **Falta:** limite de tentativas por IP em `POST /api/pedidos` (rota pública;
   pendência obrigatória antes do lançamento, seção 12), o pagamento, a tela do
@@ -2082,3 +2083,206 @@ Endereço completo da clínica e dados do remetente (F7); planilha da Bia
 preenchida; Checkout com as opções (F6); etiqueta no carrinho depois do pagamento
 (F7, testes de nota fiscal no sandbox); rastreio (F8); admin de envios (F9);
 limite de tentativas por IP na cotação.
+
+## Pagamentos: plano dos passos 13 a 16 (18/11/2026)
+
+SÓ PLANO. Nenhum código, migração ou variável foi criada. Decisão da Alexandra em
+18/11/2026: **seguimos com o e.Rede agora**, sem esperar a resposta sobre o Itaú
+Checkout 2.0. O fim do e.Rede ao longo de 2027 continua como RISCO CONHECIDO; a
+migração para o Itaú Checkout 2.0 será planejada quando a Rede informar a data.
+
+### Regras do código de pagamento
+
+1. **Tudo atrás de uma interface de gateway** (`GatewayDePagamento`), com o e.Rede
+   como primeira implementação. O resto do backend (services, rotas, cron) só
+   conhece a interface e os tipos neutros dela; **nunca chama o e.Rede direto** e
+   nunca importa nada de `gateways/erede/`, a não ser a fábrica. Trocar de
+   provedor é escrever outra implementação e mudar a fábrica.
+2. **As 5 regras do cartão valem sem exceção** (seção 7 e `CLAUDE.md`): número,
+   validade e CVV só em memória, durante a requisição; nunca em banco, log, erro
+   ou análise; logs e erros só com os 4 últimos dígitos; só HTTPS, rota sem GET e
+   sem cache; sem "salvar cartão" (sem tokenização); 3DS com o estado "aguardando
+   autenticação".
+3. **Testes só no sandbox** (`REDE_AMBIENTE=sandbox` no `backend/.env`), com os
+   cartões de teste do portal. O CI nunca chama a Rede: usa um gateway falso e
+   respostas de exemplo da documentação. Chave e PV de produção nunca no
+   computador.
+4. **Ordem:** Pix primeiro (sem dados de cartão), depois crédito e débito com 3DS.
+
+### Como fica o código
+
+```
+backend/src/modules/pagamentos/
+  gateway.ts                interface GatewayDePagamento + tipos NEUTROS
+  gateways/erede/
+    erede.autenticacao.ts   token OAuth em memória (renova aos 20 min)
+    erede.client.ts         HTTP (tempo limite, cabeçalhos, sem log de corpo)
+    erede.mapeamento.ts     códigos da Rede -> status neutros
+    erede.gateway.ts        implementa a interface
+  gateways/index.ts         fábrica (única que sabe qual provedor está ligado)
+  cartao.ts                 tipo DadosDoCartao (mascarado em toString e toJSON)
+  pagamentos.service.ts / .controller.ts / .routes.ts / .schemas.ts
+backend/src/repositories/pagamentos.repository.ts, eventos.repository.ts
+```
+
+A interface (nomes neutros, valores em centavos):
+`criarPix`, `consultarPorReferencia`, `consultarPorTid`, `autorizarCartao`
+(devolve `aprovado`, `recusado` ou `aguardando_autenticacao` com a URL do banco) e
+`cancelar`. Os status neutros são `aprovado`, `recusado`, `pendente`,
+`aguardando_autenticacao`, `cancelado` e `nao_encontrado`; códigos do provedor nunca
+chegam ao cliente da loja (a resposta diz só se vale tentar de novo).
+
+### Migração `0006_pagamentos` (SQL mostrado à Alexandra antes do arquivo)
+
+- `pagamentos`: renomeia `pagbank_order_id`, `pagbank_charge_id` e `pagbank_status`
+  para `gateway_order_id`, `gateway_charge_id` (o TID da Rede) e `gateway_status`;
+  acrescenta `gateway` (padrão `erede`), `referencia` (único e obrigatório: o nosso
+  código por TENTATIVA, até 50 caracteres, ex.: `P1001-1`), `nsu`, `bandeira`,
+  `final_cartao` (só os 4 últimos), `codigo_retorno` e `mensagem_retorno` (da Rede,
+  nunca dado de cartão), `pix_copia_e_cola`, `pix_expira_em`, `pix_txid`,
+  `pix_end_to_end_id`, `pago_em`, `consultado_em` e `erro` (mensagem curta NOSSA).
+  O QR Code em imagem não se guarda: o copia e cola gera a imagem.
+- `status` de `pagamentos` ganha `aguardando_autenticacao` e `expirado`; o de
+  `pedidos` ganha `aguardando_autenticacao`. Mudar a regra `check` exige apagar e
+  recriar a restrição.
+- `pedidos`: `token_acesso_hash` (ver "Pedido de visitante") e `pago_em`.
+- `eventos_webhook`: `tipo` e `erro` (o `evento_id` único já existe e guarda o id
+  da notificação da Rede).
+- Funções do banco, executadas só pelo `service_role`: `confirmar_pagamento`
+  (marca o pagamento e o pedido como pagos de uma vez, só se o valor bate e só se
+  ainda estavam pendentes: idempotente) e `expirar_pagamento`.
+- RLS ligado, sem política e `revoke` para `anon` e `authenticated`; conferência em
+  `database/conferencias/0006_pagamentos.sql`. Sem coluna de CPF (a Rede não exige).
+- Sem coluna que guarde número, validade ou CVV, nem o corpo das respostas.
+
+### Pedido de visitante (decisão a aprovar)
+
+O visitante não tem conta, então não tem como provar que o pedido é dele. Proposta:
+`POST /api/pedidos` passa a devolver uma única vez um `tokenDoPedido` aleatório
+(32 bytes); o banco guarda só o hash (`token_acesso_hash`). O navegador guarda o
+token (sessionStorage) e o manda para pagar e consultar o pedido. Quem tem conta
+continua acessando como dono, sem token. Isso também fecha a pendência "consulta do
+pedido de visitante" do passo 12.
+
+### Variáveis de ambiente (só nomes; valores só na Vercel e no `.env` local)
+
+`REDE_PV`, `REDE_CHAVE_INTEGRACAO`, `REDE_AMBIENTE` (`sandbox` | `producao`, padrão
+`sandbox`; `producao` só com `NODE_ENV=production`, como no Melhor Envio) e
+`REDE_WEBHOOK_TOKEN` (cabeçalho `authorization` do aviso do Pix). Todas opcionais
+na subida: sem elas a API sobe e as rotas de pagamento respondem 503. Entram no
+`env.ts` e no `.env.example` sem valor.
+
+### Passo 13: gateway, e.Rede e Pix (sandbox)
+
+- Interface, `cartao.ts` (mascarado), autenticação OAuth (token em memória, renovado
+  aos 20 minutos, uma só renovação por vez, repetição única se vier 401 que NÃO
+  processa pagamento), cliente HTTP (tempo limite, cabeçalho
+  `Transaction-Response: brand-return-opened`, sem registrar corpo) e a
+  implementação do e.Rede só com o que o Pix precisa (`criarPix` e consultas).
+- Migração `0006` (acima).
+- `POST /api/pedidos/:id/pagamentos` (dono ou token do pedido) com a forma `pix`:
+  cria a tentativa (`referencia` nova), pede o QR Code com validade de **30
+  minutos**, grava e devolve `{ pagamentoId, copiaECola, expiraEm }`.
+- `GET /api/pedidos/:id/pagamento`: status atual para a tela do Pix. Se ainda está
+  pendente e a última consulta tem mais de 1 minuto, consulta o gateway (reserva
+  caso o aviso não chegue).
+- Sem webhook ainda (passo 14): o status vem da consulta.
+- Testes: gateway falso para o service e as rotas; o mapeamento da Rede com
+  respostas de exemplo da documentação; o cliente com `fetch` simulado (cabeçalhos,
+  centavos, 401, tempo esgotado, nenhum corpo em erro ou log); roteiro manual no
+  sandbox (QR Code gerado e consulta).
+
+### Passo 14: aviso do Pix, expiração e conciliação
+
+- `POST /api/pagamentos/webhook/pix` (Rede chama; fora da proteção de origem). Só
+  aceita se o cabeçalho `authorization` for igual a `REDE_WEBHOOK_TOKEN` (comparação
+  em tempo constante). Idempotente pelo `id` da notificação (`eventos_webhook`). O
+  aviso é só uma dica: ANTES de marcar `pago` o backend consulta o TID na Rede e
+  confere o valor; a Rede recomenda esperar cerca de 10 minutos para consultar
+  depois de um aviso, então a consulta é feita já e repetida pela rotina abaixo se
+  ainda vier `Pending`. Evento de devolução (`PV.REFUND_PIX`) só é registrado.
+- **Rotina agendada** (Cron da Vercel, a cada 10 minutos, protegida pelo
+  `CRON_SECRET` como o despertador): consulta e cancela pagamentos Pix vencidos
+  (depois dos 30 minutos, com uma última consulta antes), pedidos em
+  `aguardando_autenticacao` há mais de 30 minutos e pedidos `aguardando_pagamento`
+  sem pagamento há mais de 24 horas. O pedido cancelado "libera o estoque": hoje
+  não existe estoque no banco, então só muda o status.
+- Ao confirmar o pagamento: e-mail de recibo ao cliente e aviso à clínica (Resend,
+  nunca desfaz o pagamento se falhar) e um ponto de partida para criar a etiqueta
+  do Melhor Envio (etapa F7 do frete).
+- Cadastro da URL de aviso do Pix: no sandbox pela API; em produção por TELEFONE à
+  central da Rede (CNPJ, PV, e-mail e URL, 2 dias úteis), pela Juliana, só quando a
+  rota estiver no ar (`https://healthinstituto.com.br/api/pagamentos/webhook/pix`).
+- Testes: autenticação do aviso, idempotência, aviso sem pagamento correspondente,
+  valor que não bate, consulta que diz `Pending`, expiração, e-mail que falha.
+
+### Passo 15: crédito e débito com 3DS
+
+- Rota `POST /api/pedidos/:id/pagamentos` com `credito` ou `debito` e os dados do
+  cartão no corpo (HTTPS, sem cache, sem GET). O cartão existe só em um objeto
+  mascarado que vai direto ao gateway e é descartado. Nenhum `catch` imprime o
+  corpo; um teste confere que cartão, validade e CVV não aparecem em respostas de
+  erro nem no console. O número de tentativas por pedido é limitado (3), contra
+  teste de cartões e retentativas excessivas (códigos N02 da Rede).
+- **3DS 2.0 (MPI Rede, já contratado):** a requisição leva o bloco `threeDSecure`.
+  O navegador manda os dados do dispositivo (tela, idioma, fuso, Java, cor); o
+  servidor completa `userAgent` e `ipAddress`. A Rede responde `220` com a URL do
+  banco, o pagamento fica `aguardando_autenticacao` e o navegador vai ao banco.
+  Débito sempre 3DS (`onFailure: decline`); crédito com `onFailure: decline` quando
+  houver 3DS.
+- **Retorno do banco:** `POST /api/pagamentos/3ds/sucesso`, `/falha` e `/callback`
+  (fora da proteção de origem; formulário vindo da Rede; endereço curto, até 87
+  caracteres). O pedido se identifica pelo `reference` do corpo; o resultado nunca
+  vale pelo que veio: o backend consulta `GET /v2/transactions?reference=` e só
+  então marca `pago` (código `78` = não houve transação financeira). Depois
+  redireciona o navegador (303) para a página do pedido. Cliente que fecha a aba
+  do banco: nenhum aviso chega, a rotina do passo 14 expira o pedido.
+- **Endereço de cobrança:** o 3DS exige endereço, cidade, CEP, estado, país, e-mail
+  e telefone do titular. O pedido de retirada não tem endereço, então o Checkout
+  passa a pedir o endereço de cobrança no cartão (no envio reaproveita o de
+  entrega).
+- **Risco do IPv4 (a testar):** a Rede só aceita IPv4 em `ipAddress` e a Vercel pode
+  entregar IPv6. Decisão proposta: débito exige IPv4 (senão mensagem pedindo outra
+  rede ou o Pix); crédito segue SEM 3DS quando só há IPv6 (o risco de chargeback
+  fica com a loja). Confirmar no sandbox.
+- **Parcelamento:** na v1, crédito À VISTA. O parcelamento (2 a 12 e o "até 3x sem
+  juros") volta quando a Juliana confirmar as condições com a Rede; a coluna
+  `parcelas` já existe.
+- **Recusas:** a resposta ao cliente é genérica ("não autorizado, confira os dados,
+  use outro cartão ou o Pix"), com um indicador se vale tentar de novo, derivado da
+  tabela de retornos da bandeira (reversível ou irreversível).
+- Testes: autorização aprovada, recusada, `220` com URL, retorno de sucesso e de
+  falha, consulta por `reference` com `78`, 3 tentativas, cartão nunca no log;
+  roteiro manual no sandbox com os cartões de teste do portal e os valores de
+  simulação (`207`, `208` e `209` no 3DS; `53`, `56`, `80` e `2001` a `2006` nos
+  erros), por um script de apoio em `backend/` que fala com o gateway, sem passar
+  pelo pedido real.
+
+### Passo 16: frontend
+
+- `api.ts` ganha o pagamento; o Checkout deixa de ser só interface: escolha de
+  entrega com a cotação, endereço de cobrança no cartão, Pix com QR Code, copia e
+  cola, contagem regressiva de 30 minutos e consulta periódica, cartão com redirecionamento
+  ao banco no 3DS, `PedidoConfirmado` lendo o pedido real (dono ou token). O
+  carrinho mostra o desconto do profissional pela rota `precos-profissionais`.
+- Os dados do cartão vivem só no estado do componente, nunca em `localStorage`,
+  URL ou analytics, e são zerados depois do envio.
+- Pix pode ser entregue antes do cartão: a tela de cartão fica escondida até o
+  passo 15 estar pronto.
+
+### Fora da v1
+
+Salvar cartão (tokenização), recorrência, carteiras digitais, Voucher, estorno e
+cancelamento por API (feitos à mão no portal da Rede até a tela de admin da Fase
+3), devolução de Pix pela loja e parcelamento.
+
+### O que preciso da Alexandra e da Juliana
+
+1. Aprovar este plano, em especial o token do pedido de visitante e o
+   crédito à vista na v1.
+2. Confirmar o endereço de cobrança no cartão para pedidos de retirada.
+3. Juliana: conferir a chave Pix na conta Itaú (Portal Use Rede) e as condições do
+   parcelamento.
+4. `REDE_WEBHOOK_TOKEN`: a Alexandra cria o valor (no `.env` local para o sandbox
+   e, depois, na Vercel) e nunca o cola no chat.
+5. Aprovar o SQL da `0006` antes de ele virar arquivo.
