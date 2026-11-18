@@ -15,8 +15,9 @@ no fim deste arquivo a cada passo concluído.
 
 ## 1. Decisões fechadas
 
-- Escopo desta fase: cadastro/login e pagamento. Frete real fica para depois
-  (transportadora ainda não escolhida pela cliente).
+- Escopo desta fase: cadastro/login e pagamento. O frete real (Melhor Envio,
+  decidido em 16/11/2026) tem plano próprio, ver "Frete (Melhor Envio)" no fim
+  deste arquivo.
 - Backend separado do frontend, em camadas (routes, controller, service,
   repository). O frontend NUNCA fala direto com o Supabase nem com a Rede.
 - Linguagem e framework: Node + Express + TypeScript, na pasta `backend/`
@@ -272,8 +273,10 @@ Princípios que não mudam:
   Juliana (CNPJ da clínica).
 - Parcelamento, juros e débito seguem o que a Rede oferecer de fato;
   o "até 3x sem juros" atual é só exemplo.
-- Frete: enquanto não houver transportadora, manter a regra de frete estimado
-  que o Checkout.tsx usa hoje, movida para o service de pedidos.
+- Frete: Melhor Envio, decidido em 16/11/2026 (ver "Frete (Melhor Envio)" no
+  fim). O frete nunca vem do navegador: o servidor cota de novo ao criar o
+  pedido e o frete entra no total SEM desconto. O Checkout.tsx hoje só mostra
+  "Frete: A calcular" (não existe regra de frete estimado para mover).
 
 Endpoints previstos (ajustar após ler a documentação):
 
@@ -385,6 +388,9 @@ as variáveis do Supabase, `REDE_PV` (clientId), `REDE_CHAVE_INTEGRACAO`
 `PAGBANK_TOKEN` e `PAGBANK_AMBIENTE`),
 `COOKIE_SECRET` (se necessário) e, para o aviso de novo comprovante (tela de
 aprovação, Fase 3), `RESEND_API_KEY` (ver "E-mail: SMTP próprio e contato").
+Frete (já cadastradas na Vercel em 16/11/2026, só Production): `MELHOR_ENVIO_TOKEN`
+(Secret) e `MELHOR_ENVIO_AMBIENTE` (`producao` lá; `sandbox` no `.env` local, com
+um token de sandbox separado). Ver "Frete (Melhor Envio)".
 
 Variáveis do Supabase: a integração do Marketplace cria e sincroniza as
 variáveis no projeto da Vercel a que o banco for conectado (ex.: `SUPABASE_URL`,
@@ -538,7 +544,9 @@ Etapa C — Pedidos e pagamento
   linha 14 da conferência `database/conferencias/0001_perfis_comprovantes.sql`.
   Sem urgência. (A antiga pendência de visualizar HEIC no painel admin deixou
   de existir.)
-- Transportadora (Manda Bem ou Melhor Envio): aguardando a Juliana.
+- Transportadora: DECIDIDA em 16/11/2026, Melhor Envio. Plano em "Frete
+  (Melhor Envio)"; faltam dados (endereço da clínica, remetente, pesos e
+  medidas, aprovar a lista de descartáveis só com retirada).
 - Preço cheio dos 82 exclusivos (a Juliana vai mandar a tabela) e as 2
   perguntas da regra de preço: ver "Regra de preço do profissional". Bloqueiam
   o módulo `pedidos`.
@@ -1369,3 +1377,392 @@ a última decisão.
 - O cadastro ainda não pede telefone nem registro profissional.
 - Minha Conta não mostra o motivo da recusa (ele vai só por e-mail).
 - A tela e os e-mails ainda não foram testados com a API e o Resend de verdade.
+
+## Frete (Melhor Envio) (18/11/2026)
+
+Só PLANO. Nenhum código, migração ou variável foi criada. O módulo de frete NÃO
+bloqueia nem é bloqueado pelo passo 12 (`pedidos`) até a parte da etiqueta (F7);
+a cotação (F1 a F5) pode vir antes.
+
+Fonte técnica: documentação oficial (docs.melhorenvio.com.br), lida em
+18/11/2026: cotação, carrinho, status da etiqueta, sandbox, FAQ e permissões. O
+que a documentação não deixa claro vira "teste no sandbox" (lista abaixo), não
+suposição.
+
+### Decisões da Juliana (16/11/2026)
+
+1. **Sem frete grátis.** O cliente sempre paga o frete. O frete NUNCA entra no
+   desconto do profissional (já era a decisão 4 da regra de preço): total do
+   pedido = itens (com o desconto) + frete cheio.
+2. **"Retirar na clínica (Rincão, SP)"**, grátis, como opção no checkout.
+3. **Sem entrega local** (nenhuma opção própria de entrega na cidade).
+4. **Correios e transportadoras do Melhor Envio**: o cliente escolhe, vendo o
+   preço e o prazo de cada opção.
+5. **Prazo de postagem: 1 dia útil após o pagamento.** O que o cliente vê é o
+   prazo da transportadora + 1 dia útil (por exemplo, 3 a 4 dias úteis na
+   cotação viram "4 a 5 dias úteis").
+6. **Quem posta é a Bia.** Ela paga e imprime a etiqueta no PAINEL do Melhor
+   Envio. O site nunca paga nem gera etiqueta.
+7. **A clínica emite NF-e.** A Bia informa a chave da nota no painel antes de
+   pagar a etiqueta (ver "Nota fiscal e declaração de conteúdo": isto tem um
+   ponto a testar).
+8. **Descartáveis pesados ou líquidos só têm retirada** (lista proposta abaixo,
+   aguardando aprovação). Pedido com qualquer um deles só pode escolher retirada.
+
+### Chaves e permissões
+
+- `MELHOR_ENVIO_TOKEN` (Secret) e `MELHOR_ENVIO_AMBIENTE = producao`, já
+  cadastradas pela Alexandra no projeto `healthinstituto-api`, só Production.
+  Previews e o local NÃO têm essas chaves.
+- O token tem só `cart-read`, `cart-write`, `orders-read`, `shipping-calculate`
+  e `shipping-tracking`. NÃO tem `shipping-checkout`, `shipping-generate` nem
+  `shipping-print`: o site não consegue pagar nem gerar etiqueta, nem por bug.
+  O client do Melhor Envio no backend só conhece as 4 operações abaixo (lista
+  fechada, com teste que falha se aparecer outra rota):
+
+| Operação | Rota do Melhor Envio | Permissão |
+| --- | --- | --- |
+| Cotar | `POST /api/v2/me/shipment/calculate` | `shipping-calculate` |
+| Pôr a etiqueta no carrinho | `POST /api/v2/me/cart` | `cart-write` |
+| Conferir o carrinho (evitar duplicar) | `GET /api/v2/me/cart` | `cart-read` |
+| Status e rastreio | `POST /api/v2/me/shipment/tracking` e `GET /api/v2/me/orders/:id` | `shipping-tracking`, `orders-read` |
+
+- **Ambientes.** Produção: `https://melhorenvio.com.br`; sandbox:
+  `https://sandbox.melhorenvio.com.br`. Desenvolvimento e testes usam SÓ o
+  sandbox, com um token separado no `backend/.env` local (a Alexandra cria; fora
+  do git). Nunca o de produção. Proteção no `config/env.ts`: com
+  `NODE_ENV` diferente de `production`, `MELHOR_ENVIO_AMBIENTE=producao` faz a
+  API se recusar a subir. O padrão sem variável é `sandbox`.
+- **Cabeçalhos em toda chamada:** `Authorization: Bearer <token>`,
+  `Accept: application/json`, `Content-Type: application/json` e o
+  **`User-Agent` OBRIGATÓRIO** com o nome da aplicação e um e-mail de contato
+  técnico: `Instituto Health (contato@healthinstituto.com.br)`.
+- **Validade do token (atenção):** a documentação diz que o token tem prazo
+  (a data fica dentro do próprio token, campo `exp`). Token expirado derruba a
+  cotação e a etiqueta em silêncio. A Alexandra decodifica o token localmente
+  (sem mostrar o valor), anota a data de validade aqui no plano e cria um
+  lembrete 15 dias antes. O client trata `401 Unauthenticated` como "token
+  inválido ou vencido": loga só isso e avisa a clínica por e-mail (Resend).
+- **Limite de uso:** 250 requisições por minuto por usuário. A cotação é uma
+  rota pública, então precisa do limite de tentativas por IP que já está na
+  lista de pendências obrigatórias antes do lançamento.
+- Sem `MELHOR_ENVIO_TOKEN` a API sobe normal: a cotação devolve só a retirada e
+  loga um aviso (mesmo padrão do `RESEND_API_KEY`). O site nunca quebra por
+  falta de frete.
+
+### Fluxo
+
+1. **Checkout.** Depois que o CEP preenche o endereço (ViaCEP, já funciona), o
+   navegador chama `POST /api/frete/cotacao`. O servidor monta os volumes (peso
+   e medidas), consulta o Melhor Envio e devolve as opções + "Retirar na
+   clínica". O frete nunca vem do navegador.
+2. **Criar o pedido** (passo 12). O navegador manda só a escolha
+   (`{ tipo: 'envio', servicoId }` ou `{ tipo: 'retirada' }`). O servidor COTA DE
+   NOVO, acha o serviço escolhido e grava o frete desse momento. Se o serviço não
+   existir mais ou o preço mudou, responde 409 com as opções novas, para o cliente
+   confirmar.
+3. **Pedido pago** (passos 14 e 15). O servidor coloca a(s) etiqueta(s) no
+   carrinho do Melhor Envio (`cart-write`) com remetente, destinatário, serviço
+   escolhido, volumes e produtos. Falha aqui NUNCA desfaz o pagamento: marca o
+   erro e avisa a clínica por e-mail.
+4. **A Bia** abre o painel do Melhor Envio, informa a chave da NF-e, paga e
+   imprime a etiqueta, e posta.
+5. **Rastreio.** O servidor consulta o status (`shipping-tracking`) e mostra o
+   código em Minha Conta. Quando todas as etiquetas estão postadas, o pedido
+   passa a `enviado`; quando entregues, `entregue`.
+6. **Retirada.** Sem etiqueta. O pedido pago fica à espera; a Bia marca como
+   entregue (tela de admin da Fase 3; até lá, no Table Editor).
+
+### Rotas
+
+- `POST /api/frete/cotacao` (pública, `no-store`, protegida por
+  `protegerOrigem`). Corpo: `{ cep: "14850000", itens: [{ sku, quantidade }] }`.
+  Resposta:
+
+```
+{
+  "soRetirada": false,
+  "motivoSoRetirada": null,
+  "opcoes": [
+    { "servicoId": 1, "servico": "PAC", "transportadora": "Correios",
+      "preco": 37.79, "prazoMinDias": 9, "prazoMaxDias": 10, "volumes": 1 }
+  ],
+  "retirada": { "disponivel": true, "enderecoCurto": "Clínica, Rincão, SP", "...": "..." },
+  "freteIndisponivel": false
+}
+```
+
+  `prazoMinDias` e `prazoMaxDias` já incluem o dia útil de postagem. O preço usa
+  `custom_price` e o prazo usa `custom_delivery_range` do Melhor Envio (a
+  documentação recomenda os campos `custom_*`: eles trazem os acréscimos de preço
+  e de prazo que a Bia configurar no painel). Serviços que o Melhor Envio devolve
+  com `error`, e os de preço nulo, são descartados. Ordem: preço crescente.
+  Erros: 400 (CEP ou itens inválidos), 422 (sku inexistente, inativo ou sem
+  peso). Se o Melhor Envio falhar, responde 200 com `opcoes: []`,
+  `freteIndisponivel: true` e a retirada, para o cliente nunca ficar sem saída.
+  Limites: no máximo 50 linhas e 99 unidades por linha.
+- Dentro de `POST /api/pedidos` (passo 12): o campo `entrega`, como no fluxo
+  acima. Para retirada, o endereço de entrega deixa de ser obrigatório (ver
+  migração).
+- `GET /api/pedidos/:id/rastreio` (dono do pedido ou admin): devolve, por
+  etiqueta, status, código e link de rastreio. Atualiza com o Melhor Envio no
+  máximo a cada 15 minutos por pedido (consulta sob demanda, sem Cron), e só
+  enquanto houver etiqueta não entregue.
+- Interna (sem rota HTTP): `criarEtiquetasNoCarrinho(pedidoId)`, chamada pela
+  confirmação de pagamento.
+- Admin (Fase 3, não agora): lista de pedidos pagos sem etiqueta paga, com a
+  idade (a etiqueta no carrinho vence em 20 dias), "refazer etiqueta" e "marcar
+  retirada concluída".
+
+### Camadas e arquivos
+
+- `backend/src/lib/melhorEnvio.client.ts`: único ponto que fala com o Melhor
+  Envio. `fetch` com tempo limite de 8 s, cabeçalhos acima, lista fechada de
+  rotas, erro tratado sem registrar corpo, token nem dados do destinatário.
+  Sem repetição automática no POST do carrinho (não é idempotente).
+- `backend/src/modules/frete/`: `frete.routes.ts`, `frete.controller.ts`,
+  `frete.schemas.ts` (zod), `frete.service.ts` e funções puras para testar:
+  `pesos.ts` (peso estimado), `embalagem.ts` (escolha de caixas e volumes),
+  `regras.ts` (só retirada e prazo +1 dia útil) e `clinica.ts` (CEP de origem,
+  endereço e remetente; dados não secretos).
+- `backend/src/repositories/`: `logistica.repository.ts` (peso e só retirada por
+  sku) e `envios.repository.ts` (etiquetas).
+- `modules/notificacoes`: dois avisos novos por e-mail (Resend), para
+  `contato@healthinstituto.com.br`: "Pedido pago, etiqueta não entrou no
+  carrinho" e "Token do Melhor Envio inválido ou vencido". Falha de e-mail nunca
+  quebra nada, como nos demais.
+- `config/env.ts`: `MELHOR_ENVIO_TOKEN` (opcional) e `MELHOR_ENVIO_AMBIENTE`
+  (`sandbox` | `producao`, padrão `sandbox`). Nomes entram no
+  `backend/.env.example`, sem valor.
+- Frontend (F6): `api.ts` ganha `frete.cotar`; o `Checkout.tsx` mostra as opções
+  (escolha obrigatória), o "Retirar na clínica" e troca "Frete: A calcular" pelo
+  valor. Nenhuma mensagem de frete grátis em lugar nenhum.
+
+### Migração `0006_frete` (a criar; SQL mostrado à Alexandra antes do arquivo)
+
+A `0005` é a de pagamentos, ainda não criada. As duas mexem em `pedidos` em
+colunas diferentes, então a ordem de colar não importa; a segunda a ser criada
+confere a anterior.
+
+- `produtos_logistica`: `sku` (PK, FK `produtos`), `peso_g integer` (1 a 30000),
+  `origem_do_peso` (`estimado` | `medido`), `so_retirada boolean default false`,
+  `updated_at`. Tabela à parte para o `seed:produtos` não precisar saber de
+  logística. Carga por `npm run seed:logistica` (simulação por padrão e
+  `--aplicar`, como os outros seeds): calcula o peso estimado e a regra de só
+  retirada, e NUNCA sobrescreve linha `medido`.
+- `pedidos`: `entrega_tipo` (`envio` | `retirada`, padrão `envio`); colunas
+  `entrega_cep`, `entrega_rua`, `entrega_numero`, `entrega_bairro`,
+  `entrega_cidade` e `entrega_estado` deixam de ser `not null`, com um `check`
+  que as exige quando `entrega_tipo = 'envio'` (nome e telefone continuam
+  obrigatórios nos dois, para avisar da retirada); `frete_servico_id integer`,
+  `frete_prazo_min integer` e `frete_prazo_max integer` (o que foi mostrado ao
+  cliente). `frete`, `frete_servico` e `codigo_rastreio` JÁ existem desde a
+  `0002` e continuam: `frete_servico` guarda o rótulo ("Correios PAC" ou
+  "Retirada na clínica").
+- `etiquetas_envio` (uma linha por VOLUME, porque Correios, J&T e Loggi não
+  aceitam vários volumes numa só chamada do carrinho: ver "Volumes"):
+  `id`, `pedido_id` (FK, cascade), `volume_indice`, `volume jsonb` (altura,
+  largura, comprimento em cm e peso em g), `melhor_envio_id text`, `protocolo
+  text`, `status` (`pendente`, `no_carrinho`, `paga`, `gerada`, `postada`,
+  `entregue`, `cancelada`, `expirada`, `erro`), `codigo_rastreio`,
+  `consultado_em`, `erro text` (mensagem curta nossa, nunca o corpo da
+  resposta), `created_at`, `updated_at`; único em (`pedido_id`,
+  `volume_indice`).
+- Em todas as tabelas novas: RLS ligado, nenhuma política e `revoke all` para
+  `anon` e `authenticated` (regra da seção 9). Conferência em
+  `database/conferencias/0006_frete.sql`.
+- Não guarda o corpo das respostas do Melhor Envio nem documento de ninguém.
+
+### Peso e medidas (o dado que falta)
+
+Até a Bia medir, valem ESTIMATIVAS, sempre marcadas como `estimado`, que
+cobrem 100% do catálogo para a cotação nunca travar:
+
+- **Peso por produto, a partir do campo `tamanho`** (Tulípia). Fórmula
+  provisória: conteúdo + 12% + tara do frasco ou pote (até 60 ml ou g: 35 g; até
+  150: 50 g; até 300: 70 g; acima disso: 100 g; potes de 1 kg: 120 g).
+  Exemplos: `50ml` dá 91 g; `300ml` dá 406 g; `1kg` dá 1240 g.
+  Casos especiais: `N ampolas de Mml` (N x (M x 1,1 + 6 g) + 60 g de caixa);
+  `3 sachês` (90 g); `1 un` (40 g, faixas de cabelo); `30g cada` (2 x 30 g + 60
+  g); `kit` e `kit (3 itens)`: 37 produtos SEM peso inferível pelo tamanho. O
+  peso do kit sai do número de itens (cerca de 230 g por item), que a Tulípia
+  informa no nome do kit no site dela ("2 itens", "5 produtos"); proponho
+  extrair essa contagem por script e conferir à mão.
+- **Descartáveis** (52 variações): peso a partir da embalagem (por exemplo
+  `Pacote 1 kg` = 1000 g; `Bobina aprox. 1,3 kg` = 1300 g; `Galão 5 L` = 5300 g;
+  `Caixa com 100` de luvas = 450 g). Os que a embalagem não diz (caixas e
+  pacotes "com N" de papel, copos, sacos) começam com um chute e são os
+  primeiros da planilha da Bia.
+- **Caixas padrão** (provisórias, para a Bia medir as reais):
+
+| Caixa | Medidas (C x L x A) | Peso máximo de produtos | Peso da caixa vazia |
+| --- | --- | --- | --- |
+| Pequena | 20 x 15 x 10 cm | 1,0 kg | 100 g |
+| Média | 30 x 22 x 15 cm | 3,0 kg | 200 g |
+| Grande | 40 x 30 x 25 cm | 8,0 kg | 400 g |
+
+  Respeitam os mínimos dos Correios (conferir no sandbox) e ficam num arquivo de
+  configuração (`caixas.ts`), não no banco: são 3 linhas, e trocar é um commit.
+- **Escolha dos volumes** (função pura, testada): cada unidade ocupa um volume
+  estimado (peso x 1,6) e a caixa só se enche até 60%. Ordena do maior para o
+  menor, usa a menor caixa em que tudo cabe (peso e volume); se nenhuma serve,
+  fecha caixas Grandes e repete com o resto, e a última vira a menor que
+  couber. Peso do volume = produtos + caixa vazia. A cotação vai no modo
+  `volumes` (nós empacotamos), não no modo `products` (o Melhor Envio
+  empacota), porque precisamos dos MESMOS volumes na hora do carrinho.
+- **Planilha para a Bia** (`docs/frete-medidas.csv`, a gerar quando o plano for
+  aprovado): duas abas em CSV.
+  1. Caixas reais: `caixa;comprimento_cm;largura_cm;altura_cm;peso_vazia_g;
+     peso_max_produtos_g`, com as 3 linhas acima para ela corrigir.
+  2. Produtos: `sku;nome;tamanho;peso_estimado_g;peso_real_g;observacao`, com 201
+     linhas e o estimado preenchido. Ela pesa na balança só o que estiver errado
+     e começa pelos mais vendidos. O `seed:logistica` lê o CSV preenchido e marca
+     `medido`.
+
+### Descartáveis só com retirada (proposta para você aprovar)
+
+Regra da Juliana: pesados ou líquidos (água sanitária, cloro, desinfetante, sabão
+em pó, limpadores de 2 L ou mais). Aplicada à categoria "Higiene e limpeza", são
+**13 skus**:
+
+- Sabonete Líquido 5 L (3 fragrâncias):
+  `desc-sabonete-liquido-5-l-erva-doce-28`,
+  `desc-sabonete-liquido-5-l-frutas-vermelhas-29`,
+  `desc-sabonete-liquido-5-l-pistache-30`
+- Cloro Gel 5 L: `desc-cloro-gel-5-l-32`
+- Desinfetante: `desc-desinfetante-2-l-33` (2 L) e
+  `desc-desinfetante-5-l-algas-34` (5 L Algas)
+- Sabão em Pó 800 g: `desc-sabao-em-po-multiacao-800-g-36` e
+  `desc-sabao-em-po-primavera-800-g-37`
+- Água Sanitária 5 L (3 marcas): `desc-agua-sanitaria-5-l-gopabo-38`,
+  `desc-agua-sanitaria-5-l-harcclin-39`, `desc-agua-sanitaria-5-l-triex-40`
+- Água Sanitária 2 L e 1 L: `desc-agua-sanitaria-2-l-41` e
+  `desc-agua-sanitaria-1-l-42`
+
+Ficam FORA (envio normal) e peço a sua confirmação:
+
+- `desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31` (500 ml, leve);
+- `desc-limpador-perfumado-120-ml-35` (120 ml, bem abaixo de 2 L).
+
+Pontos para decidir: (a) a Água Sanitária de **1 L** e o Sabão em Pó de **800 g**
+são leves, mas entraram porque a Juliana citou "água sanitária" e "sabão em pó"
+sem limite de tamanho; se ela quiser enviar esses, saem da lista; (b) não
+incluí os pesados que não são líquidos (Bobinas Picotadas de 1,3 a 2,5 kg e
+Sacos Plásticos Virgem de 1 kg), nem os volumosos e leves (Papel Toalha de 1000
+folhas, Papel Higiênico de 16 rolos), que seguem por caixa Grande; me diga se
+algum deve ser só retirada.
+
+A regra vive em `produtos_logistica.so_retirada`, carregada pelo seed a partir
+de uma lista de skus no código (`regras.ts`), com teste que falha se um sku da
+lista deixar de existir.
+
+### Volumes
+
+Correios, J&T e Loggi não aceitam mais de um volume por chamada do carrinho:
+cotação com N volumes vira N chamadas, e portanto N etiquetas e N códigos de
+rastreio no mesmo pedido (por isso `etiquetas_envio` é uma linha por volume).
+As caixas padrão existem justamente para a maioria dos pedidos caber em UM
+volume. Pedidos com mais de um volume mostram, em Minha Conta, um rastreio por
+volume.
+
+### Nota fiscal e declaração de conteúdo (ponto a testar)
+
+A clínica emite NF-e, então o envio é COMERCIAL: a documentação do carrinho
+exige a chave em `options.invoice.key` e a inscrição estadual em
+`from.state_register`. Mas a NF-e é emitida depois do pagamento, então o nosso
+servidor não conhece a chave quando põe a etiqueta no carrinho. Desde 06/04/2026
+a API também exige o campo `products` completo (nome, quantidade e valor
+unitário, que vêm de `itens_pedido`, já com o desconto) por causa da DC-e.
+
+Plano A (o que a Juliana descreveu): o servidor põe a etiqueta no carrinho SEM a
+chave; a Bia informa a chave no painel antes de pagar. **Precisa ser testado no
+sandbox:** o Melhor Envio aceita o carrinho sem a chave? Vira "declaração de
+conteúdo" e depois dá para trocar por NF-e no painel? Plano B, se o teste falhar:
+a Bia cola a chave numa tela nossa (admin, Fase 3) e só então o servidor põe a
+etiqueta no carrinho já com `invoice.key`. O plano B muda a ordem do passo 3 do
+fluxo, não o resto.
+
+### Pontos que só o teste responde (sandbox: Correios e Jadlog, saldo fictício)
+
+1. Carrinho aceito sem `invoice.key` (Plano A).
+2. Cotação com vários `volumes`: o preço devolvido é a soma deles?
+3. Medidas mínimas e máximas dos Correios para as 3 caixas.
+4. Campo `agency`: é obrigatório para Latam Cargo, Azul Cargo e Buslog quando o
+   token é gerado no painel (o nosso é). Combinar com a Bia quais transportadoras
+   ela quer ativas na conta; as que exigem agência ficam desligadas até ela
+   escolher a agência.
+5. Duplicidade: se a chamada do carrinho cair no meio, o `GET /me/cart` (com a
+   marca do pedido em `options.tags`) tem de achar a etiqueta antes de tentar de
+   novo.
+6. Formato do status (`posted`, `delivered`...) e do `tracking` no nosso fluxo.
+7. Se o token do painel realmente funciona só com as 5 permissões que ele tem.
+
+Limites que a documentação informa e o plano respeita: a etiqueta no carrinho
+vence em 20 dias se não for paga (a Bia precisa pagar antes; o admin da Fase 3
+mostra a idade); depois de paga, 20 dias para gerar; depois de gerada, 20 dias
+(7 nos Correios) para postar. O sandbox simula só Correios e Jadlog, então o
+código não pode ter regra específica de outras transportadoras além das duas
+exceções documentadas (agência e volumes).
+
+### Testes (vitest, Melhor Envio simulado; nunca chama a API real no CI)
+
+- `embalagem` e `pesos` (puras): peso estimado por tipo de tamanho (ml, g, kg,
+  ampolas, sachês, un, cada, kit com N itens); escolha da menor caixa; divisão em
+  várias caixas; peso do volume com a caixa vazia; item sem peso é recusado.
+- `regras`: pedido com qualquer sku só retirada vira `soRetirada` e a cotação
+  nem chama o Melhor Envio; prazo + 1 dia útil; o frete não entra no desconto
+  do profissional (junto ao módulo de pedidos: total = itens com desconto + frete
+  cheio, em centavos).
+- `POST /api/frete/cotacao` (supertest): CEP e itens inválidos; sku inexistente;
+  ordenação por preço; serviço com `error` descartado; uso de `custom_price` e
+  `custom_delivery_range`; preço enviado pelo navegador ignorado; sem token só a
+  retirada; falha do Melhor Envio devolve 200 com `freteIndisponivel`; `no-store`;
+  `protegerOrigem`.
+- `melhorEnvio.client`: cabeçalhos (inclui o `User-Agent` exato), tempo limite,
+  `401` vira "token inválido", NENHUMA rota fora da lista de 4 operações, token e
+  dados do destinatário nunca aparecem em log nem em erro.
+- `env`: `producao` fora de `production` não sobe; padrão `sandbox`.
+- Etiqueta (F7): monta o corpo do carrinho (remetente, destinatário, `products`
+  com valores já descontados, `volumes`, `tags`); uma chamada por volume nos
+  Correios; não duplica quando a etiqueta já existe; falha marca `erro` e envia o
+  aviso sem desfazer o pagamento; rastreio atualiza no máximo a cada 15 minutos e
+  muda o status do pedido para `enviado` e `entregue`.
+- Seed de logística: simulação não grava; nunca sobrescreve `medido`; a lista de
+  só retirada só tem skus que existem.
+- Teste manual no sandbox (roteiro, não automatizado), com o token de sandbox.
+
+### Ordem proposta (um passo por vez, com a regra da seção 10)
+
+- F1: este plano (aprovado) e o registro das decisões. Commit só da
+  documentação.
+- F2: migração `0006_frete` (SQL mostrado antes de criar o arquivo) e o
+  `seed:logistica`, com a planilha da Bia gerada.
+- F3: `melhorEnvio.client` + variáveis de ambiente + roteiro de testes no
+  sandbox (responde os 7 pontos acima ANTES de seguir).
+- F4: `pesos`, `embalagem` e `regras` (puras, com testes).
+- F5: `POST /api/frete/cotacao`.
+- F6: frontend do Checkout (opções, retirada e total com frete).
+- F7: etiqueta no carrinho, depois do passo 14 (pagamento confirmado).
+- F8: rastreio e Minha Conta.
+- F9: admin de envios (Fase 3).
+
+### O que falta de dados (lista)
+
+1. **Endereço completo da clínica (Rincão, SP):** CEP de origem, rua, número,
+   bairro, horário e telefone da retirada. Serve para o "Retirar na clínica" e
+   para o remetente.
+2. **Remetente do carrinho:** razão social, CNPJ, inscrição estadual (obrigatória
+   no envio comercial; "ISENTO" se for o caso), telefone e e-mail.
+3. **Medidas e pesos reais:** planilha da Bia (acima).
+4. **Contagem de itens dos 37 kits** (a Tulípia informa; extraio por script).
+5. **Transportadoras desejadas** e, se a Bia quiser Latam, Azul ou Buslog, a
+   agência de postagem.
+6. **Seguro:** declarar o valor dos produtos (`insurance_value` = soma dos itens
+   pagos, sem o frete)? Aumenta o preço do frete em troca de ressarcimento em
+   caso de extravio. Sugestão: declarar.
+7. **Validade do token** de produção (data do `exp`), para o lembrete.
+8. **Token do sandbox** no `backend/.env` (a Alexandra cria) e a conta sandbox
+   com a documentação aceita.
+9. **Aprovar a lista de 13 skus** (só retirada).
+10. **Limite de tentativas** nas rotas públicas (já pendente; a cotação passa a
+    ser mais uma que depende dele).
