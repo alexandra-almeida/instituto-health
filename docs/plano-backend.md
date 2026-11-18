@@ -2155,7 +2155,7 @@ chegam ao cliente da loja (a resposta diz só se vale tentar de novo).
   `database/conferencias/0006_pagamentos.sql`. Sem coluna de CPF (a Rede não exige).
 - Sem coluna que guarde número, validade ou CVV, nem o corpo das respostas.
 
-### Pedido de visitante (decisão a aprovar)
+### Pedido de visitante (APROVADO em 18/11/2026)
 
 O visitante não tem conta, então não tem como provar que o pedido é dele. Proposta:
 `POST /api/pedidos` passa a devolver uma única vez um `tokenDoPedido` aleatório
@@ -2237,17 +2237,18 @@ na subida: sem elas a API sobe e as rotas de pagamento respondem 503. Entram no
   então marca `pago` (código `78` = não houve transação financeira). Depois
   redireciona o navegador (303) para a página do pedido. Cliente que fecha a aba
   do banco: nenhum aviso chega, a rotina do passo 14 expira o pedido.
-- **Endereço de cobrança:** o 3DS exige endereço, cidade, CEP, estado, país, e-mail
-  e telefone do titular. O pedido de retirada não tem endereço, então o Checkout
-  passa a pedir o endereço de cobrança no cartão (no envio reaproveita o de
-  entrega).
+- **Endereço de cobrança (APROVADO em 18/11/2026):** o 3DS exige endereço, cidade,
+  CEP, estado, país, e-mail e telefone do titular. O Checkout pede o endereço de
+  cobrança SEMPRE que o pagamento for cartão, inclusive na retirada (o pedido de
+  retirada não tem endereço de entrega); no Pix não pede.
 - **Risco do IPv4 (a testar):** a Rede só aceita IPv4 em `ipAddress` e a Vercel pode
   entregar IPv6. Decisão proposta: débito exige IPv4 (senão mensagem pedindo outra
   rede ou o Pix); crédito segue SEM 3DS quando só há IPv6 (o risco de chargeback
   fica com a loja). Confirmar no sandbox.
-- **Parcelamento:** na v1, crédito À VISTA. O parcelamento (2 a 12 e o "até 3x sem
-  juros") volta quando a Juliana confirmar as condições com a Rede; a coluna
-  `parcelas` já existe.
+- **Parcelamento:** na v1, crédito SÓ À VISTA (APROVADO em 18/11/2026). O
+  **parcelado é o próximo passo**, aguardando a Juliana definir o máximo de
+  parcelas e até quantas sem juros (a Rede aceita de 2 a 12; o "até 3x sem juros"
+  do Checkout segue sendo só exemplo). A coluna `parcelas` já existe.
 - **Recusas:** a resposta ao cliente é genérica ("não autorizado, confira os dados,
   use outro cartão ou o Pix"), com um indicador se vale tentar de novo, derivado da
   tabela de retornos da bandeira (reversível ou irreversível).
@@ -2276,13 +2277,41 @@ Salvar cartão (tokenização), recorrência, carteiras digitais, Voucher, estor
 cancelamento por API (feitos à mão no portal da Rede até a tela de admin da Fase
 3), devolução de Pix pela loja e parcelamento.
 
-### O que preciso da Alexandra e da Juliana
+### Aprovações e o que ainda falta
 
-1. Aprovar este plano, em especial o token do pedido de visitante e o
-   crédito à vista na v1.
-2. Confirmar o endereço de cobrança no cartão para pedidos de retirada.
-3. Juliana: conferir a chave Pix na conta Itaú (Portal Use Rede) e as condições do
-   parcelamento.
-4. `REDE_WEBHOOK_TOKEN`: a Alexandra cria o valor (no `.env` local para o sandbox
+Aprovado pela Alexandra em 18/11/2026: o plano, o token de acesso do pedido de
+visitante (hash no banco), o crédito só à vista na v1 e o endereço de cobrança
+sempre que o pagamento for cartão. Falta:
+
+1. Juliana: conferir a chave Pix na conta Itaú (Portal Use Rede) e definir o máximo
+   de parcelas e até quantas sem juros (próximo passo, depois da v1).
+2. `REDE_WEBHOOK_TOKEN`: a Alexandra cria o valor (no `.env` local para o sandbox
    e, depois, na Vercel) e nunca o cola no chat.
-5. Aprovar o SQL da `0006` antes de ele virar arquivo.
+3. Aprovar o SQL da `0006` antes de ele virar arquivo.
+
+## Limite de tentativas por IP (18/11/2026)
+
+Desenho APROVADO pela Alexandra em 18/11/2026; implementar antes de ligar o
+Checkout. A Vercel não garante a mesma instância entre requisições, então o
+contador mora no banco (Supabase).
+
+- **Tabela `limites_de_uso`** (migração `0009_limites_de_uso`, SQL mostrado antes
+  de virar arquivo): `chave` (hash do IP + a rota; o IP NUNCA é guardado em claro),
+  `janela_inicio`, `contagem` e `bloqueado_ate`. RLS ligado, sem política e só o
+  `service_role` acessa.
+- **Função `registrar_tentativa(chave, limite, janela_segundos)`:** incrementa de
+  forma atômica numa só chamada e devolve se o limite foi passado e em quantos
+  segundos a janela recomeça.
+- **Middleware `limitarTentativas({ rota, limite, janela })`:** o IP vem do primeiro
+  valor de `x-forwarded-for` (preenchido pela Vercel; nada que o cliente escreva
+  decide), vira hash e a resposta é 429 com `Retry-After`.
+- **Limites iniciais (ajustáveis):** cotação de frete 20 por 10 minutos por IP;
+  criar pedido 5 por 10 minutos por IP.
+- **Falha aberta:** se o banco falhar, a rota continua e vai um AVISO ao log (sem
+  IP), para o limitador nunca derrubar a venda.
+- **Limpeza:** a rotina agendada que já existe apaga as linhas vencidas.
+- **Depois:** o mesmo middleware serve para login, cadastro e o pagamento (por
+  pedido e por IP).
+- **Testes:** limite estourado dá 429, a janela reinicia, IPs diferentes são
+  independentes, o IP nunca aparece em log nem no banco em claro e a falha do banco
+  deixa a requisição passar.
