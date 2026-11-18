@@ -1709,7 +1709,8 @@ suposição.
   Sem repetição automática no POST do carrinho (não é idempotente).
 - `backend/src/modules/frete/`: `frete.routes.ts`, `frete.controller.ts`,
   `frete.schemas.ts` (zod), `frete.service.ts` e funções puras para testar:
-  `pesos.ts` (peso estimado), `embalagem.ts` (escolha de caixas e volumes),
+  `embalagem.ts` (escolha de caixas e volumes; o peso estimado fica na lib do
+  `seed:logistica`, o backend só lê o peso do banco),
   `regras.ts` (prazo +1 dia útil e a válvula de só retirada) e `clinica.ts` (CEP de origem,
   endereço e remetente; dados não secretos).
 - `backend/src/repositories/`: `logistica.repository.ts` (peso, líquido e válvula de
@@ -2010,3 +2011,74 @@ locais, nada no ar até as migrações 0007 e 0008 serem coladas (ver "Ordem").
 2. Colar a `0008_criar_pedido` e rodar `database/conferencias/0008_criar_pedido.sql`.
 3. Só então o push do backend. Sem elas, `POST /api/pedidos` responde 500 (nada do
    site chama a rota ainda, então não quebra ninguém).
+
+## Frete: andamento (18/11/2026)
+
+Etapas F2 a F5 do plano de frete feitas no código, com testes (backend: 610
+testes passando). **Nada disso foi aplicado no banco nem está ligado ao pedido.**
+
+- **F2, `seed:logistica` e a planilha.** `npm run seed:logistica` (em `backend/`,
+  simulação por padrão e `--aplicar`) estima o peso de cada um dos 201 produtos
+  (Tulípia pelo `tamanho`, kits pelo número de itens, descartáveis pela
+  embalagem), marca `liquido = true` nos 13 líquidos descartáveis, deixa
+  `so_retirada` falso e NUNCA mexe nele depois, e nunca troca um peso `medido` por
+  estimado. A estimativa fica na lib do seed (`database/seeds/lib/logistica.ts`),
+  não no backend em execução: o backend só lê o peso do banco. `--gerar-planilha`
+  escreve `docs/frete-medidas.csv` (3 caixas provisórias e 201 produtos, com o
+  peso estimado e as colunas `peso_real_g` e de medidas para a Bia). Quando ela
+  devolver preenchida, o seed lê o `peso_real_g` e marca `medido`; as medidas
+  das caixas são trocadas em `modules/frete/caixas.ts`. Simulação rodada: 201
+  novos, 13 líquidos, nada gravado. **Falta a aprovação da Alexandra para o
+  `--aplicar`.**
+- **F3, cliente do Melhor Envio.** `lib/melhorEnvio.client.ts`: lista fechada de
+  operações (hoje só `shipping-calculate`), `User-Agent` `Instituto Health
+  (contato@healthinstituto.com.br)`, tempo limite de 8 s, sem repetição, token e
+  corpo das respostas nunca em erro ou log. `config/env.ts` lê
+  `MELHOR_ENVIO_TOKEN` (opcional) e `MELHOR_ENVIO_AMBIENTE` (padrão `sandbox`;
+  `producao` só é aceito com `NODE_ENV=production`, senão a API se recusa a
+  subir). O `backend/.env.example` tem os nomes, sem valor.
+- **F4, embalagem e regras** (`modules/frete`): `empacotar` escolhe os volumes
+  pelo peso (caixas padrão provisórias, 60% de ocupação), prazo da transportadora
+  + 1 dia útil e a válvula `so_retirada`.
+- **F5, `POST /api/frete/cotacao`** (pública, sem cache, `protegerOrigem`): devolve
+  as opções por preço crescente (serviço, transportadora, preço, prazo, volumes), a
+  retirada na clínica (sempre) e as marcas `soRetirada`, `freteIndisponivel` e
+  `semServicoParaOCep`. Sem token ou com o Melhor Envio fora do ar, 200 com só a
+  retirada. Produto sem peso, inativo ou desconhecido, 422. O seguro usa o preço
+  (inclusive o cheio dos exclusivos) só na conta, nunca na resposta.
+  `cotarServicoEscolhido` (para o pedido: cota de novo e responde 409
+  `frete_mudou` se o serviço sumiu) existe e tem teste, mas **NÃO está ligado ao
+  `POST /api/pedidos`**: o envio continua respondendo 503 até o Checkout e o
+  pagamento existirem.
+
+### O que a cotação real no sandbox mostrou (18/11/2026)
+
+Cotação por `volumes` com o token de sandbox, só o endereço, o serviço e o valor
+impressos:
+
+1. O sandbox só devolve **Correios (SEDEX, às vezes PAC) e Jadlog (.Package e
+   .Com)**, como a documentação diz. O código não tem regra por transportadora.
+2. **Vários volumes:** nos Correios o preço da cotação com 2 volumes é igual à
+   soma dos preços de cada um; na Jadlog o preço juntos é MENOR que a soma. O que
+   cobramos é o preço da cotação do conjunto de volumes. A etiqueta nos Correios
+   exige uma chamada por volume (a testar na etapa F7).
+3. **Zero opções é um resultado normal:** para o CEP 13500000 (Rio Claro) e para
+   um CEP inexistente o sandbox respondeu 200 com lista vazia, sem erro. Por isso
+   existe `semServicoParaOCep`; o cliente fica só com a retirada. O erro 422 do
+   Melhor Envio (`cep_invalido`) só aparece quando ele recusa a entrada.
+4. O CEP de origem usado (14840000, geral de Rincão) é **PROVISÓRIO**
+   (`modules/frete/clinica.ts`): falta o endereço completo da clínica.
+
+### Antes de colocar no ar
+
+A rota lê `produtos_logistica`, que está vazia: sem o `seed:logistica --aplicar` toda
+cotação responde 422 `produto_sem_peso`. Ordem: aprovar e aplicar o seed, conferir,
+só então o push do backend. Em produção, com o token de produção na Vercel, a rota
+cota de verdade (não cria etiqueta nem pedido).
+
+### Falta no frete
+
+Endereço completo da clínica e dados do remetente (F7); planilha da Bia
+preenchida; Checkout com as opções (F6); etiqueta no carrinho depois do pagamento
+(F7, testes de nota fiscal no sandbox); rastreio (F8); admin de envios (F9);
+limite de tentativas por IP na cotação.
