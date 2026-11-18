@@ -36,7 +36,7 @@ no fim deste arquivo a cada passo concluído.
   o pedido de habilitação de vendas online (e.Rede) e do token vai ao gerente.
   HISTÓRICO: até 25/10/2026 o gateway decidido era o PagBank; a troca foi
   registrada na seção "Progresso". As menções ao PagBank que restam neste
-  plano são histórico (ou nomes de colunas da 0002, renomeados na 0005).
+  plano são histórico (ou nomes de colunas da 0002, renomeados na 0006).
 - Fluxo do cadastro profissional mantém a ordem das telas atuais
   (commit a70448b): Perfil > Dados > Comprovante > Confirmação de e-mail > Sucesso.
 - Migrações SQL: versionadas em `database/migrations/`. A Alexandra cola cada
@@ -150,7 +150,7 @@ Tabelas (nomes fixos, não renomear):
   `quantidade` (> 0), `preco_unitario`.
 - `pagamentos`: `id`, `pedido_id`, `pagbank_order_id`, `pagbank_charge_id`,
   `status`, `valor`, `forma`, `created_at`, `updated_at`. (Nomes da migração
-  0002, ainda com o prefixo `pagbank_`. A 0005 os renomeia para nomes neutros
+  0002, ainda com o prefixo `pagbank_`. A 0006 os renomeia para nomes neutros
   `gateway_order_id`, `gateway_charge_id` e `gateway_status`, ver "Progresso".)
 - `eventos_webhook`: `id`, identificador do evento do gateway (único),
   `recebido_em`, `processado_em`. Serve para não processar o mesmo aviso
@@ -335,14 +335,14 @@ rota de pedidos e os testes). Estão também no `CLAUDE.md`.
    própria. Sem tokenização contratada e implementada, não existe "salvar
    cartão".
 5. Fluxo 3DS: o cliente vai ao banco e volta; por isso o pedido precisa do
-   estado "aguardando autenticação" (ver o impacto na migração 0005 abaixo).
+   estado "aguardando autenticação" (ver o impacto na migração 0006 abaixo).
 
-### Impacto do 3DS na migração 0005 (só anotado; a 0005 NÃO foi criada)
+### Impacto do 3DS na migração 0006 (só anotado; a 0006 NÃO foi criada)
 
 - `pedidos.status` hoje aceita `aguardando_pagamento`, `pago`, `cancelado`,
   `enviado` e `entregue`. Precisa de um estado novo, `aguardando_autenticacao`:
   o pedido existe, o cartão foi enviado à Rede e o cliente está no banco.
-  Mudar a regra `check` do `status` exige apagar e recriar a restrição na 0005.
+  Mudar a regra `check` do `status` exige apagar e recriar a restrição na 0006.
 - `pagamentos.status` (`pendente`, `em_analise`, `pago`, `recusado`,
   `cancelado`, `estornado`) provavelmente precisa do mesmo estado, ou o
   pagamento fica `pendente` enquanto o pedido está em autenticação. Decidir na
@@ -352,7 +352,7 @@ rota de pedidos e os testes). Estão também no `CLAUDE.md`.
 - Pedido que fica em `aguardando_autenticacao` e é abandonado precisa expirar
   (cancelar e liberar), possivelmente por tarefa agendada: definir o prazo.
 - Se a 3DS devolver dados que precisem ser guardados (identificador da
-  autenticação, resultado), entram em colunas de `pagamentos` na mesma 0005.
+  autenticação, resultado), entram em colunas de `pagamentos` na mesma 0006.
   Nunca dado de cartão.
 
 ### Sandbox (pendente, 11/11/2026)
@@ -485,12 +485,12 @@ Etapa C — Pedidos e pagamento
     código). (Trocado de PagBank para Rede em 26/10/2026.)
     Itens a confirmar nessa leitura, além do que o resumo já cobrir:
     - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
-      entra numa migração `0005` com a coluna em `pedidos` (e o formulário do
+      entra numa migração `0006` com a coluna em `pedidos` (e o formulário do
       Checkout passa a pedir). A 0002 NÃO tem essa coluna.
     - Como o aviso (webhook) se identifica, para decidir como montar o
       `eventos_webhook.evento_id` (id do aviso ou charge + status).
     - Quais dados de Pix (QR Code, copia-e-cola, validade) e de cartão precisam
-      ser guardados; se precisarem de colunas, entram na mesma `0005`.
+      ser guardados; se precisarem de colunas, entram na mesma `0006`.
 12. Módulo `pedidos`: criação com total calculado no servidor, com testes.
 13. `rede.client.ts` e pagamento por Pix no sandbox.
 14. Aviso (webhook) do Pix e atualização de status.
@@ -733,7 +733,7 @@ Etapa C — Pedidos e pagamento
   será usado. Ajustados neste arquivo: seções 1, 2, 4, 7, 9, 10, 11 e 12 e o
   `CLAUDE.md`. O código da migração 0002 e a conferência ainda citam
   `pagbank_*` (a migração já foi aplicada e não se edita).
-- [ ] Migração 0005 (pagamentos; foi a 0003 até 31/10/2026 e a 0004 até 14/11/2026, quando a 0004 passou a ser a aprovação de cadastros; a 0003 virou
+- [ ] Migração 0006 (pagamentos; foi a 0003 até 31/10/2026, a 0004 até 14/11/2026, quando a 0004 passou a ser a aprovação de cadastros, e a 0005 até 18/11/2026, quando a 0005 passou a ser o preço cheio dos exclusivos; a 0003 virou
   `0003_batimentos`; a escrever, SQL a ser mostrado à Alexandra antes): além de
   `cpf_cnpj`/dados de Pix que o resumo do passo 11 indicar, renomear em
   `pagamentos` as colunas `pagbank_order_id` para `gateway_order_id`,
@@ -741,7 +741,7 @@ Etapa C — Pedidos e pagamento
   `gateway_status`, e os índices `pagamentos_pagbank_order_id_idx` e
   `pagamentos_pagbank_charge_id_idx` para `pagamentos_gateway_order_id_idx` e
   `pagamentos_gateway_charge_id_idx`. Ajustar na mesma entrega a conferência
-  `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0005.
+  `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0006.
   Na Rede o TID (até 20 caracteres) faz o papel do id de transação; ver o
   resumo do passo 11 para o que cada coluna guarda.
 - [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
@@ -754,8 +754,8 @@ Etapa C — Pedidos e pagamento
   `REDE_AMBIENTE`), 3DS 2.0 e tokenização contratados no portal, taxas (Pix
   0,91%, crédito à vista 2,64% Visa e Master, débito 1,01%) e as 5 regras
   obrigatórias do módulo de pagamento (seção 7, e no `CLAUDE.md`). O impacto
-  do 3DS na migração 0005 (estado `aguardando_autenticacao`) está anotado na
-  seção 7; a 0005 continua por escrever.
+  do 3DS na migração 0006 (estado `aguardando_autenticacao`) está anotado na
+  seção 7; a 0006 continua por escrever.
 - [x] E-mail e teste real de cadastro (14/11/2026): SMTP próprio ativo e o
   fluxo de cadastro profissional testado de ponta a ponta com e-mail real (ver
   "E-mail: SMTP próprio e contato"). Resolve as notas antigas "teste real
@@ -847,7 +847,7 @@ Os originais ficam para a página de detalhe.
     O cron passa a fazer upsert dessa linha com a data de agora e depois lê de
     volta (500 se a leitura não confirmar a gravação), e o schedule vai de
     `0 9 * * *` para `0 */6 * * *` (a cada 6 horas, UTC; a equipe da Vercel é
-    Pro). Não há garantia de que baste. A 0003 original (pagamentos) virou 0004 e, em 14/11/2026, 0005 (a 0004 passou a ser a aprovação de cadastros).
+    Pro). Não há garantia de que baste. A 0003 original (pagamentos) virou 0004, em 14/11/2026 0005 (a 0004 passou a ser a aprovação de cadastros) e, em 18/11/2026, 0006 (a 0005 passou a ser o preço cheio dos exclusivos).
   - C (aprovado): monitor externo gratuito (UptimeRobot), criado pela
     Alexandra (passo a passo dado na conversa), com 3 monitores a cada 5
     minutos: `https://healthinstituto-api.vercel.app/api/saude` (API no ar),
@@ -1330,8 +1330,8 @@ from public.perfis p join auth.users u on u.id = p.id where p.is_admin;
    existentes na migração. É uma CÓPIA do e-mail de `auth.users`: **se um dia
    existir troca de e-mail, essa coluna precisa ser atualizada junto** (também
    anotado no `perfis.repository.ts`).
-4. Esta é a `0004_aprovacao_cadastros`; a de pagamentos virou `0005` (textos
-   acima e no `CLAUDE.md` ajustados).
+4. Esta é a `0004_aprovacao_cadastros`; a de pagamentos virou `0005` e, em
+   18/11/2026, `0006` (a `0005` passou a ser o preço cheio dos exclusivos).
 5. Profissional recusado que reenvia um comprovante volta para "pendente"
    (`comprovantes.service`, só depois de gravar o comprovante).
 6. Abas Aprovados e Recusados são só leitura (sem desfazer).
@@ -1538,9 +1538,10 @@ suposição.
   (escolha obrigatória), o "Retirar na clínica" e troca "Frete: A calcular" pelo
   valor. Nenhuma mensagem de frete grátis em lugar nenhum.
 
-### Migração `0006_frete` (a criar; SQL mostrado à Alexandra antes do arquivo)
+### Migração `0007_frete` (a criar; SQL mostrado à Alexandra antes do arquivo)
 
-A `0005` é a de pagamentos, ainda não criada. As duas mexem em `pedidos` em
+A `0006` é a de pagamentos, ainda não criada (a `0005` é o preço cheio dos
+exclusivos, ver "Preço cheio dos exclusivos"). As duas mexem em `pedidos` em
 colunas diferentes, então a ordem de colar não importa; a segunda a ser criada
 confere a anterior.
 
@@ -1570,7 +1571,7 @@ confere a anterior.
   `volume_indice`).
 - Em todas as tabelas novas: RLS ligado, nenhuma política e `revoke all` para
   `anon` e `authenticated` (regra da seção 9). Conferência em
-  `database/conferencias/0006_frete.sql`.
+  `database/conferencias/0007_frete.sql`.
 - Não guarda o corpo das respostas do Melhor Envio nem documento de ninguém.
 
 ### Peso e medidas (o dado que falta)
@@ -1735,7 +1736,7 @@ exceções documentadas (agência e volumes).
 
 - F1: este plano (aprovado) e o registro das decisões. Commit só da
   documentação.
-- F2: migração `0006_frete` (SQL mostrado antes de criar o arquivo) e o
+- F2: migração `0007_frete` (SQL mostrado antes de criar o arquivo) e o
   `seed:logistica`, com a planilha da Bia gerada.
 - F3: `melhorEnvio.client` + variáveis de ambiente + roteiro de testes no
   sandbox (responde os 7 pontos acima ANTES de seguir).
