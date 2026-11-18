@@ -358,15 +358,130 @@ rota de pedidos e os testes). Estão também no `CLAUDE.md`.
   autenticação, resultado), entram em colunas de `pagamentos` na mesma 0006.
   Nunca dado de cartão.
 
-### Sandbox (pendente, 11/11/2026)
+### Resumo da documentação (passo 11) (18/11/2026)
 
-Ainda não se sabe como se obtêm as credenciais de teste. O site oficial da
-documentação (developer.userede.com.br) respondeu 403 à leitura automática e a
-busca na web não trouxe a página oficial. Pistas indiretas, SEM confirmação: os
-SDKs de terceiros usam o par PV e chave com um ambiente `sandbox` (o mesmo par
-nos dois ambientes?). Próximo passo: a Alexandra abre a documentação no
-navegador e cola aqui a seção de sandbox, ou pergunta ao gerente da Rede. Nada
-foi cadastrado em lugar nenhum.
+Aprovado pela Alexandra em 18/11/2026. Fonte: portal oficial do desenvolvedor,
+página do e.Rede (https://developer.userede.com.br/e-rede, portal versão 2.35.0,
+texto de 26/10/2026), lida no navegador logado da Alexandra (o acesso automático
+dá 403). Nenhuma credencial foi vista. **Nenhum código de pagamento foi
+escrito.**
+
+**PENDÊNCIA QUE BLOQUEIA O CÓDIGO DE PAGAMENTO.** A própria página diz que, ao
+longo de 2027, o e.Rede será desativado e que o Itaú Checkout 2.0 é a evolução
+(a busca na web não confirmou isso fora do portal). A Juliana vai perguntar à
+gerente da Rede: a data, se dá para começar direto pelo Itaú Checkout 2.0, o
+custo, se tem página hospedada (o que poderia tirar o cartão do nosso backend),
+como ficam Pix, crédito, débito e 3DS e como é o sandbox. **Até a resposta, NÃO
+escrever código de pagamento** (passos 13 a 16). Quando houver código de
+pagamento, ele fica atrás de uma **interface de gateway**: `modules/pagamentos`
+fala só com a interface, e trocar de provedor mexe num arquivo só (hoje seria
+`rede.client.ts`).
+
+- **Autenticação (OAuth 2.0).** PV = `clientId` e chave de integração =
+  `clientSecret`. `POST` no endereço de token com
+  `Authorization: Basic base64(clientId:clientSecret)` e corpo
+  `grant_type=client_credentials`. O `access_token` vale **24 minutos** (a Rede
+  recomenda renovar entre 15 e 23); `401` quer dizer token vencido. Vai em
+  `Authorization: Bearer`.
+
+| | Sandbox | Produção |
+| --- | --- | --- |
+| Token | `https://rl7-sandbox-api.useredecloud.com.br/oauth2/token` | `https://api.userede.com.br/redelabs/oauth2/token` |
+| Transações | `https://sandbox-erede.useredecloud.com.br/v2/transactions` | `https://api.userede.com.br/erede/v2/transactions` |
+
+- **Crédito e débito.** `POST /v2/transactions`, `kind` = `credit` (padrão) ou
+  `debit`. Campos: `reference` (nosso código, até 50), `amount` em CENTAVOS
+  inteiros, `cardNumber`, `expirationMonth`, `expirationYear`, `securityCode`,
+  `installments` (2 a 12; sem o campo é à vista), `softDescriptor` (até 18),
+  `orderId` (sem caracteres especiais). Captura automática é o padrão (débito é
+  sempre automática). O resultado vem na própria resposta (`returnCode` `00` =
+  sucesso; `tid`, `nsu`, `authorizationCode`, `cardBin`, `last4`, grupo
+  `brand`). O cabeçalho `Transaction-Response: brand-return-opened` devolve os
+  códigos da bandeira (padrão ABECS, dizem se a recusa é reversível); a Rede pede
+  para usar sempre. Recusa irreversível não se repete, e excesso de
+  retentativas gera os códigos N01 a N09 e N99.
+- **3DS 2.0 (MPI Rede, sem custo de MPI).** Obrigatório no DÉBITO, opcional no
+  crédito. Contratação no Portal Use Rede (vender online, e-commerce, 3DS/Data
+  Only, Contratar). A requisição leva o bloco `threeDSecure`: `embedded: true`,
+  `onFailure` (`continue` ou `decline`; débito é sempre `decline`), `userAgent`,
+  `ipAddress` (**só IPv4**), `device` (profundidade de cor, tipo, Java, idioma,
+  tamanho da tela, fuso) e `billing` (endereço, cidade, CEP, estado, país, e-mail,
+  telefone), mais `urls` (`threeDSecureSuccess`, `threeDSecureFailure`,
+  `threeDSecureCallback`, cada `url` com **no máximo 87 caracteres**). A resposta
+  traz o código `220` e `threeDSecure.url`, para onde o cliente vai. Depois da
+  autenticação a Rede avisa por **postback** (formulário
+  `application/x-www-form-urlencoded`, só quando a autenticação DÁ CERTO) e/ou
+  por **callback** (POST com o resultado da autenticação). O resultado do
+  pagamento só se confirma por `GET /v2/transactions?reference=`; sem a transação
+  financeira volta o código `78`. Se o cliente não autenticar, nenhum aviso chega:
+  o pedido precisa expirar sozinho. Erro 500 no 3DS pede consulta por `reference`.
+- **Pix.** Vale só para correntista Itaú (a conta da clínica é Itaú). `POST
+  /v2/transactions` com `kind` = `Pix`, `reference`, `amount` e
+  `qrCode/dateTimeExpiration` (no máximo 15 dias). A resposta traz `tid`, a
+  imagem do QR Code em base64 e o copia e cola. O aviso de pagamento é um POST
+  para uma URL nossa, com os eventos `PV.UPDATE_TRANSACTION_PIX` (pago) e
+  `PV.REFUND_PIX` (devolvido por canal Itaú); o corpo traz `id` (da
+  notificação), `merchantId` (PV), `events` e `data` (`txid`, `id` = TID,
+  `endToEndId`), com um cabeçalho `authorization` OPCIONAL (Bearer ou Basic, que
+  nós configuramos) e `request-ID`. Sem URL cadastrada nenhum evento chega.
+  Status na consulta: `Pending`, `Approved` (pago) e `Canceled` (devolvido); QR
+  Code vencido = código `3036`. A consulta por `reference` vale 90 dias no Pix. A
+  Rede recomenda esperar pelo menos 10 minutos para consultar depois de um aviso.
+  Devolução: até 90 dias, total ou parcial, por TID, de forma síncrona.
+- **Cancelamento (cartão).** Crédito até 90 dias e débito até 7. No mesmo dia
+  processa na hora; nos outros vira D+1, com aviso por callback. Parcial é
+  permitido na captura (o estorno parcial D0 só para Master e Elo).
+- **Consulta.** Por TID (até 400 dias) ou por `reference` (60 dias nos cartões).
+- **Sem CPF.** O CPF/CNPJ do comprador NÃO é obrigatório nem no Pix nem no
+  cartão (o 3DS pede endereço, e-mail e telefone, não CPF): não há coluna
+  `cpf_cnpj` a criar na migração de pagamentos. Isso fecha a dúvida do passo 11.
+- **Tokenização.** Não vai na v1: não existe "salvar cartão".
+
+### Decisões de 18/11/2026 para o módulo de pagamento
+
+1. **e.Rede e o Itaú Checkout 2.0:** ver a pendência no início deste resumo.
+2. **Pix:** a conta da clínica é Itaú. PENDENTE conferir se a chave Pix está
+   habilitada no Portal Use Rede (Para vender > Pix).
+3. **3DS:** a Juliana JÁ contratou no portal. A tarifa ainda será confirmada com
+   a gerente.
+4. **`REDE_WEBHOOK_TOKEN`** (nova variável, só no backend): segredo que cadastramos
+   no cabeçalho `authorization` do aviso do Pix. Nome decidido; valor só na
+   Vercel e no `.env` local. Como o aviso não tem assinatura, o aviso é só uma
+   dica: antes de marcar `pago` o backend confere o TID na API da Rede, e
+   existe consulta de reserva para Pix pendente.
+5. **URL de aviso do Pix em produção:** o cadastro é por TELEFONE à central da
+   Rede (CNPJ, PV, e-mail e URL, prazo de 2 dias úteis), feito pela Juliana
+   quando a rota existir. É uma URL por CNPJ. No sandbox se cadastra pela API
+   (`POST /v2/transactions/notification-url`, exige https).
+6. **QR Code Pix: 30 minutos de validade.** Depois disso o pedido é cancelado e o
+   estoque, liberado.
+7. **Risco do IPv4 no 3DS:** o `ipAddress` aceita só IPv4 e a Vercel pode
+   entregar IPv6 do cliente. TESTAR no sandbox antes de confiar no 3DS.
+8. **Endereços de retorno do 3DS:** recebem formulário (POST) da Rede, então
+   ficam fora da proteção de origem, e precisam de até 87 caracteres. O pedido se
+   identifica pelo `reference` do corpo. Cada tentativa de pagamento tem um
+   `reference` novo; depois de timeout ou erro 500 nunca se repete um pagamento
+   sem consultar por `reference`.
+
+### Sandbox (18/11/2026)
+
+Credenciais de teste: no portal do desenvolvedor, em Meus Projetos, cria-se um
+projeto do pacote e.Rede; ele gera o PV e a chave de teste, que valem SÓ no
+sandbox (a chave de produção é outra, gerada pela Juliana no Portal Use Rede). A
+Alexandra criou o projeto de sandbox em 18/11/2026 e colou o par em
+`backend/.env` (fora do git), com `REDE_AMBIENTE=sandbox`. Endereços: ver a
+tabela do resumo acima. Ainda NÃO existe `config/env.ts` lendo essas variáveis.
+
+- **Cartões de teste:** só funcionam os da tabela do portal ("Tutorial
+  Sandbox", seção "Cartões"; os números não são copiados aqui).
+- **Resultado pelo `amount`:** valores como `53`, `56` e `80` simulam erros do
+  emissor; `2001` a `2006` e `2099` simulam as recusas N01 a N99.
+- **3DS:** `207` sem desafio, `208` com desafio manual (a tela de teste mostra o
+  código) e `209` com desafio automático. Iframe com 3DS não dá para simular.
+- **Pix:** o pagamento é simulado sozinho 2 minutos depois de gerar o QR Code;
+  um QR Code de R$ 50,00 gera o aviso de devolução parcial; `123` simula o QR
+  Code vencido. A URL do aviso se cadastra por `POST
+  /v2/transactions/notification-url` (https; `authorization` Bearer ou Basic).
 
 ## 8. Frontend
 
@@ -391,6 +506,9 @@ as variáveis do Supabase, `REDE_PV` (clientId), `REDE_CHAVE_INTEGRACAO`
 `PAGBANK_TOKEN` e `PAGBANK_AMBIENTE`),
 `COOKIE_SECRET` (se necessário) e, para o aviso de novo comprovante (tela de
 aprovação, Fase 3), `RESEND_API_KEY` (ver "E-mail: SMTP próprio e contato").
+Pagamento, decidido em 18/11/2026 (ainda não existe no `env.ts`): `REDE_WEBHOOK_TOKEN`,
+segredo do cabeçalho `authorization` do aviso do Pix (valor só na Vercel e no
+`.env` local).
 Frete (já cadastradas na Vercel em 16/11/2026, só Production): `MELHOR_ENVIO_TOKEN`
 (Secret) e `MELHOR_ENVIO_AMBIENTE` (`producao` lá; `sandbox` no `.env` local, com
 um token de sandbox separado). Ver "Frete (Melhor Envio)".
@@ -485,7 +603,9 @@ Etapa C — Pedidos e pagamento
     `pedidos`, `itens_pedido`, `pagamentos`, `eventos_webhook`; script de
     carga dos produtos a partir do JSON.
 11. Leitura da documentação da Rede (e.Rede) e resumo para aprovação (sem
-    código). (Trocado de PagBank para Rede em 26/10/2026.)
+    código). FEITO e aprovado em 18/11/2026 (ver "Resumo da documentação (passo
+    11)" na seção 7); os passos 13 a 16 esperam a resposta da gerente da Rede
+    sobre o fim do e.Rede em 2027. (Trocado de PagBank para Rede em 26/10/2026.)
     Itens a confirmar nessa leitura, além do que o resumo já cobrir:
     - O CPF/CNPJ do comprador é obrigatório (no Pix e no cartão)? Se for,
       entra numa migração `0006` com a coluna em `pedidos` (e o formulário do
@@ -565,6 +685,15 @@ Etapa C — Pedidos e pagamento
   provisiona). Projetos em plano pago não pausam por inatividade (documentação
   do Supabase). Tem custo mensal, na fatura da Vercel dela.
 - Credenciais de produção da Rede da Juliana (e.Rede habilitado no PV dela).
+- **Fim do e.Rede em 2027 (18/11/2026):** a Juliana pergunta à gerente da Rede a
+  data, se dá para começar direto pelo Itaú Checkout 2.0, o custo, se tem página
+  hospedada, Pix, crédito, débito, 3DS e o sandbox. SEM CÓDIGO DE PAGAMENTO até a
+  resposta; depois, tudo atrás de uma interface de gateway.
+- Conferir se a chave Pix da conta Itaú da clínica está habilitada no Portal Use
+  Rede (Para vender > Pix), e cadastrar por telefone a URL de aviso do Pix
+  (CNPJ, PV, e-mail e URL; 2 dias úteis), pela Juliana, quando a rota existir.
+- Confirmar com a gerente a tarifa do 3DS (já contratado) e testar o risco do
+  IPv4 do 3DS no sandbox.
 - Cartão pelo nosso backend: DECIDIDO em 09/11/2026 (a Rede não tem página
   hospedada). Valem as regras obrigatórias da seção 7. Ainda em aberto: a
   contratação do 3DS 2.0 e da tokenização (custo por bandeira) e o sandbox.
@@ -747,9 +876,11 @@ Etapa C — Pedidos e pagamento
   `database/conferencias/0002_...sql` (linhas 112 a 116) ou criar a da 0006.
   Na Rede o TID (até 20 caracteres) faz o papel do id de transação; ver o
   resumo do passo 11 para o que cada coluna guarda.
-- [ ] Passo 11 (26/10/2026, em andamento): leitura do manual oficial do e.Rede
-  v1.32 (23/03/2026) e resumo apresentado à Alexandra, sem código. A decisão do
-  cartão pelo servidor foi tomada em 09/11/2026 (ver seção 7).
+- [x] Passo 11 (26/10/2026; concluído em 18/11/2026): leitura da documentação
+  oficial do e.Rede e resumo aprovado pela Alexandra, sem código (ver seção 7). A
+  decisão do cartão pelo servidor foi tomada em 09/11/2026. NOVA PENDÊNCIA: o
+  e.Rede será desativado ao longo de 2027 (Itaú Checkout 2.0); sem a resposta da
+  gerente da Rede, nenhum código de pagamento.
 - [x] Resposta da Rede (09/11/2026), registrada em 11/11/2026 sem código de
   pagamento: PV de e-commerce 110115600 (duplicado do PV físico), condições
   comerciais em até 2 dias úteis, chave de integração gerada pela Juliana e
