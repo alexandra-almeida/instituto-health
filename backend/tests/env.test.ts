@@ -74,3 +74,61 @@ describe('RESEND_API_KEY', () => {
     expect(env.RESEND_API_KEY).toBe('chave-falsa-de-teste')
   })
 })
+
+describe('MELHOR_ENVIO_TOKEN e MELHOR_ENVIO_AMBIENTE', () => {
+  it('sem as variáveis: a API sobe, sem token e no sandbox (mesmo em produção)', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('MELHOR_ENVIO_TOKEN', undefined)
+    vi.stubEnv('MELHOR_ENVIO_AMBIENTE', undefined)
+
+    const env = await carregarEnv()
+
+    expect(env.MELHOR_ENVIO_TOKEN).toBeUndefined()
+    expect(env.MELHOR_ENVIO_AMBIENTE).toBe('sandbox')
+  })
+
+  it('vazias (como no .env.example): valem como ausentes', async () => {
+    vi.stubEnv('MELHOR_ENVIO_TOKEN', '')
+    vi.stubEnv('MELHOR_ENVIO_AMBIENTE', '')
+
+    const env = await carregarEnv()
+
+    expect(env.MELHOR_ENVIO_TOKEN).toBeUndefined()
+    expect(env.MELHOR_ENVIO_AMBIENTE).toBe('sandbox')
+  })
+
+  it('em produção aceita o ambiente producao e o token', async () => {
+    vi.stubEnv('NODE_ENV', 'production')
+    vi.stubEnv('MELHOR_ENVIO_AMBIENTE', 'producao')
+    vi.stubEnv('MELHOR_ENVIO_TOKEN', 'token-de-teste')
+
+    const env = await carregarEnv()
+
+    expect(env.MELHOR_ENVIO_AMBIENTE).toBe('producao')
+    expect(env.MELHOR_ENVIO_TOKEN).toBe('token-de-teste')
+  })
+
+  it.each(['development', 'test'])(
+    'producao fora de produção (%s) faz a API se recusar a subir, citando só o nome',
+    async (nodeEnv) => {
+      vi.stubEnv('NODE_ENV', nodeEnv)
+      vi.stubEnv('MELHOR_ENVIO_AMBIENTE', 'producao')
+      vi.stubEnv('MELHOR_ENVIO_TOKEN', 'token-secreto-123')
+
+      const erro = await carregarEnv().catch((e: unknown) => e)
+
+      expect(erro).toBeInstanceOf(Error)
+      expect((erro as Error).message).toContain('MELHOR_ENVIO_AMBIENTE')
+      expect((erro as Error).message).not.toContain('token-secreto-123')
+    },
+  )
+
+  it('ambiente desconhecido: falha citando só o nome', async () => {
+    vi.stubEnv('MELHOR_ENVIO_AMBIENTE', 'homologacao')
+
+    const erro = await carregarEnv().catch((e: unknown) => e)
+
+    expect((erro as Error).message).toContain('MELHOR_ENVIO_AMBIENTE')
+    expect((erro as Error).message).not.toContain('homologacao')
+  })
+})

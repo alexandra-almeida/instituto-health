@@ -5,34 +5,63 @@ import { z } from 'zod'
 // de quebrar no meio de uma requisição. Do Supabase o backend usa só estas
 // duas (decisão de 16/10/2026 no plano, seção 9). As da Rede entram nos
 // próximos passos.
-const esquema = z.object({
-  NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
-  // Só usada no desenvolvimento local; na Vercel não existe listen
-  PORTA: z.coerce.number().int().positive().default(3333),
-  SUPABASE_URL: z.url(),
-  // Chave secreta: ignora o RLS. Nunca registrar em log nem devolver ao cliente
-  SUPABASE_SECRET_KEY: z.string().min(1),
-  // Origens do site que podem chamar a API, separadas por vírgula (o domínio
-  // da Vercel e, depois, o próprio). Vazia em produção: a API recusa toda
-  // requisição que altera dados. Ver middlewares/protegerOrigem.ts
-  ORIGEM_FRONTEND: z.string().optional(),
-  // Segredo do Cron da Vercel (rota /api/cron/manter-ativo). Opcional até em
-  // produção: sem ela a API sobe normal e só a rota do cron responde 401.
-  // Definida (não vazia), precisa ter 16 caracteres ou mais.
-  CRON_SECRET: z.preprocess(
-    (valor) => (valor === '' ? undefined : valor),
-    z.string().min(16).optional(),
-  ),
-  // Chave do Resend para os avisos por e-mail (aprovação de profissionais).
-  // Opcional até em produção: sem ela a API sobe normal e só não envia os
-  // avisos (um aviso no log). Segredo: nunca em log, resposta ou frontend.
-  RESEND_API_KEY: z.preprocess(
-    (valor) => (valor === '' ? undefined : valor),
-    z.string().min(1).optional(),
-  ),
-})
+const esquema = z
+  .object({
+    NODE_ENV: z
+      .enum(['development', 'test', 'production'])
+      .default('development'),
+    // Só usada no desenvolvimento local; na Vercel não existe listen
+    PORTA: z.coerce.number().int().positive().default(3333),
+    SUPABASE_URL: z.url(),
+    // Chave secreta: ignora o RLS. Nunca registrar em log nem devolver ao cliente
+    SUPABASE_SECRET_KEY: z.string().min(1),
+    // Origens do site que podem chamar a API, separadas por vírgula (o domínio
+    // da Vercel e, depois, o próprio). Vazia em produção: a API recusa toda
+    // requisição que altera dados. Ver middlewares/protegerOrigem.ts
+    ORIGEM_FRONTEND: z.string().optional(),
+    // Segredo do Cron da Vercel (rota /api/cron/manter-ativo). Opcional até em
+    // produção: sem ela a API sobe normal e só a rota do cron responde 401.
+    // Definida (não vazia), precisa ter 16 caracteres ou mais.
+    CRON_SECRET: z.preprocess(
+      (valor) => (valor === '' ? undefined : valor),
+      z.string().min(16).optional(),
+    ),
+    // Chave do Resend para os avisos por e-mail (aprovação de profissionais).
+    // Opcional até em produção: sem ela a API sobe normal e só não envia os
+    // avisos (um aviso no log). Segredo: nunca em log, resposta ou frontend.
+    RESEND_API_KEY: z.preprocess(
+      (valor) => (valor === '' ? undefined : valor),
+      z.string().min(1).optional(),
+    ),
+    // Melhor Envio (frete). O token só tem as permissões de cotar, ler e pôr
+    // etiqueta no carrinho; o site nunca paga nem gera etiqueta. Opcional até em
+    // produção: sem ele a API sobe normal e a cotação devolve só a retirada na
+    // clínica. Segredo: nunca em log, resposta ou frontend.
+    MELHOR_ENVIO_TOKEN: z.preprocess(
+      (valor) => (valor === '' ? undefined : valor),
+      z.string().min(1).optional(),
+    ),
+    // Sem a variável vale o sandbox (nunca produção por acidente)
+    MELHOR_ENVIO_AMBIENTE: z.preprocess(
+      (valor) => (valor === '' ? undefined : valor),
+      z.enum(['sandbox', 'producao']).default('sandbox'),
+    ),
+  })
+  // O ambiente de produção do Melhor Envio só vale rodando em produção: no
+  // computador de desenvolvimento e nos testes, só sandbox, com o token de
+  // sandbox. Assim o token real nunca é usado fora da Vercel por engano.
+  .superRefine((valores, contexto) => {
+    if (
+      valores.MELHOR_ENVIO_AMBIENTE === 'producao' &&
+      valores.NODE_ENV !== 'production'
+    ) {
+      contexto.addIssue({
+        code: 'custom',
+        path: ['MELHOR_ENVIO_AMBIENTE'],
+        message: 'producao só é aceito com NODE_ENV=production',
+      })
+    }
+  })
 
 const resultado = esquema.safeParse(process.env)
 
