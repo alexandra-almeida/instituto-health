@@ -18,10 +18,13 @@ from (
           and is_nullable = 'YES'
       )),
     (2, 'regra: preco_cheio precisa ser maior que zero',
+      -- O Postgres guarda a regra normalizada, com o zero escrito
+      -- "(0)::numeric": CHECK (((preco_cheio IS NULL) OR (preco_cheio >
+      -- (0)::numeric))). Por isso a busca é por padrão, não pelo texto exato.
       exists (
         select 1 from pg_constraint
         where conrelid = 'public.produtos'::regclass and contype = 'c'
-          and pg_get_constraintdef(oid) ilike '%preco_cheio > 0%'
+          and pg_get_constraintdef(oid) ~* 'preco_cheio\s*>\s*\(?0'
       )),
     (3, 'regra: preço público OU preço cheio, nunca os dois',
       exists (
