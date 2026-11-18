@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "test": "vitest run",
     "seed:produtos": "tsx --env-file=.env ../database/seeds/0002_produtos.ts",
-    "seed:precos-profissionais": "tsx --env-file=.env ../database/seeds/0002_precos_profissionais.ts"
+    "seed:precos-profissionais": "tsx --env-file=.env ../database/seeds/0002_precos_profissionais.ts",
+    "seed:precos-cheios": "tsx --env-file=.env ../database/seeds/0005_precos_cheios.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",

@@ -27,7 +27,7 @@ export function converterPreco(bruto: string): number | null {
 }
 
 // Divide uma linha pelo separador, entendendo campos entre aspas
-function dividirLinha(linha: string, separador: string): string[] {
+export function dividirLinha(linha: string, separador: string): string[] {
   const campos: string[] = []
   let atual = ''
   let entreAspas = false

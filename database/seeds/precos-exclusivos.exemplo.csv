@@ -1,0 +1,4 @@
+categoria;produto;tamanho;preco_cheio;sku
+Exemplo;Produto de exemplo A;50ml;123,45;exemplo-de-sku-0
+Exemplo;Produto de exemplo B;kit;1.234,50;exemplo-de-sku-1
+Exemplo;Produto de exemplo C (ainda sem preço);200g;;exemplo-de-sku-2
