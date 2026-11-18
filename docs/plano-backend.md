@@ -1816,8 +1816,9 @@ produtos podem ser enviados, e o pedido nunca é limitado por categoria. O que
 existe em `produtos_logistica`:
 
 - **`liquido`:** só avisa a Bia que aquele envio precisa de embalagem vedada. Não
-  restringe nada. O `seed:logistica` marca `liquido = true` nos líquidos de
-  limpeza, **11 skus**:
+  restringe nada. Todo líquido leva embalagem vedada, então o `seed:logistica`
+  marca `liquido = true` em **13 skus** (lista confirmada pela Alexandra em
+  18/11/2026):
   - Sabonete Líquido 5 L: `desc-sabonete-liquido-5-l-erva-doce-28`,
     `desc-sabonete-liquido-5-l-frutas-vermelhas-29`,
     `desc-sabonete-liquido-5-l-pistache-30`
@@ -1826,12 +1827,14 @@ existe em `produtos_logistica`:
   - Água Sanitária: `desc-agua-sanitaria-5-l-gopabo-38`,
     `desc-agua-sanitaria-5-l-harcclin-39`, `desc-agua-sanitaria-5-l-triex-40`,
     `desc-agua-sanitaria-2-l-41` e `desc-agua-sanitaria-1-l-42`
+  - Sabonete Líquido 500 ml com Pump:
+    `desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31`
+  - Limpador Perfumado 120 ml: `desc-limpador-perfumado-120-ml-35`
 
-  Os outros líquidos do catálogo, o Sabonete Líquido 500 ml com Pump
-  (`desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31`) e o Limpador
-  Perfumado 120 ml (`desc-limpador-perfumado-120-ml-35`), NÃO estão na lista da
-  decisão; ficam `liquido = false` até a Alexandra ou a Bia dizerem o contrário.
-  O sabão em pó não é líquido.
+  O sabão em pó não é líquido (`liquido = false`). Líquido de produto Tulípia
+  (séruns, tônicos, sabonetes e outros) NÃO entra nesta lista: ela vale só para
+  os descartáveis; se a Bia quiser a embalagem vedada nos da Tulípia também, é
+  outra decisão.
 - **`so_retirada`:** continua na tabela como VÁLVULA, sempre `false` por padrão e
   no seed (para TODOS). Só se liga à mão se algum transportador recusar um produto
   específico no futuro; aí o pedido com ele só poderia escolher retirada.
