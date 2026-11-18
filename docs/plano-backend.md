@@ -2066,7 +2066,7 @@ impressos:
    um CEP inexistente o sandbox respondeu 200 com lista vazia, sem erro. Por isso
    existe `semServicoParaOCep`; o cliente fica só com a retirada. O erro 422 do
    Melhor Envio (`cep_invalido`) só aparece quando ele recusa a entrada.
-4. O CEP de origem usado (14840000, geral de Rincão) é **PROVISÓRIO**
+4. O CEP de origem usado (14830000, geral de Rincão) é **PROVISÓRIO**
    (`modules/frete/clinica.ts`): falta o endereço completo da clínica.
 
 ### Antes de colocar no ar

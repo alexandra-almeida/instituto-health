@@ -15,7 +15,7 @@ const volume = {
   valorSegurado: 100,
 }
 const entrada = {
-  cepOrigem: '14840000',
+  cepOrigem: '14830000',
   cepDestino: '13500000',
   volumes: [volume],
 }
@@ -67,7 +67,7 @@ describe('chamada', () => {
     expect(cabecalhos.Accept).toBe('application/json')
     expect(cabecalhos['Content-Type']).toBe('application/json')
     expect(JSON.parse(init.body as string)).toEqual({
-      from: { postal_code: '14840000' },
+      from: { postal_code: '14830000' },
       to: { postal_code: '13500000' },
       volumes: [
         { height: 10, width: 15, length: 20, weight: 0.5, insurance: 100 },

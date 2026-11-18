@@ -86,7 +86,7 @@ function montar(
     produtos: produtos as never,
     logistica: repoLogistica as never,
     melhorEnvio,
-    cepDeOrigem: '14840000',
+    cepDeOrigem: '14830000',
   })
   return { servico, produtos, repoLogistica, calcular }
 }
@@ -135,7 +135,7 @@ describe('cotar', () => {
     await servico.cotar('13500000', itens(['niacine-7', 2]))
     expect(calcular).toHaveBeenCalledTimes(1)
     const entrada = calcular.mock.calls[0]![0]
-    expect(entrada.cepOrigem).toBe('14840000')
+    expect(entrada.cepOrigem).toBe('14830000')
     expect(entrada.cepDestino).toBe('13500000')
     expect(entrada.volumes).toHaveLength(1)
     // 2 x 91 g + 100 g da caixa pequena = 282 g
