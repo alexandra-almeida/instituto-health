@@ -135,8 +135,11 @@ Tabelas (nomes fixos, não renomear):
 - `comprovantes_profissionais`: `id uuid`, `perfil_id uuid` (FK perfis, cascade),
   `storage_path text`, `enviado_em timestamptz`.
 - `produtos`: `sku text` (PK), `nome`, `tamanho`, `preco numeric(10,2)` (preço
-  público, pode ser nulo), `exclusivo_profissional boolean`, `ativo boolean`.
-  Semeada a partir de `frontend/src/data/tulipia-produtos.json`.
+  público, pode ser nulo), `exclusivo_profissional boolean`, `ativo boolean` e,
+  desde a migração 0005, `preco_cheio numeric(10,2)` (preço cheio CONFIDENCIAL
+  dos exclusivos, nunca no site). Semeada a partir de
+  `frontend/src/data/tulipia-produtos.json` (e do CSV de preços cheios, fora do
+  git).
 - `precos_profissionais`: `sku text` (PK, FK produtos), `preco numeric(10,2)`.
 - `enderecos`: `id`, `perfil_id`, `cep`, `rua`, `numero`, `complemento`,
   `bairro`, `cidade`, `estado`, `nome_destinatario`, `telefone`, `created_at`
@@ -547,9 +550,9 @@ Etapa C — Pedidos e pagamento
 - Transportadora: DECIDIDA em 16/11/2026, Melhor Envio. Plano em "Frete
   (Melhor Envio)"; faltam dados (endereço da clínica, remetente, pesos e
   medidas, aprovar a lista de descartáveis só com retirada).
-- Preço cheio dos 82 exclusivos (a Juliana vai mandar a tabela) e as 2
-  perguntas da regra de preço: ver "Regra de preço do profissional". Bloqueiam
-  o módulo `pedidos`.
+- Regra de preço do profissional: o preço cheio dos exclusivos chegou (3 ficaram
+  sem preço) e faltam as 2 perguntas e a tabela de promoções; ver "Regra de
+  preço do profissional". Bloqueiam o módulo `pedidos`.
 - Passagem do Supabase para o plano Pro (backups, sem pausa por inatividade)
   antes de receber pedidos reais. Ao migrar, decidir se o despertador do passo
   5b é removido (rota, `crons`, tabela `batimentos` e `CRON_SECRET`) ou
@@ -1096,16 +1099,19 @@ e o profissional paga 97,30, não 30% sobre 125,10 (que daria 87,57).
 
 ### Em aberto (não construir o módulo `pedidos` antes da resposta)
 
-- **Preço cheio dos 82 produtos exclusivos**, que hoje não têm preço no
-  catálogo (preço nulo no banco e no site). A Juliana vai mandar a tabela. Sem
-  ela não há como calcular os 30% desses itens.
+- **Preço cheio dos 82 produtos exclusivos**: RESPONDIDO em 18/11/2026 (ver
+  "Preço cheio dos exclusivos"). Faltam preço para 3 deles: Combo
+  Dermocosméticos para Olhos, Ultimate Estetic+ Nano Máscara Tensora de Ouro e
+  Body HD Goma Esfoliante (este entra na lista de 13 do Corporal e fica sem
+  comprar até ter preço).
 
 ### Perguntas para a Juliana (lista atualizada em 16/11/2026)
 
 Respondidas e retiradas: se o desconto inclui o frete (não inclui), se soma com
 promoção (não soma, vale o maior), se vale para os descartáveis (não vale).
 
-1. **A tabela com o preço cheio dos 82 exclusivos** (decisão dela de mandar).
+1. (Respondida em 18/11/2026: a tabela chegou, faltam 3 preços.) **Os preços
+   dos 3 exclusivos que ficaram vazios.**
 2. Pelas decisões acima, o desconto sai sempre do preço cheio, então a lista de
    preços de profissional por produto (tabela `precos_profissionais` e o script
    `seed:precos-profissionais`) parece não ser mais necessária. **Confirmar?**
@@ -1120,6 +1126,55 @@ isso hoje não existe em lugar nenhum (o site e o banco só têm o preço cheio;
 promoções do Esquenta Black são só texto e filtro na página). Definir onde
 guardar (por exemplo uma tabela de promoções com sku, preço e período) antes de
 construir o passo 12.
+
+### Preço cheio dos exclusivos (18/11/2026)
+
+A Juliana mandou a tabela com o preço cheio dos 82 exclusivos de profissional:
+`database/seeds/dados/precos-exclusivos.csv` (colunas
+`categoria;produto;tamanho;preco_cheio;sku`, separado por `;`, vírgula
+decimal). Conferido em 18/11/2026 contra o catálogo: os 82 skus são exatamente
+os 82 exclusivos (preço nulo no JSON), sem repetição nem sku inexistente; 79 têm
+preço e 3 estão vazios (Combo Dermocosméticos para Olhos, Ultimate Estetic+
+Nano Máscara Tensora de Ouro e Body HD Goma Esfoliante), que ficam SEM preço, ou
+seja, não podem ser vendidos até haver preço.
+
+**O repositório do GitHub é PÚBLICO** (conferido em 18/11/2026; a Alexandra vai
+torná-lo privado). Por isso o CSV nunca é commitado: `database/seeds/dados/`
+(e, por segurança, `backend/dados/`) estão no `.gitignore`, e nenhum valor de
+preço aparece em código, JSON, teste, log, mensagem de erro ou documento.
+
+- **Onde fica o preço.** Coluna nova `produtos.preco_cheio numeric(10,2)`
+  (migração `0005_preco_cheio_exclusivos`, a colar no SQL Editor com a
+  conferência `database/conferencias/0005_preco_cheio_exclusivos.sql`). Não dá
+  para usar `produtos.preco`: a regra `produtos_exclusivo_sem_preco_publico`
+  (0002) exige `preco` nulo nos exclusivos, e `preco` é o preço PÚBLICO. Regras
+  novas: `preco` e `preco_cheio` nunca existem juntos, e `preco_cheio` só existe
+  em exclusivo. O preço de um item é `preco ?? preco_cheio`; sem nenhum dos
+  dois, o produto não é vendido.
+- **Carga.** `npm run seed:precos-cheios` (em `backend/`; simulação por padrão e
+  `--aplicar` para gravar), lógica pura em `database/seeds/lib/precosCheios.ts`
+  com testes. Exige que todo sku exista e seja exclusivo, sem repetição, que
+  TODO exclusivo do catálogo tenha linha (mesmo vazia), e preço válido (até 2
+  casas, maior que zero; nunca arredonda em silêncio). Linha vazia = sem preço.
+  Nunca apaga preço (planilha vazia onde o banco já tem preço só avisa) e nunca
+  imprime valor, só quantidades, skus e nomes. Compara em centavos inteiros.
+- **Rota.** `GET /api/produtos/precos-profissionais?skus=a,b,c` (até 100 skus):
+  `autenticar` + `exigirProfissionalAprovado` (lê `tipo` e `status` no banco a
+  cada chamada; Home Care, pendente e recusado levam 403), resposta
+  `Cache-Control: private, no-store`. Devolve, por sku, `precoCheio` e
+  `precoComDesconto` (30% sobre o cheio; descartáveis `desc-` sem desconto) e
+  uma lista `semPreco` (sku desconhecido, inativo ou sem preço). O desconto é
+  calculado só no servidor (`backend/src/lib/preco.ts`, centavos inteiros, meio
+  centavo do desconto arredondado para cima); o navegador não manda nem
+  influencia preço.
+- **Ainda não entra:** a regra do MAIOR desconto entre a promoção vigente e os
+  30% (depende da tabela de promoções, que não existe), o total do pedido (passo
+  12) e a tela (carrinho e checkout mostrarem o desconto). O site NUNCA recebe o
+  preço cheio de exclusivo no JSON: ele só chega pela rota, para profissional
+  aprovado.
+- **Colar a `0005` ANTES do push** do backend novo: a rota lê `preco_cheio`, e
+  sem a coluna ela responde 500 (nada do site chama a rota ainda, então não
+  quebra ninguém, mas a ordem segura é migração, simulação, push).
 
 ### Fotos dos descartáveis (03/11/2026)
 
