@@ -40,10 +40,16 @@ from (
         where conrelid = 'public.produtos_logistica'::regclass and contype = 'f'
           and confrelid = 'public.produtos'::regclass
       )),
-    (6, 'produtos_logistica tem peso_g, origem_do_peso e so_retirada',
-      (select count(*) = 3 from information_schema.columns
+    (6, 'produtos_logistica tem peso_g, origem_do_peso, liquido e so_retirada, e as duas últimas são obrigatórias e começam em false',
+      (select count(*) = 4 from information_schema.columns
         where table_schema = 'public' and table_name = 'produtos_logistica'
-          and column_name in ('peso_g', 'origem_do_peso', 'so_retirada'))),
+          and column_name in ('peso_g', 'origem_do_peso', 'liquido',
+                              'so_retirada'))
+      and (select count(*) = 2 from information_schema.columns
+        where table_schema = 'public' and table_name = 'produtos_logistica'
+          and column_name in ('liquido', 'so_retirada')
+          and data_type = 'boolean' and is_nullable = 'NO'
+          and column_default = 'false')),
     (7, 'pedidos ganhou entrega_tipo, frete_servico_id e os dois prazos',
       (select count(*) = 4 from information_schema.columns
         where table_schema = 'public' and table_name = 'pedidos'

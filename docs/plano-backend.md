@@ -669,7 +669,7 @@ Etapa C — Pedidos e pagamento
   de existir.)
 - Transportadora: DECIDIDA em 16/11/2026, Melhor Envio. Plano em "Frete
   (Melhor Envio)"; faltam dados (endereço da clínica, remetente, pesos e
-  medidas, aprovar a lista de descartáveis só com retirada).
+  medidas).
 - Regra de preço do profissional: o preço cheio dos exclusivos chegou (3 ficaram
   sem preço) e faltam as 2 perguntas e a tabela de promoções; ver "Regra de
   preço do profissional". Bloqueiam o módulo `pedidos`.
@@ -1592,8 +1592,9 @@ suposição.
 7. **A clínica emite NF-e.** A Bia informa a chave da nota no painel antes de
    pagar a etiqueta (ver "Nota fiscal e declaração de conteúdo": isto tem um
    ponto a testar).
-8. **Descartáveis pesados ou líquidos só têm retirada** (lista proposta abaixo,
-   aguardando aprovação). Pedido com qualquer um deles só pode escolher retirada.
+8. ~~Descartáveis pesados ou líquidos só têm retirada.~~ **REVISTA em
+   18/11/2026: não existe mais "só retirada" para os descartáveis. Todos os
+   produtos podem ser enviados.** Ver "Descartáveis: todos podem ser enviados".
 
 ### Chaves e permissões
 
@@ -1709,10 +1710,10 @@ suposição.
 - `backend/src/modules/frete/`: `frete.routes.ts`, `frete.controller.ts`,
   `frete.schemas.ts` (zod), `frete.service.ts` e funções puras para testar:
   `pesos.ts` (peso estimado), `embalagem.ts` (escolha de caixas e volumes),
-  `regras.ts` (só retirada e prazo +1 dia útil) e `clinica.ts` (CEP de origem,
+  `regras.ts` (prazo +1 dia útil e a válvula de só retirada) e `clinica.ts` (CEP de origem,
   endereço e remetente; dados não secretos).
-- `backend/src/repositories/`: `logistica.repository.ts` (peso e só retirada por
-  sku) e `envios.repository.ts` (etiquetas).
+- `backend/src/repositories/`: `logistica.repository.ts` (peso, líquido e válvula de
+  só retirada por sku) e `envios.repository.ts` (etiquetas).
 - `modules/notificacoes`: dois avisos novos por e-mail (Resend), para
   `contato@healthinstituto.com.br`: "Pedido pago, etiqueta não entrou no
   carrinho" e "Token do Melhor Envio inválido ou vencido". Falha de e-mail nunca
@@ -1732,11 +1733,13 @@ colunas diferentes, então a ordem de colar não importa; a segunda a ser criada
 confere a anterior.
 
 - `produtos_logistica`: `sku` (PK, FK `produtos`), `peso_g integer` (1 a 30000),
-  `origem_do_peso` (`estimado` | `medido`), `so_retirada boolean default false`,
-  `updated_at`. Tabela à parte para o `seed:produtos` não precisar saber de
-  logística. Carga por `npm run seed:logistica` (simulação por padrão e
-  `--aplicar`, como os outros seeds): calcula o peso estimado e a regra de só
-  retirada, e NUNCA sobrescreve linha `medido`.
+  `origem_do_peso` (`estimado` | `medido`), `liquido boolean not null default
+  false` (a Bia precisa de embalagem vedada), `so_retirada boolean not null
+  default false` (só uma válvula) e `updated_at`. Tabela à parte para o
+  `seed:produtos` não precisar saber de logística. Carga por `npm run
+  seed:logistica` (simulação por padrão e `--aplicar`, como os outros seeds):
+  calcula o peso estimado, marca `liquido` pela lista abaixo, deixa `so_retirada
+  = false` em TODOS e NUNCA sobrescreve linha `medido`.
 - `pedidos`: `entrega_tipo` (`envio` | `retirada`, padrão `envio`); colunas
   `entrega_cep`, `entrega_rua`, `entrega_numero`, `entrega_bairro`,
   `entrega_cidade` e `entrega_estado` deixam de ser `not null`, com um `check`
@@ -1806,42 +1809,35 @@ cobrem 100% do catálogo para a cotação nunca travar:
      e começa pelos mais vendidos. O `seed:logistica` lê o CSV preenchido e marca
      `medido`.
 
-### Descartáveis só com retirada (proposta para você aprovar)
+### Descartáveis: todos podem ser enviados (decisão de 18/11/2026)
 
-Regra da Juliana: pesados ou líquidos (água sanitária, cloro, desinfetante, sabão
-em pó, limpadores de 2 L ou mais). Aplicada à categoria "Higiene e limpeza", são
-**13 skus**:
+A proposta de restringir 13 descartáveis à retirada foi **DESCARTADA**: todos os
+produtos podem ser enviados, e o pedido nunca é limitado por categoria. O que
+existe em `produtos_logistica`:
 
-- Sabonete Líquido 5 L (3 fragrâncias):
-  `desc-sabonete-liquido-5-l-erva-doce-28`,
-  `desc-sabonete-liquido-5-l-frutas-vermelhas-29`,
-  `desc-sabonete-liquido-5-l-pistache-30`
-- Cloro Gel 5 L: `desc-cloro-gel-5-l-32`
-- Desinfetante: `desc-desinfetante-2-l-33` (2 L) e
-  `desc-desinfetante-5-l-algas-34` (5 L Algas)
-- Sabão em Pó 800 g: `desc-sabao-em-po-multiacao-800-g-36` e
-  `desc-sabao-em-po-primavera-800-g-37`
-- Água Sanitária 5 L (3 marcas): `desc-agua-sanitaria-5-l-gopabo-38`,
-  `desc-agua-sanitaria-5-l-harcclin-39`, `desc-agua-sanitaria-5-l-triex-40`
-- Água Sanitária 2 L e 1 L: `desc-agua-sanitaria-2-l-41` e
-  `desc-agua-sanitaria-1-l-42`
+- **`liquido`:** só avisa a Bia que aquele envio precisa de embalagem vedada. Não
+  restringe nada. O `seed:logistica` marca `liquido = true` nos líquidos de
+  limpeza, **11 skus**:
+  - Sabonete Líquido 5 L: `desc-sabonete-liquido-5-l-erva-doce-28`,
+    `desc-sabonete-liquido-5-l-frutas-vermelhas-29`,
+    `desc-sabonete-liquido-5-l-pistache-30`
+  - Cloro Gel 5 L: `desc-cloro-gel-5-l-32`
+  - Desinfetante: `desc-desinfetante-2-l-33` e `desc-desinfetante-5-l-algas-34`
+  - Água Sanitária: `desc-agua-sanitaria-5-l-gopabo-38`,
+    `desc-agua-sanitaria-5-l-harcclin-39`, `desc-agua-sanitaria-5-l-triex-40`,
+    `desc-agua-sanitaria-2-l-41` e `desc-agua-sanitaria-1-l-42`
 
-Ficam FORA (envio normal) e peço a sua confirmação:
-
-- `desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31` (500 ml, leve);
-- `desc-limpador-perfumado-120-ml-35` (120 ml, bem abaixo de 2 L).
-
-Pontos para decidir: (a) a Água Sanitária de **1 L** e o Sabão em Pó de **800 g**
-são leves, mas entraram porque a Juliana citou "água sanitária" e "sabão em pó"
-sem limite de tamanho; se ela quiser enviar esses, saem da lista; (b) não
-incluí os pesados que não são líquidos (Bobinas Picotadas de 1,3 a 2,5 kg e
-Sacos Plásticos Virgem de 1 kg), nem os volumosos e leves (Papel Toalha de 1000
-folhas, Papel Higiênico de 16 rolos), que seguem por caixa Grande; me diga se
-algum deve ser só retirada.
-
-A regra vive em `produtos_logistica.so_retirada`, carregada pelo seed a partir
-de uma lista de skus no código (`regras.ts`), com teste que falha se um sku da
-lista deixar de existir.
+  Os outros líquidos do catálogo, o Sabonete Líquido 500 ml com Pump
+  (`desc-sabonete-liquido-500-ml-com-pump-ameixa-dourada-31`) e o Limpador
+  Perfumado 120 ml (`desc-limpador-perfumado-120-ml-35`), NÃO estão na lista da
+  decisão; ficam `liquido = false` até a Alexandra ou a Bia dizerem o contrário.
+  O sabão em pó não é líquido.
+- **`so_retirada`:** continua na tabela como VÁLVULA, sempre `false` por padrão e
+  no seed (para TODOS). Só se liga à mão se algum transportador recusar um produto
+  específico no futuro; aí o pedido com ele só poderia escolher retirada.
+- **Peso e frete:** os descartáveis pesados (galões de 5 L, bobinas) entram na
+  cotação como qualquer outro produto, pelo peso estimado. O frete deles pode
+  ficar alto, e o cliente vê o preço antes de escolher.
 
 ### Volumes
 
@@ -1896,8 +1892,9 @@ exceções documentadas (agência e volumes).
 - `embalagem` e `pesos` (puras): peso estimado por tipo de tamanho (ml, g, kg,
   ampolas, sachês, un, cada, kit com N itens); escolha da menor caixa; divisão em
   várias caixas; peso do volume com a caixa vazia; item sem peso é recusado.
-- `regras`: pedido com qualquer sku só retirada vira `soRetirada` e a cotação
-  nem chama o Melhor Envio; prazo + 1 dia útil; o frete não entra no desconto
+- `regras`: prazo + 1 dia útil; pedido com um sku de `so_retirada = true` (a
+  válvula, nunca ligada por padrão) só pode escolher retirada e a cotação nem
+  chama o Melhor Envio; o frete não entra no desconto
   do profissional (junto ao módulo de pedidos: total = itens com desconto + frete
   cheio, em centavos).
 - `POST /api/frete/cotacao` (supertest): CEP e itens inválidos; sku inexistente;
@@ -1914,8 +1911,9 @@ exceções documentadas (agência e volumes).
   Correios; não duplica quando a etiqueta já existe; falha marca `erro` e envia o
   aviso sem desfazer o pagamento; rastreio atualiza no máximo a cada 15 minutos e
   muda o status do pedido para `enviado` e `entregue`.
-- Seed de logística: simulação não grava; nunca sobrescreve `medido`; a lista de
-  só retirada só tem skus que existem.
+- Seed de logística: simulação não grava; nunca sobrescreve `medido`; todos os
+  skus da lista de líquidos existem e ficam `liquido = true`; `so_retirada` fica
+  `false` em TODOS.
 - Teste manual no sandbox (roteiro, não automatizado), com o token de sandbox.
 
 ### Ordem proposta (um passo por vez, com a regra da seção 10)
@@ -1950,7 +1948,7 @@ exceções documentadas (agência e volumes).
 7. **Validade do token** de produção (data do `exp`), para o lembrete.
 8. **Token do sandbox** no `backend/.env` (a Alexandra cria) e a conta sandbox
    com a documentação aceita.
-9. **Aprovar a lista de 13 skus** (só retirada).
+9. (Retirada: a lista de 13 skus só com retirada foi descartada em 18/11/2026.)
 10. **Limite de tentativas** nas rotas públicas (já pendente; a cotação passa a
     ser mais uma que depende dele).
 
@@ -1992,7 +1990,7 @@ locais, nada no ar até as migrações 0007 e 0008 serem coladas (ver "Ordem").
   interface `CotadorDeFrete` (`modules/pedidos/entrega.ts`), que ao criar o pedido
   cota DE NOVO o serviço escolhido. Hoje a implementação responde 503
   (`frete_indisponivel`) e nada é criado; a do frete real entra nas etapas F3 a
-  F5. A regra "descartável pesado só retirada" também entra nelas.
+  F5. Descartáveis NÃO são limitados à retirada (decisão de 18/11/2026).
 - **Gravação atômica:** função `criar_pedido` do banco (migração 0008), que grava
   o pedido e os itens juntos: um pedido sem itens nunca existe. Só o
   `service_role` executa. Valores entram como texto exato (`"129.90"`).

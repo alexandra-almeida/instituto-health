@@ -3,8 +3,9 @@
 -- database/conferencias/0007_frete.sql.
 --
 -- O que faz (nenhum dado existente é alterado):
---  1) produtos_logistica: peso por produto e a regra "só retirada" (carregadas
---     depois pelo seed:logistica, com peso ESTIMADO até a Bia medir);
+--  1) produtos_logistica: peso por produto, se é líquido (a Bia precisa de
+--     embalagem vedada) e uma válvula "só retirada" (carregadas depois pelo
+--     seed:logistica, com peso ESTIMADO até a Bia medir);
 --  2) pedidos: tipo de entrega (envio ou retirada na clínica) e o que foi
 --     mostrado ao cliente (serviço e prazo); o endereço de entrega deixa de ser
 --     obrigatório na RETIRADA;
@@ -26,7 +27,12 @@ create table if not exists public.produtos_logistica (
   peso_g integer not null check (peso_g between 1 and 30000),
   origem_do_peso text not null default 'estimado'
     check (origem_do_peso in ('estimado', 'medido')),
-  -- pesados e líquidos (água sanitária, cloro, desinfetante...): só retirada
+  -- Líquido (água sanitária, cloro gel, desinfetante, sabonete líquido 5 L...):
+  -- só avisa a Bia que o envio precisa de embalagem vedada. NÃO restringe a
+  -- venda: todos os produtos podem ser enviados (decisão de 18/11/2026).
+  liquido boolean not null default false,
+  -- Válvula, sempre false por padrão: só liga se algum transportador recusar um
+  -- produto específico no futuro (aí o pedido com ele só pode ser retirada).
   so_retirada boolean not null default false,
   updated_at timestamptz not null default now()
 );
