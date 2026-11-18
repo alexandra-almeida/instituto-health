@@ -5,6 +5,7 @@ import { adminRoutes } from './modules/admin/admin.routes.js'
 import { authRoutes } from './modules/auth/auth.routes.js'
 import { comprovantesRoutes } from './modules/comprovantes/comprovantes.routes.js'
 import { cronRoutes } from './modules/cron/cron.routes.js'
+import { produtosRoutes } from './modules/produtos/produtos.routes.js'
 import { saudeRoutes } from './modules/saude/saude.routes.js'
 
 // Monta o app sem chamar listen. A Vercel procura um arquivo que importe
@@ -23,6 +24,7 @@ app.use('/api/auth', authRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/comprovantes', comprovantesRoutes)
 app.use('/api/cron', cronRoutes)
+app.use('/api/produtos', produtosRoutes)
 
 app.use(rotaNaoEncontrada)
 app.use(tratarErros)
