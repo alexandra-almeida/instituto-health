@@ -59,3 +59,11 @@ export function precoCheioEmCentavos(produto: {
   const valor = produto.preco ?? produto.preco_cheio
   return valor === null ? null : emCentavos(valor)
 }
+
+// Centavos inteiros viram o texto exato de uma coluna numeric(10,2): 12990 vira
+// "129.90" (sem passar por ponto flutuante)
+export function centavosParaNumeric(centavos: number): string {
+  const reais = Math.trunc(centavos / 100)
+  const resto = String(centavos % 100).padStart(2, '0')
+  return `${reais}.${resto}`
+}
