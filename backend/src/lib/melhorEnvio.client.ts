@@ -124,16 +124,22 @@ function lerOpcao(bruto: unknown): OpcaoDoMelhorEnvio | null {
   }
 }
 
-// Só a mensagem curta de validação (sem o objeto `errors`, que pode repetir o
-// que enviamos), com sequências de 5 ou mais dígitos mascaradas
+// Só a mensagem curta de validação e os NOMES dos campos recusados (as chaves de
+// `errors`, nunca os textos nem os valores, que podem repetir o que enviamos),
+// com sequências de 5 ou mais dígitos mascaradas
 async function mensagemDeValidacao(
   resposta: Response,
 ): Promise<string | undefined> {
   try {
     const corpo: unknown = await resposta.json()
-    const mensagem = objeto(corpo)?.message
+    const cru = objeto(corpo)
+    const mensagem = cru?.message
     if (typeof mensagem !== 'string') return undefined
-    return mensagem.replace(/\d{5,}/g, '#').slice(0, 160)
+    const campos = Object.keys(objeto(cru?.errors) ?? {})
+      .slice(0, 6)
+      .map((nome) => nome.replace(/[^\w.*-]/g, '').slice(0, 40))
+    const sufixo = campos.length > 0 ? ` [campos: ${campos.join(', ')}]` : ''
+    return `${mensagem}${sufixo}`.replace(/\d{5,}/g, '#').slice(0, 200)
   } catch {
     return undefined
   }

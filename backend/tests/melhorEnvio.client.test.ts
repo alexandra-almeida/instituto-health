@@ -255,7 +255,7 @@ describe('erros', () => {
 })
 
 describe('detalhe do erro de entrada (para diagnóstico nos logs)', () => {
-  it('guarda só a mensagem curta, com números longos mascarados, e nunca o objeto errors', async () => {
+  it('guarda a mensagem curta e só os nomes dos campos recusados, com números longos mascarados', async () => {
     const fetchFalso = vi.fn().mockResolvedValue(
       resposta(
         {
@@ -270,8 +270,10 @@ describe('detalhe do erro de entrada (para diagnóstico nos logs)', () => {
       .catch((e: unknown) => e)
     expect((erro as ErroDoMelhorEnvio).codigo).toBe('entrada_invalida')
     expect((erro as ErroDoMelhorEnvio).detalhe).toBe(
-      'The to.postal_code # is invalid',
+      'The to.postal_code # is invalid [campos: from.postal_code]',
     )
+    // os textos e os valores de `errors` nunca entram, só o nome do campo
+    expect((erro as ErroDoMelhorEnvio).detalhe).not.toMatch(/Secreta|14830000/)
     expect((erro as Error).message).not.toMatch(/postal|Secreta/)
   })
 
