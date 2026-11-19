@@ -17,7 +17,8 @@ import {
 } from '../../repositories/produtos.repository.js'
 import type { CotadorDeFrete, FreteCotado } from '../pedidos/entrega.js'
 import {
-  CEP_DE_ORIGEM_PROVISORIO,
+  CEP_DE_ORIGEM,
+  ENDERECO_DA_RETIRADA,
   ROTULO_DA_OPCAO_DE_RETIRADA,
 } from './clinica.js'
 import { empacotar } from './embalagem.js'
@@ -44,7 +45,7 @@ export interface Cotacao {
   soRetirada: boolean
   motivoSoRetirada: string | null
   opcoes: OpcaoDeFrete[]
-  retirada: { disponivel: true; rotulo: string }
+  retirada: { disponivel: true; rotulo: string; endereco: string }
   /** o Melhor Envio não respondeu (ou não há token): só a retirada */
   freteIndisponivel: boolean
   /** o Melhor Envio respondeu, mas nenhum serviço atende este CEP */
@@ -71,6 +72,7 @@ export function criarFreteService({
   const retirada = {
     disponivel: true as const,
     rotulo: ROTULO_DA_OPCAO_DE_RETIRADA,
+    endereco: ENDERECO_DA_RETIRADA,
   }
   const apenasRetirada = (extra: Partial<Cotacao> = {}): Cotacao => ({
     soRetirada: false,
@@ -290,5 +292,5 @@ export const freteService = criarFreteService({
         ambiente: env.MELHOR_ENVIO_AMBIENTE,
       })
     : null,
-  cepDeOrigem: CEP_DE_ORIGEM_PROVISORIO,
+  cepDeOrigem: CEP_DE_ORIGEM,
 })

@@ -15,7 +15,7 @@ const volume = {
   valorSegurado: 100,
 }
 const entrada = {
-  cepOrigem: '14830000',
+  cepOrigem: '14830021',
   cepDestino: '13500000',
   volumes: [volume],
 }
@@ -67,7 +67,7 @@ describe('chamada', () => {
     expect(cabecalhos.Accept).toBe('application/json')
     expect(cabecalhos['Content-Type']).toBe('application/json')
     expect(JSON.parse(init.body as string)).toEqual({
-      from: { postal_code: '14830000' },
+      from: { postal_code: '14830021' },
       to: { postal_code: '13500000' },
       volumes: [
         { height: 10, width: 15, length: 20, weight: 0.5, insurance: 100 },
@@ -260,7 +260,7 @@ describe('detalhe do erro de entrada (para diagnóstico nos logs)', () => {
       resposta(
         {
           message: 'The to.postal_code 01310100 is invalid',
-          errors: { 'from.postal_code': ['Rua Secreta 10, 14830000'] },
+          errors: { 'from.postal_code': ['Rua Secreta 10, 14830021'] },
         },
         422,
       ),
@@ -273,7 +273,7 @@ describe('detalhe do erro de entrada (para diagnóstico nos logs)', () => {
       'The to.postal_code # is invalid [campos: from.postal_code]',
     )
     // os textos e os valores de `errors` nunca entram, só o nome do campo
-    expect((erro as ErroDoMelhorEnvio).detalhe).not.toMatch(/Secreta|14830000/)
+    expect((erro as ErroDoMelhorEnvio).detalhe).not.toMatch(/Secreta|14830021/)
     expect((erro as Error).message).not.toMatch(/postal|Secreta/)
   })
 

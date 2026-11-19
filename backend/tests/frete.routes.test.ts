@@ -42,7 +42,11 @@ const COTACAO = {
       volumes: 1,
     },
   ],
-  retirada: { disponivel: true, rotulo: 'Retirar na clínica (Rincão, SP)' },
+  retirada: {
+    disponivel: true,
+    rotulo: 'Retirar na clínica (Rincão, SP)',
+    endereco: 'Rua 15 de Novembro, 464, Centro, Rincão, SP, CEP 14830-021',
+  },
   freteIndisponivel: false,
   semServicoParaOCep: false,
 }
