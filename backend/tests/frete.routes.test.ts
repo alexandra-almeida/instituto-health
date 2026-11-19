@@ -15,6 +15,16 @@ vi.mock('../src/modules/frete/frete.service.js', () => ({
   comoCotadorDeFrete: vi.fn(),
 }))
 
+// O limite de tentativas por IP (banco) é trocado por um simulado que nunca
+// bloqueia; o comportamento dele tem teste próprio (limitarTentativas.test.ts)
+vi.mock('../src/repositories/limites.repository.js', () => ({
+  limitesRepository: {
+    // funções simples (não vi.fn): o resetAllMocks dos testes não as desfaz
+    registrar: async () => ({ excedeu: false, esperaSegundos: 1 }),
+    limparVencidos: async () => 0,
+  },
+}))
+
 const { default: app } = await import('../src/app.js')
 
 const ROTA = '/api/frete/cotacao'

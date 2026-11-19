@@ -2,15 +2,24 @@ import {
   batimentosRepository,
   type BatimentosRepository,
 } from '../../repositories/batimentos.repository.js'
+import {
+  limitesRepository,
+  type LimitesRepository,
+} from '../../repositories/limites.repository.js'
+
+// Janelas de limite de tentativas com mais de 1 dia já não valem nada
+const IDADE_DAS_JANELAS_APAGADAS_EM_SEGUNDOS = 86400
 
 interface Dependencias {
   batimentos: BatimentosRepository
+  limites?: Pick<LimitesRepository, 'limparVencidos'>
   /** relógio injetável, para o teste não depender da hora real */
   agora?: () => Date
 }
 
 export function criarCronService({
   batimentos,
+  limites,
   agora = () => new Date(),
 }: Dependencias) {
   return {
@@ -27,6 +36,15 @@ export function criarCronService({
       if (!lido || lido.getTime() < instante.getTime()) {
         throw new Error('O batimento gravado não foi encontrado na leitura')
       }
+      // Faxina das janelas vencidas do limite de tentativas. Nunca derruba o
+      // despertador: se falhar, só um aviso no log
+      if (limites) {
+        try {
+          await limites.limparVencidos(IDADE_DAS_JANELAS_APAGADAS_EM_SEGUNDOS)
+        } catch {
+          console.warn('Cron: não foi possível limpar os limites vencidos')
+        }
+      }
       return { ok: true }
     },
   }
@@ -36,4 +54,5 @@ export type CronService = ReturnType<typeof criarCronService>
 
 export const cronService = criarCronService({
   batimentos: batimentosRepository,
+  limites: limitesRepository,
 })

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { autenticar } from '../../middlewares/autenticar.js'
 import { autenticarOpcional } from '../../middlewares/autenticarOpcional.js'
+import { limitarCriacaoDePedido } from '../../middlewares/limitarTentativas.js'
 import { protegerOrigem } from '../../middlewares/protegerOrigem.js'
 import { validar, validarEntrada } from '../../middlewares/validar.js'
 import { buscar, criar, listar } from './pedidos.controller.js'
@@ -15,12 +16,12 @@ pedidosRoutes.use((_req, res, next) => {
 })
 
 // Criar pedido: visitante pode (compra sem cadastro); com sessão válida o
-// pedido fica ligado à conta. Passa pela proteção de origem (POST). Falta o
-// limite de tentativas por IP, pendência obrigatória antes do lançamento
-// (plano, seção 12).
+// pedido fica ligado à conta. Passa pela proteção de origem (POST) e pelo limite
+// de tentativas por IP (5 a cada 10 minutos).
 pedidosRoutes.post(
   '/',
   protegerOrigem,
+  limitarCriacaoDePedido,
   autenticarOpcional,
   validar(criarPedidoSchema),
   criar,

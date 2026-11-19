@@ -49,6 +49,16 @@ vi.mock('../src/repositories/pedidos.repository.js', () => ({
   pedidosRepository: pedidosFalso,
 }))
 
+// O limite de tentativas por IP (banco) é trocado por um simulado que nunca
+// bloqueia; o comportamento dele tem teste próprio (limitarTentativas.test.ts)
+vi.mock('../src/repositories/limites.repository.js', () => ({
+  limitesRepository: {
+    // funções simples (não vi.fn): o resetAllMocks dos testes não as desfaz
+    registrar: async () => ({ excedeu: false, esperaSegundos: 1 }),
+    limparVencidos: async () => 0,
+  },
+}))
+
 const { default: app } = await import('../src/app.js')
 
 const USUARIO = { id: '11111111-1111-4111-8111-111111111111', email: 'a@b.com' }
